@@ -1,6 +1,5 @@
-﻿using System;
-using AmongUs.Data;
-using BepInEx;
+﻿using BepInEx;
+using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 
@@ -17,38 +16,15 @@ internal class RebuildUsPlugin : BasePlugin
 
     internal static RebuildUsPlugin Instance;
     internal Harmony Harmony { get; } = new(MOD_ID);
-    internal static BepInEx.Logging.ManualLogSource Logger;
+    internal ManualLogSource Logger;
 
     public override void Load()
     {
         Logger = Log;
         Instance = this;
 
-        Logger.LogInfo("Loading \"Rebuild Us\"...");
-
         Harmony.PatchAll();
 
-        Logger.LogInfo("\"Rebuild Us\" was completely loaded! Enjoy the modifications!");
-    }
-
-    [HarmonyPatch(typeof(StatsManager), nameof(StatsManager.AmBanned), MethodType.Getter)]
-    public static class AmBannedPatch
-    {
-        public static void Postfix(out bool __result)
-        {
-            __result = false;
-        }
-    }
-
-    [HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake))]
-    public static class ChatControllerAwakePatch
-    {
-        private static void Prefix()
-        {
-            if (!EOSManager.Instance.isKWSMinor)
-            {
-                DataManager.Settings.Multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
-            }
-        }
+        Logger.LogMessage("\"Rebuild Us\" was completely loaded! Enjoy the modifications!");
     }
 }
