@@ -2,6 +2,8 @@
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
+using RebuildUs.Modules;
+using RebuildUs.Roles;
 
 namespace RebuildUs;
 
@@ -24,6 +26,9 @@ internal class RebuildUsPlugin : BasePlugin
         Instance = this;
 
         Harmony.PatchAll();
+
+        CustomOptions.RegisterOptions();
+        RolesManager.RegisterRoles();
 
         Logger.LogMessage("\"Rebuild Us\" was completely loaded! Enjoy the modifications!");
     }
