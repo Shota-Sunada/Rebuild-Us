@@ -27,7 +27,6 @@ internal class RebuildUsPlugin : BasePlugin
 
         Harmony.PatchAll();
 
-        CustomOptions.RegisterOptions();
         RolesManager.RegisterRoles();
 
         Logger.LogMessage("\"Rebuild Us\" was completely loaded! Enjoy the modifications!");

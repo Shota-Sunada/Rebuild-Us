@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using RebuildUs.Modules;
 using UnityEngine;
 
 namespace RebuildUs.Roles;
@@ -13,10 +14,8 @@ internal enum RoleType
     Ignore = 3,
 }
 
-internal enum RoleId
+internal enum RoleId : uint
 {
-    None = -1,
-
     // Among Us Roles
     Crewmate = 0,
     Impostor = 1,
@@ -41,7 +40,7 @@ internal static class RolesManager
             if (roleInfo == null) continue;
 
             AllRoles.Add(roleInfo);
-            RebuildUsPlugin.Instance.Logger.LogMessage($"Registering role: {nameof(type)}");
+            RebuildUsPlugin.Instance.Logger.LogMessage($"Registering role: {roleInfo.NameKey}");
         }
     }
 
@@ -52,12 +51,12 @@ internal static class RolesManager
 internal class RoleInfoAttribute : Attribute
 {
     internal string NameKey { get; }
-    internal Color Color { get; }
     internal string IntroDescKey { get; }
     internal string ShortDescKey { get; }
     internal string FullDescKey { get; }
     internal RoleType RoleType { get; }
     internal RoleId RoleId { get; }
+    internal Color Color { get; }
 
     internal RoleInfoAttribute(
         string nameKey,
@@ -73,5 +72,24 @@ internal class RoleInfoAttribute : Attribute
         FullDescKey = fullDescKey;
         RoleType = roleType;
         RoleId = roleId;
+        Color = Color.white;
+    }
+
+    internal RoleInfoAttribute(
+        string nameKey,
+        string introDescKey,
+        string shortDescKey,
+        string fullDescKey,
+        RoleType roleType,
+        RoleId roleId,
+        byte colorR, byte colorG, byte colorB)
+    {
+        NameKey = nameKey;
+        IntroDescKey = introDescKey;
+        ShortDescKey = shortDescKey;
+        FullDescKey = fullDescKey;
+        RoleType = roleType;
+        RoleId = roleId;
+        Color = new Color32(colorR, colorG, colorB, byte.MaxValue);
     }
 }
