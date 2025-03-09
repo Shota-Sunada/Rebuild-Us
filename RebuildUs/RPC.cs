@@ -6,14 +6,14 @@ namespace RebuildUs;
 
 internal static class RPCProcedure
 {
-    internal static RPCSender SendRPC(uint netId, byte callId)
+    internal static RPCSender SendRPC(uint netId, byte callId, int targetId = -1)
     {
-        return new RPCSender(netId, callId);
+        return new RPCSender(netId, callId, targetId);
     }
 
-    internal static RPCSender SendRPC(byte callId)
+    internal static RPCSender SendRPC(byte callId, int targetId = -1)
     {
-        return new RPCSender(PlayerControl.LocalPlayer.NetId, callId);
+        return new RPCSender(PlayerControl.LocalPlayer.NetId, callId, targetId);
     }
 }
 
@@ -45,10 +45,10 @@ internal static class HandleRpcPatch
 //     rpc.Write(1);
 // } // Disposeが呼ばれる
 // ↑っていうのをCopilotが生成してくれた
-internal class RPCSender(uint netId, byte callId) : IDisposable
+internal class RPCSender(uint netId, byte callId, int targetId) : IDisposable
 {
     // Send RPC to player with netId
-    private readonly MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(netId, callId, SendOption.Reliable);
+    private readonly MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(netId, callId, SendOption.Reliable, targetId);
 
     public void Dispose()
     {
