@@ -4,10 +4,12 @@ using InnerNet;
 
 namespace RebuildUs.Patches;
 
-[HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake))]
+[HarmonyPatch]
 internal static class ChatControllerAwakePatch
 {
-    internal static void Prefix()
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake))]
+    internal static void AwakePrefix()
     {
         if (!EOSManager.Instance.isKWSMinor)
         {

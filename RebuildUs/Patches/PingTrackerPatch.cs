@@ -3,9 +3,11 @@ using TMPro;
 
 namespace RebuildUs.Patches;
 
-[HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
+[HarmonyPatch]
 internal static class PingTrackerPatch
 {
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
     internal static void Postfix(PingTracker __instance)
     {
         __instance.text.alignment = TextAlignmentOptions.TopRight;

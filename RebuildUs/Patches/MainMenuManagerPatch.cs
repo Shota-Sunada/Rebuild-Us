@@ -4,9 +4,11 @@ using UnityEngine;
 
 namespace RebuildUs.Patches;
 
-[HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
+[HarmonyPatch]
 internal static class MainMenuManagerStartPatch
 {
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     internal static void Postfix(MainMenuManager __instance)
     {
         ModManager.Instance.ShowModStamp();
