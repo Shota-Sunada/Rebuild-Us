@@ -2,7 +2,7 @@ namespace RebuildUs.Helpers;
 
 internal static class PlayerHelpers
 {
-    public static bool IsDead(this PlayerControl player)
+    internal static bool IsDead(this PlayerControl player)
     {
         return
             player == null ||

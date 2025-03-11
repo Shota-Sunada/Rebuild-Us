@@ -1,6 +1,8 @@
 using System;
 using Hazel;
 using HarmonyLib;
+using RebuildUs.Modules;
+using System.Linq;
 
 namespace RebuildUs;
 
@@ -14,6 +16,24 @@ internal static class RPCProcedure
     internal static RPCSender SendRPC(byte callId, int targetId = -1)
     {
         return new RPCSender(PlayerControl.LocalPlayer.NetId, callId, targetId);
+    }
+
+    internal static void HandleShareOptions(byte optionsCount, MessageReader reader)
+    {
+        try
+        {
+            for (int i = 0; i < optionsCount; i++)
+            {
+                int id = reader.ReadPackedInt32();
+                int selectedIndex = reader.ReadPackedInt32();
+                var option = CustomOption.AllOptions.First(option => option.Id == id);
+                option.UpdateSelection(selectedIndex, i == optionsCount - 1);
+            }
+        }
+        catch (Exception e)
+        {
+            RebuildUsPlugin.Instance.Logger.LogError($"Error while deserializing options: {e.Message}");
+        }
     }
 }
 
@@ -45,7 +65,7 @@ internal static class HandleRpcPatch
 //     rpc.Write(1);
 // } // Disposeが呼ばれる
 // ↑っていうのをCopilotが生成してくれた
-internal class RPCSender(uint netId, byte callId, int targetId) : IDisposable
+internal class RPCSender(uint netId, byte callId, int targetId = -1) : IDisposable
 {
     // Send RPC to player with netId
     private readonly MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(netId, callId, SendOption.Reliable, targetId);

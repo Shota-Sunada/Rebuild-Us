@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
@@ -18,6 +19,7 @@ internal class RebuildUsPlugin : BasePlugin
 
     internal static RebuildUsPlugin Instance;
     internal Harmony Harmony { get; } = new(MOD_ID);
+    internal Version Version { get; } = Version.Parse(MOD_VERSION);
     internal ManualLogSource Logger;
 
     public override void Load()
@@ -26,6 +28,8 @@ internal class RebuildUsPlugin : BasePlugin
         Instance = this;
 
         Harmony.PatchAll();
+
+        CustomOption.AddKillDistance();
 
         RolesManager.RegisterRoles();
 
