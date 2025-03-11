@@ -8,9 +8,11 @@ internal static class StringOptionPatch
 {
     [HarmonyPrefix]
     [HarmonyPatch(typeof(StringOption), nameof(StringOption.Initialize))]
-    internal static void InitializePrefix(StringOption __instance)
+    internal static bool InitializePrefix(StringOption __instance)
     {
         CustomOption.PreventOutOfRange(__instance);
+
+        return CustomOption.EnableStringOption(__instance);
     }
 
     [HarmonyPostfix]
@@ -18,5 +20,19 @@ internal static class StringOptionPatch
     internal static void InitializePostfix(StringOption __instance)
     {
         CustomOption.OverrideBaseOptions(__instance);
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(StringOption), nameof(StringOption.Increase))]
+    internal static bool IncreasePrefix(StringOption __instance)
+    {
+        return CustomOption.IncreaseStringOption(__instance);
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(StringOption), nameof(StringOption.Decrease))]
+    internal static bool DecreasePrefix(StringOption __instance)
+    {
+        return CustomOption.DecreaseStringOption(__instance);
     }
 }

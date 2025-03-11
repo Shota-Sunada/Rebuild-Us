@@ -5,6 +5,7 @@ using UnityEngine;
 using AmongUs.GameOptions;
 using RebuildUs.Helpers;
 using TMPro;
+using BepInEx.Configuration;
 
 namespace RebuildUs.Modules;
 
@@ -13,11 +14,14 @@ internal partial class CustomOption
     internal const int ROLE_OVERVIEW_ID = 99;
 
     internal static List<CustomOption> AllOptions = [];
+    internal static ConfigEntry<string> VanillaSettings;
+    internal static int Preset = 0;
 
     internal int Id;
     internal string TitleKey;
     internal object[] Selections;
     internal OptionBehaviour OptionBehaviour;
+    internal ConfigEntry<int> Entry;
 
     internal int DefaultIndex;
     internal int SelectedIndex;
@@ -85,6 +89,68 @@ internal partial class CustomOption
         string headerKey = "")
     {
         return new(id, type, titleKey, ["Off", "On"], defaultValue ? "On" : "Off", parent, isHeader, headerKey);
+    }
+
+    internal static void SwitchPreset(int newPreset)
+    {
+        SaveVanillaOptions();
+        Preset = newPreset;
+        VanillaSettings = RebuildUsPlugin.Instance.Config.Bind($"Preset{Preset}", "GameOptions", "");
+        LoadVanillaOptions();
+        foreach (var option in AllOptions)
+        {
+            if (option.Id == 0) continue;
+
+            option.Entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{Preset}", option.Id.ToString(), option.DefaultIndex);
+            option.SelectedIndex = Mathf.Clamp(option.Entry.Value, 0, option.Selections.Length - 1);
+            if (option.OptionBehaviour != null && option.OptionBehaviour is StringOption stringOption)
+            {
+                stringOption.oldValue = stringOption.Value = option.SelectedIndex;
+                stringOption.ValueText.text = option.Selections[option.SelectedIndex].ToString();
+            }
+        }
+
+        // make sure to reload all tabs, even the ones in the background, because they might have changed when the preset was switched!
+        if (AmongUsClient.Instance.AmHost)
+        {
+            foreach (var entry in CurrentGOMs)
+            {
+                var optionType = (CustomOptionType)entry.Key;
+                var gom = entry.Value;
+                if (gom is not null)
+                {
+                    UpdateGameOptionsMenu(optionType, gom);
+                }
+            }
+        }
+    }
+
+    internal static void SaveVanillaOptions()
+    {
+        VanillaSettings.Value = Convert.ToBase64String(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameManager.Instance.LogicOptions.currentGameOptions, false));
+    }
+
+    internal static bool LoadVanillaOptions()
+    {
+        var optionsString = VanillaSettings.Value;
+        if (optionsString == "")
+        {
+            return false;
+        }
+
+        var gameOptions = GameOptionsManager.Instance.gameOptionsFactory.FromBytes(Convert.FromBase64String(optionsString));
+        if (gameOptions.Version < 8)
+        {
+            RebuildUsPlugin.Instance.Logger.LogMessage("tried to paste old settings, not doing this!");
+            return false;
+        }
+
+        GameOptionsManager.Instance.GameHostOptions = gameOptions;
+        GameOptionsManager.Instance.CurrentGameOptions = GameOptionsManager.Instance.GameHostOptions;
+        GameManager.Instance.LogicOptions.SetGameOptions(GameOptionsManager.Instance.CurrentGameOptions);
+        GameManager.Instance.LogicOptions.SyncOptions();
+
+        return true;
     }
 
     internal static void ShareOptionChange(int id)
@@ -172,24 +238,27 @@ internal partial class CustomOption
         {
             stringOption.oldValue = stringOption.Value = SelectedIndex;
             stringOption.ValueText.text = Selections[SelectedIndex].ToString();
-            // if (AmongUsClient.Instance?.AmHost && PlayerControl.LocalPlayer)
-            // {
-            //     if (id == 0 && selection != preset)
-            //     {
-            //         switchPreset(selection); // Switch presets
-            //         ShareOptionSelections();
-            //     }
-            //     else if (Entry != null)
-            //     {
-            //         entry.Value = selection; // Save selection to config
-            //         ShareOptionChange((uint)id);// Share single selection
-            //     }
-            // }
+            if (AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
+            {
+                if (Id == 0 && SelectedIndex != Preset)
+                {
+                    // Switch presets
+                    SwitchPreset(SelectedIndex);
+                    ShareOptionSelections();
+                }
+                else if (Entry != null)
+                {
+                    // Save selection to config
+                    Entry.Value = SelectedIndex;
+                    // Share single selection
+                    ShareOptionChange(Id);
+                }
+            }
         }
         else if (Id == 0 && AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
         {
             // Share the preset switch for random maps, even if the menu isn't open!
-            // switchPreset(selection);
+            SwitchPreset(SelectedIndex);
             ShareOptionSelections(); // Share all selections
         }
 
@@ -402,7 +471,7 @@ internal partial class CustomOption
             {
                 viewSettingsInfoPanel.titleText.outlineColor = Color.white;
                 viewSettingsInfoPanel.titleText.outlineWidth = 0.2f;
-                // if (option.type == CustomOptionType.Modifier)
+                // if (option.Type == CustomOptionType.Modifier)
                 //     viewSettingsInfoPanel.settingText.text = viewSettingsInfoPanel.settingText.text + GameOptionsDataPatch.buildModifierExtras(option);
             }
             __instance.settingsInfo.Add(viewSettingsInfoPanel.gameObject);
@@ -593,29 +662,30 @@ internal partial class CustomOption
                 textMeshPro.fontMaterial.SetFloat("_Stencil", 20);
             }
 
-            optionBehaviour.OnValueChanged = new Action<OptionBehaviour>((o) => { });
-            optionBehaviour.TitleText.text = option.TitleKey;
+            var stringOption = optionBehaviour as StringOption;
+            stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => { });
+            stringOption.TitleText.text = option.TitleKey;
 
             if (option.IsHeader &&
                 option.HeaderKey == "" &&
                 (option.Type is CustomOptionType.Neutral or CustomOptionType.Crewmate or CustomOptionType.Impostor or CustomOptionType.Modifier))
             {
-                optionBehaviour.TitleText.text = "Spawn Chance";
+                stringOption.TitleText.text = "Spawn Chance";
             }
 
-            if (optionBehaviour.TitleText.text.Length > 25)
+            if (stringOption.TitleText.text.Length > 25)
             {
-                optionBehaviour.TitleText.fontSize = 2.2f;
+                stringOption.TitleText.fontSize = 2.2f;
             }
 
-            if (optionBehaviour.TitleText.text.Length > 40)
+            if (stringOption.TitleText.text.Length > 40)
             {
-                optionBehaviour.TitleText.fontSize = 2f;
+                stringOption.TitleText.fontSize = 2f;
             }
 
-            optionBehaviour.Value = optionBehaviour.oldValue = option.SelectedIndex;
-            optionBehaviour.ValueText.text = option.Selections[option.SelectedIndex].ToString();
-            option.OptionBehaviour = optionBehaviour;
+            stringOption.Value = stringOption.oldValue = option.SelectedIndex;
+            stringOption.ValueText.text = option.Selections[option.SelectedIndex].ToString();
+            option.OptionBehaviour = stringOption;
 
             menu.Children.Add(optionBehaviour);
             num -= 0.45f;
@@ -728,5 +798,58 @@ internal partial class CustomOption
         //     createCustomButton(__instance, next++, "HideNSeekRoles", "Hide 'N' Seek Roles");
         //     createGameOptionsMenu(__instance, CustomOptionType.HideNSeekRoles, "HideNSeekRoles");
         // }
+    }
+
+    internal static bool EnableStringOption(StringOption __instance)
+    {
+        var option = AllOptions.FirstOrDefault(option => option.OptionBehaviour == __instance);
+        if (option == null)
+        {
+            return true;
+        }
+
+        __instance.OnValueChanged = new Action<OptionBehaviour>((o) => { });
+        //__instance.TitleText.text = option.name;
+        __instance.Value = __instance.oldValue = option.SelectedIndex;
+        __instance.ValueText.text = option.Selections[option.SelectedIndex].ToString();
+
+        return false;
+    }
+
+    internal static bool IncreaseStringOption(StringOption __instance)
+    {
+        var option = AllOptions.FirstOrDefault(option => option.OptionBehaviour == __instance);
+        if (option == null)
+        {
+            return true;
+        }
+
+        option.UpdateSelection(option.SelectedIndex + 1);
+        // if (CustomOptionHolder.isMapSelectionOption(option))
+        // {
+        //     IGameOptions currentGameOptions = GameOptionsManager.Instance.CurrentGameOptions;
+        //     currentGameOptions.SetByte(ByteOptionNames.MapId, (byte)option.selection);
+        //     GameOptionsManager.Instance.GameHostOptions = GameOptionsManager.Instance.CurrentGameOptions;
+        //     GameManager.Instance.LogicOptions.SyncOptions();
+        // }
+        return false;
+    }
+
+    internal static bool DecreaseStringOption(StringOption __instance)
+    {
+        var option = AllOptions.FirstOrDefault(option => option.OptionBehaviour == __instance);
+        if (option == null)
+        {
+            return true;
+        }
+        option.UpdateSelection(option.SelectedIndex - 1);
+        // if (CustomOptionHolder.isMapSelectionOption(option))
+        // {
+        //     IGameOptions currentGameOptions = GameOptionsManager.Instance.CurrentGameOptions;
+        //     currentGameOptions.SetByte(ByteOptionNames.MapId, (byte)option.selection);
+        //     GameOptionsManager.Instance.GameHostOptions = GameOptionsManager.Instance.CurrentGameOptions;
+        //     GameManager.Instance.LogicOptions.SyncOptions();
+        // }
+        return false;
     }
 }
