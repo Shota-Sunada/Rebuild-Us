@@ -72,7 +72,7 @@ internal partial class CustomOption
         {
             selections.Add(i);
         }
-        return new(id, type, titleKey, [selections], defaultValue, parent, isHeader, headerKey);
+        return new(id, type, titleKey, [.. selections], defaultValue, parent, isHeader, headerKey);
     }
 
     internal static CustomOption Create(
@@ -168,36 +168,37 @@ internal partial class CustomOption
         }
         SelectedIndex = newSelection;
 
-        // if (OptionBehaviour != null && OptionBehaviour is StringOption stringOption)
-        // {
-        //     stringOption.oldValue = stringOption.Value = SelectedIndex;
-        //     stringOption.ValueText.text = Selections[SelectedIndex].ToString();
-        //     // if (AmongUsClient.Instance?.AmHost && PlayerControl.LocalPlayer)
-        //     // {
-        //     //     if (id == 0 && selection != preset)
-        //     //     {
-        //     //         switchPreset(selection); // Switch presets
-        //     //         ShareOptionSelections();
-        //     //     }
-        //     //     else if (Entry != null)
-        //     //     {
-        //     //         entry.Value = selection; // Save selection to config
-        //     //         ShareOptionChange((uint)id);// Share single selection
-        //     //     }
-        //     // }
-        // }
-        // else if (Id == 0 && AmongUsClient.Instance?.AmHost && PlayerControl.LocalPlayer)
-        // {  // Share the preset switch for random maps, even if the menu isnt open!
-        //     switchPreset(selection);
-        //     ShareOptionSelections();// Share all selections
-        // }
+        if (OptionBehaviour != null && OptionBehaviour is StringOption stringOption)
+        {
+            stringOption.oldValue = stringOption.Value = SelectedIndex;
+            stringOption.ValueText.text = Selections[SelectedIndex].ToString();
+            // if (AmongUsClient.Instance?.AmHost && PlayerControl.LocalPlayer)
+            // {
+            //     if (id == 0 && selection != preset)
+            //     {
+            //         switchPreset(selection); // Switch presets
+            //         ShareOptionSelections();
+            //     }
+            //     else if (Entry != null)
+            //     {
+            //         entry.Value = selection; // Save selection to config
+            //         ShareOptionChange((uint)id);// Share single selection
+            //     }
+            // }
+        }
+        else if (Id == 0 && AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
+        {
+            // Share the preset switch for random maps, even if the menu isn't open!
+            // switchPreset(selection);
+            ShareOptionSelections(); // Share all selections
+        }
 
         if (AmongUsClient.Instance.AmHost)
         {
             var currentTab = CurrentGOMTabs.FirstOrDefault(x => x.active).GetComponent<GameOptionsMenu>();
             if (currentTab is not null)
             {
-                var optionType = AllOptions.First(x => x.OptionBehaviour == currentTab.Children[0]).Type;
+                var optionType = AllOptions.FirstOrDefault(x => x.OptionBehaviour == currentTab.Children[0]).Type;
                 UpdateGameOptionsMenu(optionType, currentTab);
             }
         }
@@ -274,7 +275,6 @@ internal partial class CustomOption
 
     internal static void DrawTab(LobbyViewSettingsPane __instance, CustomOptionType optionType)
     {
-
         var relevantOptions = AllOptions.Where(x => x.Type == optionType || optionType == CustomOptionType.General).ToList();
 
         if ((int)optionType is ROLE_OVERVIEW_ID)

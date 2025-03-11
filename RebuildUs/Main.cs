@@ -29,6 +29,7 @@ internal class RebuildUsPlugin : BasePlugin
 
         Harmony.PatchAll();
 
+        CustomOptionHolders.Initialize();
         CustomOption.AddKillDistance();
 
         RolesManager.RegisterRoles();
