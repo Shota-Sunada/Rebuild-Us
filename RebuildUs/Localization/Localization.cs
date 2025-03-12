@@ -10,8 +10,7 @@ internal static class Tr
 
     internal static void Initialize()
     {
-        var i = SupportedLangs.English;
-        // for (var i = SupportedLangs.English; i <= SupportedLangs.Irish; i++)
+        for (var i = SupportedLangs.English; i <= SupportedLangs.Irish; i++)
         {
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"RebuildUs.Localization.Translations.{i}.json");
             var dic = JsonSerializer.Deserialize<Dictionary<string, string>>(stream);
