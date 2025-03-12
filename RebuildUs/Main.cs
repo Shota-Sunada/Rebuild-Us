@@ -3,6 +3,7 @@ using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
+using RebuildUs.Localization;
 using RebuildUs.Modules;
 using RebuildUs.Roles;
 
@@ -28,6 +29,8 @@ internal class RebuildUsPlugin : BasePlugin
         Instance = this;
 
         Harmony.PatchAll();
+
+        LocalizationManager.Initialize();
 
         CustomOptionHolders.Initialize();
         CustomOption.AddKillDistance();
