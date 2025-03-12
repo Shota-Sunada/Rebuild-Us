@@ -1,6 +1,4 @@
-using HarmonyLib;
 using AmongUs.GameOptions;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using RebuildUs.Localization;
 
 namespace RebuildUs.Modules;

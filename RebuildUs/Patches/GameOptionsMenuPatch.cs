@@ -1,6 +1,4 @@
-using System.Linq;
 using HarmonyLib;
-using AmongUs.GameOptions;
 using RebuildUs.Modules;
 
 namespace RebuildUs.Patches;
