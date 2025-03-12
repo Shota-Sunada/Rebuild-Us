@@ -1,0 +1,3 @@
+files:
+  - source: /RebuildUs/Localization/Translations/English.json
+    translation: /RebuildUs/Localization/Translations/%language%.json
