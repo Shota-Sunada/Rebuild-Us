@@ -6,6 +6,7 @@ using AmongUs.GameOptions;
 using RebuildUs.Helpers;
 using TMPro;
 using BepInEx.Configuration;
+using RebuildUs.Localization;
 
 namespace RebuildUs.Modules;
 
@@ -88,7 +89,7 @@ internal partial class CustomOption
         bool isHeader = false,
         string headerKey = "")
     {
-        return new(id, type, titleKey, ["Off", "On"], defaultValue ? "On" : "Off", parent, isHeader, headerKey);
+        return new(id, type, titleKey, [LocalizationManager.GetString("OptionOff"), LocalizationManager.GetString("OptionOn")], defaultValue ? LocalizationManager.GetString("OptionOn") : LocalizationManager.GetString("OptionOff"), parent, isHeader, headerKey);
     }
 
     internal static void SwitchPreset(int newPreset)
@@ -398,16 +399,16 @@ internal partial class CustomOption
 
                 var categoryHeaderMasked = UnityEngine.Object.Instantiate(__instance.categoryHeaderOrigin);
                 categoryHeaderMasked.SetHeader(StringNames.ImpostorsCategory, 61);
-                categoryHeaderMasked.Title.text = option.HeaderKey != "" ? option.HeaderKey : option.TitleKey;
+                categoryHeaderMasked.Title.text = option.HeaderKey != "" ? LocalizationManager.GetString(option.HeaderKey) : LocalizationManager.GetString(option.TitleKey);
 
                 if ((int)optionType is ROLE_OVERVIEW_ID)
                 {
                     categoryHeaderMasked.Title.text = new Dictionary<CustomOptionType, string>()
                     {
-                        { CustomOptionType.Impostor, "Impostor Roles" },
-                        { CustomOptionType.Neutral, "Neutral Roles" },
-                        { CustomOptionType.Crewmate, "Crewmate Roles" },
-                        { CustomOptionType.Modifier, "Modifiers" }
+                        { CustomOptionType.Impostor, LocalizationManager.GetString("CategoryHeaderCrewmateRoles") },
+                        { CustomOptionType.Neutral, LocalizationManager.GetString("CategoryHeaderNeutralRoles") },
+                        { CustomOptionType.Crewmate, LocalizationManager.GetString("CategoryHeaderImpostorRoles") },
+                        { CustomOptionType.Modifier, LocalizationManager.GetString("CategoryHeaderModifier")}
                     }[curType];
                 }
                 categoryHeaderMasked.Title.outlineColor = Color.white;
@@ -491,7 +492,7 @@ internal partial class CustomOption
         if (option == CustomOptionHolders.CrewmateRolesCountMin)
         {
             val = "";
-            name = "Crewmate Roles";
+            name = LocalizationManager.GetString("CategoryHeaderCrewmateRoles");
             var min = CustomOptionHolders.CrewmateRolesCountMin.GetSelection();
             var max = CustomOptionHolders.CrewmateRolesCountMax.GetSelection();
 
@@ -527,7 +528,7 @@ internal partial class CustomOption
 
         if (option == CustomOptionHolders.NeutralRolesCountMin)
         {
-            name = "Neutral Roles";
+            name = LocalizationManager.GetString("CategoryHeaderNeutralRoles");
             var min = CustomOptionHolders.NeutralRolesCountMin.GetSelection();
             var max = CustomOptionHolders.NeutralRolesCountMax.GetSelection();
             if (min > max)
@@ -539,7 +540,7 @@ internal partial class CustomOption
 
         if (option == CustomOptionHolders.ImpostorRolesCountMin)
         {
-            name = "Impostor Roles";
+            name = LocalizationManager.GetString("CategoryHeaderImpostorRoles");
             var min = CustomOptionHolders.ImpostorRolesCountMin.GetSelection();
             var max = CustomOptionHolders.ImpostorRolesCountMax.GetSelection();
             if (max > GameOptionsManager.Instance.currentGameOptions.NumImpostors)
@@ -555,7 +556,7 @@ internal partial class CustomOption
 
         if (option == CustomOptionHolders.ModifiersCountMin)
         {
-            name = "Modifiers";
+            name = LocalizationManager.GetString("CategoryHeaderModifiers");
             var min = CustomOptionHolders.ModifiersCountMin.GetSelection();
             var max = CustomOptionHolders.ModifiersCountMax.GetSelection();
             if (min > max)
@@ -575,17 +576,17 @@ internal partial class CustomOption
         if (MapOptions.GameMode is CustomGameMode.Classic)
         {
             // create RU settings
-            CreateCustomButton(__instance, next++, "RUSettings", "RU Settings", CustomOptionType.General);
+            CreateCustomButton(__instance, next++, "RUSettings", LocalizationManager.GetString("CategoryHeaderModSettings"), CustomOptionType.General);
             // create RU settings
-            CreateCustomButton(__instance, next++, "RoleOverview", "Role Overview", (CustomOptionType)ROLE_OVERVIEW_ID);
+            CreateCustomButton(__instance, next++, "RoleOverview", LocalizationManager.GetString("CategoryHeaderRoleOverview"), (CustomOptionType)ROLE_OVERVIEW_ID);
             // Imp
-            CreateCustomButton(__instance, next++, "ImpostorSettings", "Impostor Roles", CustomOptionType.Impostor);
+            CreateCustomButton(__instance, next++, "ImpostorSettings", LocalizationManager.GetString("CategoryHeaderImpostorRoles"), CustomOptionType.Impostor);
             // Neutral
-            CreateCustomButton(__instance, next++, "NeutralSettings", "Neutral Roles", CustomOptionType.Neutral);
+            CreateCustomButton(__instance, next++, "NeutralSettings", LocalizationManager.GetString("CategoryHeaderNeutralRoles"), CustomOptionType.Neutral);
             // Crew
-            CreateCustomButton(__instance, next++, "CrewmateSettings", "Crewmate Roles", CustomOptionType.Crewmate);
+            CreateCustomButton(__instance, next++, "CrewmateSettings", LocalizationManager.GetString("CategoryHeaderCrewmateRoles"), CustomOptionType.Crewmate);
             // Modifier
-            CreateCustomButton(__instance, next++, "ModifierSettings", "Modifiers", CustomOptionType.Modifier);
+            CreateCustomButton(__instance, next++, "ModifierSettings", LocalizationManager.GetString("CategoryHeaderModifier"), CustomOptionType.Modifier);
         }
         // else if (MapOptions.GameMode is CustomGameMode.HideNSeek)
         // {
@@ -629,7 +630,7 @@ internal partial class CustomOption
             {
                 var categoryHeaderMasked = UnityEngine.Object.Instantiate(menu.categoryHeaderOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
                 categoryHeaderMasked.SetHeader(StringNames.ImpostorsCategory, 20);
-                categoryHeaderMasked.Title.text = option.HeaderKey != "" ? option.HeaderKey : option.TitleKey;
+                categoryHeaderMasked.Title.text = option.HeaderKey != "" ? LocalizationManager.GetString(option.HeaderKey) : LocalizationManager.GetString(option.TitleKey);
                 categoryHeaderMasked.Title.outlineColor = Color.white;
                 categoryHeaderMasked.Title.outlineWidth = 0.2f;
                 categoryHeaderMasked.transform.localScale = Vector3.one * 0.63f;
@@ -664,13 +665,13 @@ internal partial class CustomOption
 
             var stringOption = optionBehaviour as StringOption;
             stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => { });
-            stringOption.TitleText.text = option.TitleKey;
+            stringOption.TitleText.text = LocalizationManager.GetString(option.TitleKey);
 
             if (option.IsHeader &&
                 option.HeaderKey == "" &&
                 (option.Type is CustomOptionType.Neutral or CustomOptionType.Crewmate or CustomOptionType.Impostor or CustomOptionType.Modifier))
             {
-                stringOption.TitleText.text = "Spawn Chance";
+                stringOption.TitleText.text = LocalizationManager.GetString("RoleOverviewTitle");
             }
 
             if (stringOption.TitleText.text.Length > 25)
@@ -774,19 +775,19 @@ internal partial class CustomOption
         if (MapOptions.GameMode is CustomGameMode.Classic)
         {
             // create RU settings
-            CreateCustomButton(__instance, next++, "RUSettings", "RU Settings");
+            CreateCustomButton(__instance, next++, "RUSettings", LocalizationManager.GetString("CategoryHeaderModSettings"));
             CreateGameOptionsMenu(__instance, CustomOptionType.General, "RUSettings");
             // Imp
-            CreateCustomButton(__instance, next++, "ImpostorSettings", "Impostor Roles");
+            CreateCustomButton(__instance, next++, "ImpostorSettings", LocalizationManager.GetString("CategoryHeaderImpostorRoles"));
             CreateGameOptionsMenu(__instance, CustomOptionType.Impostor, "ImpostorSettings");
             // Neutral
-            CreateCustomButton(__instance, next++, "NeutralSettings", "Neutral Roles");
+            CreateCustomButton(__instance, next++, "NeutralSettings", LocalizationManager.GetString("CategoryHeaderNeutralRoles"));
             CreateGameOptionsMenu(__instance, CustomOptionType.Neutral, "NeutralSettings");
             // Crew
-            CreateCustomButton(__instance, next++, "CrewmateSettings", "Crewmate Roles");
+            CreateCustomButton(__instance, next++, "CrewmateSettings", LocalizationManager.GetString("CategoryHeaderCrewmateRoles"));
             CreateGameOptionsMenu(__instance, CustomOptionType.Crewmate, "CrewmateSettings");
             // Modifier
-            CreateCustomButton(__instance, next++, "ModifierSettings", "Modifiers");
+            CreateCustomButton(__instance, next++, "ModifierSettings", LocalizationManager.GetString("CategoryHeaderModifier"));
             CreateGameOptionsMenu(__instance, CustomOptionType.Modifier, "ModifierSettings");
         }
         // else if (MapOptions.GameMode == CustomGameMode.HideNSeek)

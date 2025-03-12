@@ -1,6 +1,7 @@
 using HarmonyLib;
 using AmongUs.GameOptions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using RebuildUs.Localization;
 
 namespace RebuildUs.Modules;
 
@@ -65,7 +66,7 @@ internal partial class CustomOption
     {
         if (id is KILL_RANGE_VERY_SHORT)
         {
-            __result = "Very Short";
+            __result = LocalizationManager.GetString("KillRangeVeryShort");
             return false;
         }
 

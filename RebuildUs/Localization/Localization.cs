@@ -13,19 +13,21 @@ internal static class LocalizationManager
 
     internal static void Initialize()
     {
-        for (var i = SupportedLangs.English; i <= SupportedLangs.Irish; i++)
+        var i = SupportedLangs.English;
+        // for (var i = SupportedLangs.English; i <= SupportedLangs.Irish; i++)
         {
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"RebuildUs.Localization.Translations.{i}.json");
             var dic = JsonSerializer.Deserialize<Dictionary<string, string>>(stream);
 
             foreach (var (key, value) in dic)
             {
-                if (Translations[key] is null)
+                if (!Translations.TryGetValue(key, out var trans))
                 {
-                    Translations[key] = [];
+                    trans = [];
+                    Translations[key] = trans;
                 }
 
-                Translations[key][i] = value;
+                trans[i] = value;
             }
         }
     }
