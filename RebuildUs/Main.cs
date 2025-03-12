@@ -30,7 +30,7 @@ internal class RebuildUsPlugin : BasePlugin
 
         Harmony.PatchAll();
 
-        LocalizationManager.Initialize();
+        Tr.Initialize();
 
         CustomOptionHolders.Initialize();
         CustomOption.AddKillDistance();

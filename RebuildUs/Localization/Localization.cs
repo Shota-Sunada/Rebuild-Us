@@ -7,7 +7,7 @@ using GameCore;
 
 namespace RebuildUs.Localization;
 
-internal static class LocalizationManager
+internal static class Tr
 {
     private static readonly Dictionary<string, Dictionary<SupportedLangs, string>> Translations = [];
 
@@ -32,7 +32,7 @@ internal static class LocalizationManager
         }
     }
 
-    internal static string GetString(string key, params string[] args)
+    internal static string Get(string key, params string[] args)
     {
         var lang = TranslationController.InstanceExists ? TranslationController.Instance.currentLanguage.languageID : SupportedLangs.English;
 

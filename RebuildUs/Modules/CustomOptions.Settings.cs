@@ -66,7 +66,7 @@ internal partial class CustomOption
     {
         if (id is KILL_RANGE_VERY_SHORT)
         {
-            __result = LocalizationManager.GetString("KillRangeVeryShort");
+            __result = Tr.Get("KillRangeVeryShort");
             return false;
         }
 
