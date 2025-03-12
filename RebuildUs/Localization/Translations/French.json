@@ -1,0 +1,23 @@
+{
+    "OptionOn": "On",
+    "OptionOff": "Off",
+    "SettingPreset": "Preset",
+    "MinMaxRoles": "Min/Max Roles",
+    "CrewmateRolesCountMin": "Minimum Crewmate Roles",
+    "CrewmateRolesCountMax": "Maximum Crewmate Roles",
+    "CrewmateRolesFill": "Fill Crewmate Roles\n(Ignores Min/Max)",
+    "NeutralRolesCountMin": "Minimum Neutral Roles",
+    "NeutralRolesCountMax": "Maximum Neutral Roles",
+    "ImpostorRolesCountMin": "Minimum Impostor Roles",
+    "ImpostorRolesCountMax": "Maximum Impostor Roles",
+    "ModifiersCountMin": "Minimum Modifiers",
+    "ModifiersCountMax": "Maximum Modifiers",
+    "CategoryHeaderCrewmateRoles": "Crewmate Roles",
+    "CategoryHeaderNeutralRoles": "Neutral Roles",
+    "CategoryHeaderImpostorRoles": "Impostor Roles",
+    "CategoryHeaderModifier": "Modifiers",
+    "CategoryHeaderModSettings": "Mod Settings",
+    "CategoryHeaderRoleOverview": "Role Overview",
+    "RoleOverviewTitle": "Spawn Chance",
+    "KillRangeVeryShort": "Very Short"
+}
