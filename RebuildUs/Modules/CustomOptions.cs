@@ -562,7 +562,7 @@ internal partial class CustomOption
 
         if (option == CustomOptionHolders.ModifiersCountMin)
         {
-            name = Tr.Get("CategoryHeaderModifiers");
+            name = Tr.Get("CategoryHeaderModifier");
             var min = CustomOptionHolders.ModifiersCountMin.GetSelection();
             var max = CustomOptionHolders.ModifiersCountMax.GetSelection();
             if (min > max)

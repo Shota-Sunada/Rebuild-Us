@@ -73,8 +73,11 @@ internal partial class CustomOption
 
     internal static void AddKillDistance()
     {
-        GameOptionsData.KillDistances = new([0.5f, 1f, 1.8f, 2.5f]);
-        GameOptionsData.KillDistanceStrings = new(["Very Short", "Short", "Medium", "Long"]);
+        if (TranslationController.InstanceExists)
+        {
+            GameOptionsData.KillDistances = new([0.5f, 1f, 1.8f, 2.5f]);
+            GameOptionsData.KillDistanceStrings = new([Tr.Get("KillRangeVeryShort"), TranslationController.Instance.GetString(StringNames.SettingShort), TranslationController.Instance.GetString(StringNames.SettingMedium), TranslationController.Instance.GetString(StringNames.SettingLong)]);
+        }
     }
 
     internal static bool AdjustStringForViewPanel(StringGameSetting __instance, float value, ref string __result)
