@@ -2,9 +2,7 @@
 The mod that adds many roles and features to AmongUs.
 
 > [!IMPORTANT]
-> This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC.<br/>
-> Portions of the materials contained herein are property of Innersloth LLC.<br/>
-> © Innersloth LLC.
+> _This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC._
 
 > [!NOTE]
 > This project is based on [The Other Roles](https://github.com/TheOtherRolesAU/TheOtherRoles).<br/>
@@ -22,6 +20,5 @@ The mod that adds many roles and features to AmongUs.
   Shudo Physics Club: [Website](https://shudo-physics.com), [GitHub](https://github.com/ShudoPhysicsClub)
 
 ## License
-> [!IMPORTANT]
-> This project is under the [GPLv3](https://github.com/Shota-Sunada/Rebuild-Us/blob/main/LICENSE).<br/>
-> Please respect the license and all the authors of the mods referenced by us.<br/>
+This project is under the [GPLv3](https://github.com/Shota-Sunada/Rebuild-Us/blob/main/LICENSE).<br/>
+Please respect the license and all the authors of the mods referenced by us.<br/>
