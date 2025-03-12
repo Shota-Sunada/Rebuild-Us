@@ -14,11 +14,10 @@ internal partial class CustomOption
 {
     internal const int ROLE_OVERVIEW_ID = 99;
 
-    internal static List<CustomOption> AllOptions = [];
+    internal static Dictionary<int, CustomOption> AllOptions = [];
     internal static ConfigEntry<string> VanillaSettings;
     internal static int Preset = 0;
 
-    internal int Id;
     internal string TitleKey;
     internal object[] Selections;
     internal OptionBehaviour OptionBehaviour;
@@ -33,7 +32,6 @@ internal partial class CustomOption
 
     internal CustomOption(int id, CustomOptionType type, string titleKey, object[] selections, object defaultValue, CustomOption parent, bool isHeader, string headerKey)
     {
-        Id = id;
         Type = type;
         TitleKey = titleKey;
         Selections = selections;
@@ -45,10 +43,16 @@ internal partial class CustomOption
 
         SelectedIndex = 0;
 
-        AllOptions.Add(this);
+        if (AllOptions.ContainsKey(id))
+        {
+            RebuildUsPlugin.Instance.Logger.LogWarning($"The custom option id ({id}) is already exists!");
+            RebuildUsPlugin.Instance.Logger.LogWarning("The old one will be replaced by the new!");
+        }
+
+        AllOptions[id] = this;
     }
 
-    internal static CustomOption Crate(
+    internal static CustomOption Create(
         int id,
         CustomOptionType type,
         string titleKey,
@@ -98,11 +102,11 @@ internal partial class CustomOption
         Preset = newPreset;
         VanillaSettings = RebuildUsPlugin.Instance.Config.Bind($"Preset{Preset}", "GameOptions", "");
         LoadVanillaOptions();
-        foreach (var option in AllOptions)
+        foreach (var (id, option) in AllOptions)
         {
-            if (option.Id == 0) continue;
+            if (id == 0) continue;
 
-            option.Entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{Preset}", option.Id.ToString(), option.DefaultIndex);
+            option.Entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{Preset}", id.ToString(), option.DefaultIndex);
             option.SelectedIndex = Mathf.Clamp(option.Entry.Value, 0, option.Selections.Length - 1);
             if (option.OptionBehaviour != null && option.OptionBehaviour is StringOption stringOption)
             {
@@ -154,17 +158,18 @@ internal partial class CustomOption
         return true;
     }
 
-    internal static void ShareOptionChange(int id)
+    internal static void ShareOptionChange(CustomOption option)
     {
-        var option = AllOptions.Find(x => x.Id == id);
         if (option is null)
         {
             return;
         }
 
+        var id = AllOptions.FirstOrDefault(x => x.Value == option).Key;
+
         using var rpc = new RPCSender(PlayerControl.LocalPlayer.NetId, 80);
         rpc.Write((byte)1);
-        rpc.Write((uint)option.Id, true);
+        rpc.Write((uint)id, true);
         rpc.Write(Convert.ToUInt32(option.SelectedIndex), true);
     }
 
@@ -177,7 +182,7 @@ internal partial class CustomOption
             return;
         }
 
-        var optionsList = new List<CustomOption>(AllOptions);
+        var optionsList = new Dictionary<int, CustomOption>(AllOptions);
         while (optionsList.Count != 0)
         {
             // takes less than 3 bytes per option on average
@@ -186,10 +191,10 @@ internal partial class CustomOption
             rpc.Write(amount);
             for (int i = 0; i < amount; i++)
             {
-                var option = optionsList[0];
-                optionsList.RemoveAt(0);
-                rpc.Write((uint)option.Id, true);
-                rpc.Write(Convert.ToUInt32(option.SelectedIndex), true);
+                var option = optionsList.ElementAt(0);
+                rpc.Write((uint)option.Key, true);
+                rpc.Write(Convert.ToUInt32(option.Value.SelectedIndex), true);
+                optionsList.Remove(option.Key);
             }
         }
     }
@@ -219,7 +224,7 @@ internal partial class CustomOption
         newSelection = Mathf.Clamp((newSelection + Selections.Length) % Selections.Length, 0, Selections.Length - 1);
         if (AmongUsClient.Instance.AmClient && notifyUsers && SelectedIndex != newSelection)
         {
-            DestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)(Id + 6000), Selections[newSelection].ToString(), false);
+            DestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)6000, Selections[newSelection].ToString(), false);
             try
             {
                 SelectedIndex = newSelection;
@@ -241,7 +246,7 @@ internal partial class CustomOption
             stringOption.ValueText.text = Selections[SelectedIndex].ToString();
             if (AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
             {
-                if (Id == 0 && SelectedIndex != Preset)
+                if (AllOptions[0] == this && SelectedIndex != Preset)
                 {
                     // Switch presets
                     SwitchPreset(SelectedIndex);
@@ -252,15 +257,16 @@ internal partial class CustomOption
                     // Save selection to config
                     Entry.Value = SelectedIndex;
                     // Share single selection
-                    ShareOptionChange(Id);
+                    ShareOptionChange(this);
                 }
             }
         }
-        else if (Id == 0 && AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
+        else if (AllOptions[0] == this && AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
         {
             // Share the preset switch for random maps, even if the menu isn't open!
             SwitchPreset(SelectedIndex);
-            ShareOptionSelections(); // Share all selections
+            // Share all selections
+            ShareOptionSelections();
         }
 
         if (AmongUsClient.Instance.AmHost)
@@ -268,7 +274,7 @@ internal partial class CustomOption
             var currentTab = CurrentGOMTabs.FirstOrDefault(x => x.active).GetComponent<GameOptionsMenu>();
             if (currentTab is not null)
             {
-                var optionType = AllOptions.FirstOrDefault(x => x.OptionBehaviour == currentTab.Children[0]).Type;
+                var optionType = AllOptions.Values.FirstOrDefault(x => x.OptionBehaviour == currentTab.Children[0]).Type;
                 UpdateGameOptionsMenu(optionType, currentTab);
             }
         }
@@ -345,18 +351,18 @@ internal partial class CustomOption
 
     internal static void DrawTab(LobbyViewSettingsPane __instance, CustomOptionType optionType)
     {
-        var relevantOptions = AllOptions.Where(x => x.Type == optionType || optionType == CustomOptionType.General).ToList();
+        var relevantOptions = AllOptions.Values.Where(x => x.Type == optionType || optionType == CustomOptionType.General).ToList();
 
         if ((int)optionType is ROLE_OVERVIEW_ID)
         {
             // Create 4 Groups with Role settings only
             relevantOptions.Clear();
-            relevantOptions.AddRange(AllOptions.Where(x => x.Type == CustomOptionType.Impostor && x.IsHeader));
-            relevantOptions.AddRange(AllOptions.Where(x => x.Type == CustomOptionType.Neutral && x.IsHeader));
-            relevantOptions.AddRange(AllOptions.Where(x => x.Type == CustomOptionType.Crewmate && x.IsHeader));
-            relevantOptions.AddRange(AllOptions.Where(x => x.Type == CustomOptionType.Modifier && x.IsHeader));
+            relevantOptions.AddRange(AllOptions.Values.Where(x => x.Type == CustomOptionType.Impostor && x.IsHeader));
+            relevantOptions.AddRange(AllOptions.Values.Where(x => x.Type == CustomOptionType.Neutral && x.IsHeader));
+            relevantOptions.AddRange(AllOptions.Values.Where(x => x.Type == CustomOptionType.Crewmate && x.IsHeader));
+            relevantOptions.AddRange(AllOptions.Values.Where(x => x.Type == CustomOptionType.Modifier && x.IsHeader));
 
-            foreach (var option in AllOptions)
+            foreach (var (id, option) in AllOptions)
             {
                 if (option.Parent != null && option.Parent.GetSelection() > 0)
                 {
@@ -764,7 +770,7 @@ internal partial class CustomOption
         }
         modSettingsGOM.scrollBar.transform.FindChild("SliderInner").DestroyChildren();
         modSettingsGOM.Children.Clear();
-        var relevantOptions = AllOptions.Where(x => x.Type == optionType).ToList();
+        var relevantOptions = AllOptions.Values.Where(x => x.Type == optionType).ToList();
         CreateSettings(modSettingsGOM, relevantOptions);
     }
 
@@ -803,7 +809,7 @@ internal partial class CustomOption
 
     internal static bool EnableStringOption(StringOption __instance)
     {
-        var option = AllOptions.FirstOrDefault(option => option.OptionBehaviour == __instance);
+        var option = AllOptions.Values.FirstOrDefault(option => option.OptionBehaviour == __instance);
         if (option == null)
         {
             return true;
@@ -819,7 +825,7 @@ internal partial class CustomOption
 
     internal static bool IncreaseStringOption(StringOption __instance)
     {
-        var option = AllOptions.FirstOrDefault(option => option.OptionBehaviour == __instance);
+        var option = AllOptions.Values.FirstOrDefault(option => option.OptionBehaviour == __instance);
         if (option == null)
         {
             return true;
@@ -838,7 +844,7 @@ internal partial class CustomOption
 
     internal static bool DecreaseStringOption(StringOption __instance)
     {
-        var option = AllOptions.FirstOrDefault(option => option.OptionBehaviour == __instance);
+        var option = AllOptions.Values.FirstOrDefault(option => option.OptionBehaviour == __instance);
         if (option == null)
         {
             return true;

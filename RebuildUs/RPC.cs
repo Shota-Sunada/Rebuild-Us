@@ -26,7 +26,7 @@ internal static class RPCProcedure
             {
                 int id = reader.ReadPackedInt32();
                 int selectedIndex = reader.ReadPackedInt32();
-                var option = CustomOption.AllOptions.First(option => option.Id == id);
+                var option = CustomOption.AllOptions[id];
                 option.UpdateSelection(selectedIndex, i == optionsCount - 1);
             }
         }

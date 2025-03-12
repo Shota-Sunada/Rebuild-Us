@@ -1,6 +1,7 @@
 {
     "OptionOn": "On",
     "OptionOff": "Off",
+    "SettingPreset": "Preset",
     "MinMaxRoles": "Min/Max Roles",
     "CrewmateRolesCountMin": "Minimum Crewmate Roles",
     "CrewmateRolesCountMax": "Maximum Crewmate Roles",
