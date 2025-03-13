@@ -6,14 +6,19 @@ using System.Linq;
 
 namespace RebuildUs;
 
+internal enum CustomRPC : byte
+{
+    ShareOptions = 80,
+}
+
 internal static class RPCProcedure
 {
-    internal static RPCSender SendRPC(uint netId, byte callId, int targetId = -1)
+    internal static RPCSender SendRPC(uint netId, CustomRPC callId, int targetId = -1)
     {
         return new RPCSender(netId, callId, targetId);
     }
 
-    internal static RPCSender SendRPC(byte callId, int targetId = -1)
+    internal static RPCSender SendRPC(CustomRPC callId, int targetId = -1)
     {
         return new RPCSender(PlayerControl.LocalPlayer.NetId, callId, targetId);
     }
@@ -48,8 +53,12 @@ internal static class HandleRpcPatch
         // アモアスが0から65まで使用 => 将来追加されることを見込んで80番から使用すること
         // Submergedが210から214まで使用するので重複厳禁
         // 最大値は 255(=byte.MaxValue)
-        switch (callId)
+        switch ((CustomRPC)callId)
         {
+            case CustomRPC.ShareOptions:
+                RPCProcedure.HandleShareOptions(reader.ReadByte(), reader);
+                break;
+
             default:
                 break;
         }
@@ -65,10 +74,10 @@ internal static class HandleRpcPatch
 //     rpc.Write(1);
 // } // Disposeが呼ばれる
 // ↑っていうのをCopilotが生成してくれた
-internal class RPCSender(uint netId, byte callId, int targetId = -1) : IDisposable
+internal class RPCSender(uint netId, CustomRPC callId, int targetId = -1) : IDisposable
 {
     // Send RPC to player with netId
-    private readonly MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(netId, callId, SendOption.Reliable, targetId);
+    private readonly MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(netId, (byte)callId, SendOption.Reliable, targetId);
 
     public void Dispose()
     {
