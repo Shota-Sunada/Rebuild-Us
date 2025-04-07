@@ -44,7 +44,7 @@ internal static class Helpers
             var stream = assembly.GetManifestResourceStream(path);
             var length = stream.Length;
             var byteTexture = new Il2CppStructArray<byte>(length);
-            stream.ReadExactly(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
+            stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
             if (path.Contains("HorseHats"))
             {
                 byteTexture = new Il2CppStructArray<byte>([.. byteTexture.Reverse()]);
@@ -111,14 +111,14 @@ internal static class Helpers
         return !IsDead(player);
     }
 
-    // internal static string Cs(this string str, Color c)
-    // {
-    //     return string.Format("<color=#{0:X2}{1:X2}{2:X2}{3:X2}>{4}</color>", ToByte(c.r), ToByte(c.g), ToByte(c.b), ToByte(c.a), str);
-    // }
+    internal static string Cs(this string str, Color c)
+    {
+        return string.Format("<color=#{0:X2}{1:X2}{2:X2}{3:X2}>{4}</color>", ToByte(c.r), ToByte(c.g), ToByte(c.b), ToByte(c.a), str);
+    }
 
-    // internal static byte ToByte(float f)
-    // {
-    //     f = Mathf.Clamp01(f);
-    //     return (byte)(f * 255);
-    // }
+    internal static byte ToByte(float f)
+    {
+        f = Mathf.Clamp01(f);
+        return (byte)(f * 255);
+    }
 }
