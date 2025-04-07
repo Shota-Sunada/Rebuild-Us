@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
+using RebuildUs.Utilities;
 
 namespace RebuildUs.Localization;
 
@@ -30,7 +31,7 @@ internal static class Tr
 
     internal static string Get(string key, params string[] args)
     {
-        var lang = TranslationController.InstanceExists ? TranslationController.Instance.currentLanguage.languageID : SupportedLangs.English;
+        var lang = TranslationController.InstanceExists ? FastDestroyableSingleton<TranslationController>.Instance.currentLanguage.languageID : SupportedLangs.English;
 
         if (!Translations.TryGetValue(key, out var langDic))
         {

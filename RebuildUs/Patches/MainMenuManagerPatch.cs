@@ -1,4 +1,5 @@
 using HarmonyLib;
+using RebuildUs.Utilities;
 using TMPro;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ internal static class MainMenuManagerStartPatch
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     internal static void Postfix(MainMenuManager __instance)
     {
-        ModManager.Instance.ShowModStamp();
+        FastDestroyableSingleton<ModManager>.Instance.ShowModStamp();
 
         var ruLogo = new GameObject("RULogo");
         ruLogo.transform.SetParent(GameObject.Find("RightPanel").transform, false);

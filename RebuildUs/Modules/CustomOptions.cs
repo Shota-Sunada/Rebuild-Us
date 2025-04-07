@@ -6,6 +6,7 @@ using AmongUs.GameOptions;
 using TMPro;
 using BepInEx.Configuration;
 using RebuildUs.Localization;
+using RebuildUs.Utilities;
 
 namespace RebuildUs.Modules;
 
@@ -228,16 +229,16 @@ internal partial class CustomOption
         newSelection = Mathf.Clamp((newSelection + Selections.Length) % Selections.Length, 0, Selections.Length - 1);
         if (AmongUsClient.Instance.AmClient && notifyUsers && SelectedIndex != newSelection)
         {
-            DestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)6000, Selections[newSelection].ToString(), false);
+            FastDestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)6000, Selections[newSelection].ToString(), false);
             try
             {
                 SelectedIndex = newSelection;
-                if (GameStartManager.Instance != null &&
-                    GameStartManager.Instance.LobbyInfoPane != null &&
-                    GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane != null &&
-                    GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.activeSelf)
+                if (FastDestroyableSingleton<GameStartManager>.Instance != null &&
+                    FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane != null &&
+                    FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane.LobbyViewSettingsPane != null &&
+                    FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.activeSelf)
                 {
-                    ChangeTab(GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane, GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.currentTab);
+                    ChangeTab(FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane.LobbyViewSettingsPane, FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane.LobbyViewSettingsPane.currentTab);
                 }
             }
             catch { }

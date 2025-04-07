@@ -1,5 +1,6 @@
 using AmongUs.GameOptions;
 using RebuildUs.Localization;
+using RebuildUs.Utilities;
 
 namespace RebuildUs.Modules;
 
@@ -46,7 +47,7 @@ internal partial class CustomOption
         if (TranslationController.InstanceExists)
         {
             LegacyGameOptions.KillDistances = new([0.5f, 1f, 1.8f, 2.5f]);
-            LegacyGameOptions.KillDistanceStrings = new([Tr.Get("KillRangeVeryShort"), TranslationController.Instance.GetString(StringNames.SettingShort), TranslationController.Instance.GetString(StringNames.SettingMedium), TranslationController.Instance.GetString(StringNames.SettingLong)]);
+            LegacyGameOptions.KillDistanceStrings = new([Tr.Get("KillRangeVeryShort"), FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.SettingShort), FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.SettingMedium), FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.SettingLong)]);
         }
     }
 }

@@ -1,6 +1,7 @@
 using HarmonyLib;
 using AmongUs.Data;
 using InnerNet;
+using RebuildUs.Utilities;
 
 namespace RebuildUs.Patches;
 
@@ -11,7 +12,7 @@ internal static class ChatControllerAwakePatch
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake))]
     internal static void AwakePrefix()
     {
-        if (!EOSManager.Instance.isKWSMinor)
+        if (!FastDestroyableSingleton<EOSManager>.Instance.isKWSMinor)
         {
             DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
         }
