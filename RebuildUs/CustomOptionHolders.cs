@@ -1,3 +1,4 @@
+using RebuildUs.Localization;
 using RebuildUs.Modules;
 
 namespace RebuildUs;
@@ -24,14 +25,14 @@ internal static class CustomOptionHolders
 
         PresetSelection = CustomOption.Create(0, CustomOptionType.General, "SettingPreset", Presets, null, true);
 
-        CrewmateRolesCountMin = CustomOption.Create(10, CustomOptionType.General, "CrewmateRolesCountMin", 0f, 0f, 15f, 1f, null, true, "MinMaxRoles");
-        CrewmateRolesCountMax = CustomOption.Create(11, CustomOptionType.General, "CrewmateRolesCountMax", 0f, 0f, 15f, 1f);
-        CrewmateRolesFill = CustomOption.Create(12, CustomOptionType.General, "CrewmateRolesFill", 0f, 0f, 15f, 1f);
-        NeutralRolesCountMin = CustomOption.Create(13, CustomOptionType.General, "NeutralRolesCountMin", 0f, 0f, 15f, 1f);
-        NeutralRolesCountMax = CustomOption.Create(14, CustomOptionType.General, "NeutralRolesCountMax", 0f, 0f, 15f, 1f);
-        ImpostorRolesCountMin = CustomOption.Create(15, CustomOptionType.General, "ImpostorRolesCountMin", 0f, 0f, 15f, 1f);
-        ImpostorRolesCountMax = CustomOption.Create(16, CustomOptionType.General, "ImpostorRolesCountMax", 0f, 0f, 15f, 1f);
-        ModifiersCountMin = CustomOption.Create(17, CustomOptionType.General, "ModifiersCountMin", 0f, 0f, 15f, 1f);
-        ModifiersCountMax = CustomOption.Create(18, CustomOptionType.General, "ModifiersCountMax", 0f, 0f, 15f, 1f);
+        CrewmateRolesCountMin = CustomOption.Create(10, CustomOptionType.General, Tr.Get("CrewmateRolesCountMin"), 0f, 0f, 15f, 1f, null, true, "MinMaxRoles");
+        CrewmateRolesCountMax = CustomOption.Create(11, CustomOptionType.General, Tr.Get("CrewmateRolesCountMax"), 0f, 0f, 15f, 1f);
+        CrewmateRolesFill = CustomOption.Create(12, CustomOptionType.General, Tr.Get("CrewmateRolesFill"), false);
+        NeutralRolesCountMin = CustomOption.Create(13, CustomOptionType.General, Tr.Get("NeutralRolesCountMin"), 0f, 0f, 15f, 1f);
+        NeutralRolesCountMax = CustomOption.Create(14, CustomOptionType.General, Tr.Get("NeutralRolesCountMax"), 0f, 0f, 15f, 1f);
+        ImpostorRolesCountMin = CustomOption.Create(15, CustomOptionType.General, Tr.Get("ImpostorRolesCountMin"), 0f, 0f, 15f, 1f);
+        ImpostorRolesCountMax = CustomOption.Create(16, CustomOptionType.General, Tr.Get("ImpostorRolesCountMax"), 0f, 0f, 15f, 1f);
+        ModifiersCountMin = CustomOption.Create(17, CustomOptionType.General, Tr.Get("ModifiersCountMin"), 0f, 0f, 15f, 1f);
+        ModifiersCountMax = CustomOption.Create(18, CustomOptionType.General, Tr.Get("ModifiersCountMax"), 0f, 0f, 15f, 1f);
     }
 }

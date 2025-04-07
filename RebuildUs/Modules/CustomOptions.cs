@@ -18,7 +18,7 @@ internal partial class CustomOption
     internal static ConfigEntry<string> VanillaSettings;
     internal static int Preset = 0;
 
-    internal string TitleKey;
+    internal string Title;
     internal object[] Selections;
     internal OptionBehaviour OptionBehaviour;
     internal ConfigEntry<int> Entry;
@@ -28,18 +28,18 @@ internal partial class CustomOption
     internal CustomOption Parent;
     internal bool IsHeader;
     internal CustomOptionType Type;
-    internal string HeaderKey;
+    internal string Header;
 
-    internal CustomOption(int id, CustomOptionType type, string titleKey, object[] selections, object defaultValue, CustomOption parent, bool isHeader, string headerKey)
+    internal CustomOption(int id, CustomOptionType type, string title, object[] selections, object defaultValue, CustomOption parent, bool isHeader, string header)
     {
         Type = type;
-        TitleKey = titleKey;
+        Title = title;
         Selections = selections;
         var index = Array.IndexOf(selections, defaultValue);
         DefaultIndex = index >= 0 ? index : 0;
         Parent = parent;
         IsHeader = isHeader;
-        HeaderKey = headerKey;
+        Header = header;
 
         SelectedIndex = 0;
 
@@ -55,45 +55,45 @@ internal partial class CustomOption
     internal static CustomOption Create(
         int id,
         CustomOptionType type,
-        string titleKey,
+        string title,
         string[] selections,
         CustomOption parent = null,
         bool isHeader = false,
-        string headerKey = "")
+        string header = "")
     {
-        return new(id, type, titleKey, selections, "", parent, isHeader, headerKey);
+        return new(id, type, title, selections, "", parent, isHeader, header);
     }
 
     internal static CustomOption Create(
         int id,
         CustomOptionType type,
-        string titleKey,
+        string title,
         float defaultValue,
         float min,
         float max,
         float interval,
         CustomOption parent = null,
         bool isHeader = false,
-        string headerKey = "")
+        string header = "")
     {
         var selections = new List<object>();
         for (float i = min; i <= max; i += interval)
         {
             selections.Add(i);
         }
-        return new(id, type, titleKey, [.. selections], defaultValue, parent, isHeader, headerKey);
+        return new(id, type, title, [.. selections], defaultValue, parent, isHeader, header);
     }
 
     internal static CustomOption Create(
         int id,
         CustomOptionType type,
-        string titleKey,
+        string title,
         bool defaultValue,
         CustomOption parent = null,
         bool isHeader = false,
-        string headerKey = "")
+        string header = "")
     {
-        return new(id, type, titleKey, [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, headerKey);
+        return new(id, type, title, [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, header);
     }
 
     internal static void SwitchPreset(int newPreset)
@@ -405,7 +405,7 @@ internal partial class CustomOption
 
                 var categoryHeaderMasked = UnityEngine.Object.Instantiate(__instance.categoryHeaderOrigin);
                 categoryHeaderMasked.SetHeader(StringNames.ImpostorsCategory, 61);
-                categoryHeaderMasked.Title.text = option.HeaderKey != "" ? Tr.Get(option.HeaderKey) : Tr.Get(option.TitleKey);
+                categoryHeaderMasked.Title.text = option.Header != "" ? option.Header : option.Title;
 
                 if ((int)optionType is ROLE_OVERVIEW_ID)
                 {
@@ -462,12 +462,12 @@ internal partial class CustomOption
 
             viewSettingsInfoPanel.transform.localPosition = new(num2, num, -2f);
             var value = option.GetSelection();
-            var settingTuple = HandleSpecialOptionsView(option, option.TitleKey, option.Selections[value].ToString());
+            var settingTuple = HandleSpecialOptionsView(option, option.Title, option.Selections[value].ToString());
             viewSettingsInfoPanel.SetInfo(StringNames.ImpostorsCategory, settingTuple.Item2, 61);
             viewSettingsInfoPanel.titleText.text = settingTuple.Item1;
 
             if (option.IsHeader &&
-                option.HeaderKey == "" &&
+                option.Header == "" &&
                 (int)optionType is not ROLE_OVERVIEW_ID &&
                 (option.Type is CustomOptionType.Neutral or CustomOptionType.Crewmate or CustomOptionType.Impostor or CustomOptionType.Modifier))
             {
@@ -636,7 +636,7 @@ internal partial class CustomOption
             {
                 var categoryHeaderMasked = UnityEngine.Object.Instantiate(menu.categoryHeaderOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
                 categoryHeaderMasked.SetHeader(StringNames.ImpostorsCategory, 20);
-                categoryHeaderMasked.Title.text = option.HeaderKey != "" ? Tr.Get(option.HeaderKey) : Tr.Get(option.TitleKey);
+                categoryHeaderMasked.Title.text = option.Header != "" ? option.Header : option.Title;
                 categoryHeaderMasked.Title.outlineColor = Color.white;
                 categoryHeaderMasked.Title.outlineWidth = 0.2f;
                 categoryHeaderMasked.transform.localScale = Vector3.one * 0.63f;
@@ -671,10 +671,10 @@ internal partial class CustomOption
 
             var stringOption = optionBehaviour as StringOption;
             stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => { });
-            stringOption.TitleText.text = Tr.Get(option.TitleKey);
+            stringOption.TitleText.text = option.Title;
 
             if (option.IsHeader &&
-                option.HeaderKey == "" &&
+                option.Header == "" &&
                 (option.Type is CustomOptionType.Neutral or CustomOptionType.Crewmate or CustomOptionType.Impostor or CustomOptionType.Modifier))
             {
                 stringOption.TitleText.text = Tr.Get("RoleOverviewTitle");
