@@ -111,14 +111,14 @@ internal static class Helpers
         return !IsDead(player);
     }
 
-    internal static string Cs(this string str, Color c)
-    {
-        return string.Format("<color=#{0:X2}{1:X2}{2:X2}{3:X2}>{4}</color>", ToByte(c.r), ToByte(c.g), ToByte(c.b), ToByte(c.a), str);
-    }
+    // internal static string Cs(this string str, Color c)
+    // {
+    //     return string.Format("<color=#{0:X2}{1:X2}{2:X2}{3:X2}>{4}</color>", ToByte(c.r), ToByte(c.g), ToByte(c.b), ToByte(c.a), str);
+    // }
 
-    internal static byte ToByte(float f)
-    {
-        f = Mathf.Clamp01(f);
-        return (byte)(f * 255);
-    }
+    // internal static byte ToByte(float f)
+    // {
+    //     f = Mathf.Clamp01(f);
+    //     return (byte)(f * 255);
+    // }
 }
