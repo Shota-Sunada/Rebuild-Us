@@ -7,13 +7,13 @@ internal partial class CustomOption
 {
     internal const StringNames KILL_RANGE_VERY_SHORT = (StringNames)49999;
 
-    internal static bool RestrictOptions(GameOptionsData __instance, ref int maxExpectedPlayers)
+    internal static bool RestrictOptions(LegacyGameOptions __instance, ref int maxExpectedPlayers)
     {
         return __instance.MaxPlayers > maxExpectedPlayers
             || __instance.NumImpostors is < 1 or > 3
             || __instance.PlayerSpeedMod is 0f or > 3f
             || __instance.KillDistance < 0
-            || __instance.KillDistance >= GameOptionsData.KillDistances.Count;
+            || __instance.KillDistance >= LegacyGameOptions.KillDistances.Count;
     }
 
     internal static bool RestrictOptions(NormalGameOptionsV07 __instance, ref int maxExpectedPlayers)
@@ -22,7 +22,7 @@ internal partial class CustomOption
             || __instance.NumImpostors is < 1 or > 3
             || __instance.PlayerSpeedMod is 0f or > 3f
             || __instance.KillDistance < 0
-            || __instance.KillDistance >= GameOptionsData.KillDistances.Count;
+            || __instance.KillDistance >= LegacyGameOptions.KillDistances.Count;
     }
 
     internal static void PreventOutOfRange(StringOption __instance)
@@ -50,12 +50,12 @@ internal partial class CustomOption
             if (GameOptionsManager.Instance.currentGameMode is GameModes.Normal)
             {
                 var index = GameOptionsManager.Instance.currentNormalGameOptions.KillDistance;
-                value = GameOptionsData.KillDistanceStrings[index];
+                value = LegacyGameOptions.KillDistanceStrings[index];
             }
             else
             {
                 var index = GameOptionsManager.Instance.currentHideNSeekGameOptions.KillDistance;
-                value = GameOptionsData.KillDistanceStrings[index];
+                value = LegacyGameOptions.KillDistanceStrings[index];
             }
         }
     }
@@ -75,8 +75,8 @@ internal partial class CustomOption
     {
         if (TranslationController.InstanceExists)
         {
-            GameOptionsData.KillDistances = new([0.5f, 1f, 1.8f, 2.5f]);
-            GameOptionsData.KillDistanceStrings = new([Tr.Get("KillRangeVeryShort"), TranslationController.Instance.GetString(StringNames.SettingShort), TranslationController.Instance.GetString(StringNames.SettingMedium), TranslationController.Instance.GetString(StringNames.SettingLong)]);
+            LegacyGameOptions.KillDistances = new([0.5f, 1f, 1.8f, 2.5f]);
+            LegacyGameOptions.KillDistanceStrings = new([Tr.Get("KillRangeVeryShort"), TranslationController.Instance.GetString(StringNames.SettingShort), TranslationController.Instance.GetString(StringNames.SettingMedium), TranslationController.Instance.GetString(StringNames.SettingLong)]);
         }
     }
 
@@ -87,7 +87,7 @@ internal partial class CustomOption
             return true;
         }
 
-        __result = GameOptionsData.KillDistanceStrings[(int)value];
+        __result = LegacyGameOptions.KillDistanceStrings[(int)value];
 
         return false;
     }

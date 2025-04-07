@@ -8,8 +8,8 @@ namespace RebuildUs.Patches;
 internal static class GameOptionsDataPatch
 {
     [HarmonyPrefix]
-    [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.AreInvalid))]
-    internal static bool AreInvalidPrefix(GameOptionsData __instance, ref int maxExpectedPlayers)
+    [HarmonyPatch(typeof(LegacyGameOptions), nameof(LegacyGameOptions.AreInvalid))]
+    internal static bool AreInvalidPrefix(LegacyGameOptions __instance, ref int maxExpectedPlayers)
     {
         return CustomOption.RestrictOptions(__instance, ref maxExpectedPlayers);
     }
