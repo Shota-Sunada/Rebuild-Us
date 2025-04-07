@@ -8,8 +8,6 @@ internal static class Tr
 {
     private static readonly Dictionary<string, Dictionary<SupportedLangs, string>> Translations = [];
 
-    internal static SupportedLangs CurrentLanguage = SupportedLangs.English;
-
     internal static void Initialize()
     {
         for (var i = SupportedLangs.English; i <= SupportedLangs.Irish; i++)
@@ -32,12 +30,14 @@ internal static class Tr
 
     internal static string Get(string key, params string[] args)
     {
+        var lang = TranslationController.InstanceExists ? TranslationController.Instance.currentLanguage.languageID : SupportedLangs.English;
+
         if (!Translations.TryGetValue(key, out var langDic))
         {
             return key;
         }
 
-        if (!langDic.TryGetValue(CurrentLanguage, out var str))
+        if (!langDic.TryGetValue(lang, out var str))
         {
             if (!langDic.TryGetValue(SupportedLangs.English, out var enStr))
             {
