@@ -27,7 +27,5 @@ internal static class TranslationControllerPatch
     internal static void InitializePostfix(TranslationController __instance)
     {
         CustomOption.AddKillDistance();
-
-        Tr.CurrentLanguage = TranslationController.Instance.currentLanguage.languageID;
     }
 }
