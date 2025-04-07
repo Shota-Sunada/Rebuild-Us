@@ -19,7 +19,10 @@ internal static class StringOptionPatch
     [HarmonyPatch(typeof(StringOption), nameof(StringOption.Initialize))]
     internal static void InitializePostfix(StringOption __instance)
     {
-        CustomOption.OverrideBaseOptions(__instance);
+        if (__instance.Title is StringNames.GameKillDistance && __instance.Values.Count is 3)
+        {
+            __instance.Values = new([TranslationControllerPatch.KILL_RANGE_VERY_SHORT, StringNames.SettingShort, StringNames.SettingMedium, StringNames.SettingLong]);
+        }
     }
 
     [HarmonyPrefix]

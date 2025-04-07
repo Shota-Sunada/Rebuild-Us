@@ -6,10 +6,15 @@ using System.Reflection;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 
-namespace RebuildUs.Helpers;
+namespace RebuildUs;
 
-internal static class UnityHelpers
+internal static class Helpers
 {
+    internal static bool IsRoleEnabled()
+    {
+        return true;
+    }
+
     internal static Dictionary<string, Sprite> CachedSprites = [];
 
     internal static Sprite LoadSpriteFromResources(string path, float pixelsPerUnit, bool cache = true)
@@ -17,7 +22,7 @@ internal static class UnityHelpers
         try
         {
             if (cache && CachedSprites.TryGetValue(path + pixelsPerUnit, out var sprite)) return sprite;
-            Texture2D texture = LoadTextureFromResources(path);
+            var texture = LoadTextureFromResources(path);
             sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
             if (cache) sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
             if (!cache) return sprite;
@@ -60,7 +65,7 @@ internal static class UnityHelpers
         {
             if (File.Exists(path))
             {
-                Texture2D texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
+                var texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
                 var byteTexture = Il2CppSystem.IO.File.ReadAllBytes(path);
                 ImageConversion.LoadImage(texture, byteTexture, false);
                 return texture;
@@ -76,5 +81,33 @@ internal static class UnityHelpers
     internal static void Destroy(this UnityEngine.Object obj)
     {
         UnityEngine.Object.Destroy(obj);
+    }
+
+    internal static bool IsCrewmate(this PlayerControl player)
+    {
+        return player != null && !player.IsImpostor() && !player.IsNeutral();
+    }
+
+    internal static bool IsImpostor(this PlayerControl player)
+    {
+        return player != null && player.Data.Role.IsImpostor;
+    }
+
+    internal static bool IsNeutral(this PlayerControl player)
+    {
+        return false;
+    }
+
+    internal static bool IsDead(this PlayerControl player)
+    {
+        return
+            player == null ||
+            player.Data.IsDead ||
+            player.Data.Disconnected;
+    }
+
+    internal static bool IsAlive(this PlayerControl player)
+    {
+        return !IsDead(player);
     }
 }

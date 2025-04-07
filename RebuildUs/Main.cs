@@ -33,7 +33,6 @@ internal class RebuildUsPlugin : BasePlugin
         Tr.Initialize();
 
         CustomOptionHolders.Initialize();
-        CustomOption.AddKillDistance();
 
         RolesManager.RegisterRoles();
 

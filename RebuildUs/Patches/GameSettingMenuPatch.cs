@@ -1,6 +1,5 @@
 using HarmonyLib;
 using RebuildUs.Modules;
-using RebuildUs.Helpers;
 using AmongUs.GameOptions;
 
 namespace RebuildUs.Patches;
@@ -23,14 +22,14 @@ internal static class GameSettingMenuPatch
         }
         foreach (var button in CustomOption.CurrentGOMButtons)
         {
-            button.SelectButton(false);
+            button?.SelectButton(false);
         }
 
         if (tabNum > 2)
         {
             tabNum -= 3;
-            CustomOption.CurrentGOMTabs[tabNum].SetActive(true);
-            CustomOption.CurrentGOMButtons[tabNum].SelectButton(true);
+            CustomOption.CurrentGOMTabs[tabNum]?.SetActive(true);
+            CustomOption.CurrentGOMButtons[tabNum]?.SelectButton(true);
         }
     }
 

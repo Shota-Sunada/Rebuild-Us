@@ -32,6 +32,6 @@ internal static class CustomOptionHolders
         ImpostorRolesCountMin = CustomOption.Create(15, CustomOptionType.General, "ImpostorRolesCountMin", 0f, 0f, 15f, 1f);
         ImpostorRolesCountMax = CustomOption.Create(16, CustomOptionType.General, "ImpostorRolesCountMax", 0f, 0f, 15f, 1f);
         ModifiersCountMin = CustomOption.Create(17, CustomOptionType.General, "ModifiersCountMin", 0f, 0f, 15f, 1f);
-        ModifiersCountMax = CustomOption.Create(18, CustomOptionType.General, "ModifiersCountMax", false);
+        ModifiersCountMax = CustomOption.Create(18, CustomOptionType.General, "ModifiersCountMax", 0f, 0f, 15f, 1f);
     }
 }

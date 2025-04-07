@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
-using RebuildUs.Helpers;
 using TMPro;
 using BepInEx.Configuration;
 using RebuildUs.Localization;

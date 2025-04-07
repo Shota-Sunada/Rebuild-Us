@@ -1,3 +1,4 @@
+using AmongUs.GameOptions;
 using HarmonyLib;
 using RebuildUs.Modules;
 
@@ -10,6 +11,13 @@ internal static class StringGameSettingPatch
     [HarmonyPatch(typeof(StringGameSetting), nameof(StringGameSetting.GetValueString))]
     internal static bool GetValueStringPrefix(StringGameSetting __instance, float value, ref string __result)
     {
-        return CustomOption.AdjustStringForViewPanel(__instance, value, ref __result);
+        switch (__instance.OptionName)
+        {
+            case Int32OptionNames.KillDistance:
+                __result = LegacyGameOptions.KillDistanceStrings[(int)value];
+                return false;
+            default:
+                return true;
+        }
     }
 }
