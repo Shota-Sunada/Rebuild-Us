@@ -20,6 +20,8 @@ internal static class CustomOptionHolders
 
     internal static void Initialize()
     {
+        CustomOption.VanillaSettings = RebuildUsPlugin.Instance.Config.Bind("Preset0", "VanillaOptions", "");
+
         PresetSelection = CustomOption.Create(0, CustomOptionType.General, "SettingPreset", Presets, null, true);
 
         CrewmateRolesCountMin = CustomOption.Create(10, CustomOptionType.General, "CrewmateRolesCountMin", 0f, 0f, 15f, 1f, null, true, "MinMaxRoles");
