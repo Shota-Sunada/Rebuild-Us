@@ -12,6 +12,7 @@ namespace RebuildUs.Modules;
 internal partial class CustomOption
 {
     internal const int ROLE_OVERVIEW_ID = 99;
+    internal const StringNames KILL_RANGE_VERY_SHORT = (StringNames)49999;
 
     internal static Dictionary<int, CustomOption> AllOptions = [];
     internal static ConfigEntry<string> VanillaSettings;

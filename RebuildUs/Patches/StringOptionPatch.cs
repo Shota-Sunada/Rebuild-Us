@@ -21,7 +21,7 @@ internal static class StringOptionPatch
     {
         if (__instance.Title is StringNames.GameKillDistance && __instance.Values.Count is 3)
         {
-            __instance.Values = new([TranslationControllerPatch.KILL_RANGE_VERY_SHORT, StringNames.SettingShort, StringNames.SettingMedium, StringNames.SettingLong]);
+            __instance.Values = new([CustomOption.KILL_RANGE_VERY_SHORT, StringNames.SettingShort, StringNames.SettingMedium, StringNames.SettingLong]);
         }
     }
 
