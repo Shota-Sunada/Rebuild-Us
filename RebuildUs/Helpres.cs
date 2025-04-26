@@ -121,4 +121,9 @@ internal static class Helpers
         f = Mathf.Clamp01(f);
         return (byte)(f * 255);
     }
+
+    internal static bool HasFakeTasks(this PlayerControl player)
+    {
+        return false;
+    }
 }
