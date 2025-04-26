@@ -49,6 +49,8 @@ internal class RebuildUsPlugin : BasePlugin
 
         RolesManager.RegisterRoles();
 
+        SubmergedCompatibility.Initialize();
+
         Logger.LogMessage("\"Rebuild Us\" was completely loaded! Enjoy the modifications!");
     }
 }

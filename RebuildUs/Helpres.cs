@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using HarmonyLib;
+using Il2CppInterop.Runtime.InteropTypes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 
@@ -125,5 +127,15 @@ internal static class Helpers
     internal static bool HasFakeTasks(this PlayerControl player)
     {
         return false;
+    }
+
+    internal static object TryCast(this Il2CppObjectBase self, Type type)
+    {
+        return AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self, []);
+    }
+
+    internal static void RpcRepairSystem(this ShipStatus shipStatus, SystemTypes systemType, byte amount)
+    {
+        shipStatus.RpcUpdateSystem(systemType, amount);
     }
 }
