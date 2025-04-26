@@ -511,7 +511,7 @@ internal partial class CustomOption
 
             if (CustomOptionHolders.CrewmateRolesFill.GetBool())
             {
-                var crewCount = PlayerControl.AllPlayerControls.Count - GameOptionsManager.Instance.currentGameOptions.NumImpostors;
+                var crewCount = PlayerControl.AllPlayerControls.Count - GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.NumImpostors);
                 var minNeutral = CustomOptionHolders.NeutralRolesCountMin.GetSelection();
                 var maxNeutral = CustomOptionHolders.NeutralRolesCountMax.GetSelection();
 
@@ -556,9 +556,9 @@ internal partial class CustomOption
             name = Tr.Get("CategoryHeaderImpostorRoles");
             var min = CustomOptionHolders.ImpostorRolesCountMin.GetSelection();
             var max = CustomOptionHolders.ImpostorRolesCountMax.GetSelection();
-            if (max > GameOptionsManager.Instance.currentGameOptions.NumImpostors)
+            if (max > GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.NumImpostors))
             {
-                max = GameOptionsManager.Instance.currentGameOptions.NumImpostors;
+                max = GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.NumImpostors);
             }
             if (min > max)
             {

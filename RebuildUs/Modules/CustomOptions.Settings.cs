@@ -20,7 +20,7 @@ internal partial class CustomOption
         if (__instance.Title is StringNames.GameKillDistance && GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.KillDistance) == 3)
         {
             __instance.Value = 1;
-            GameOptionsManager.Instance.currentNormalGameOptions.KillDistance = 1;
+            GameOptionsManager.Instance.CurrentGameOptions.SetInt(Int32OptionNames.KillDistance, 1);
             GameManager.Instance.LogicOptions.SyncOptions();
         }
     }
@@ -29,14 +29,14 @@ internal partial class CustomOption
     {
         if (stringName is StringNames.GameKillDistance)
         {
-            if (GameOptionsManager.Instance.currentGameMode is GameModes.Normal)
+            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode is GameModes.Normal)
             {
-                var index = GameOptionsManager.Instance.currentNormalGameOptions.KillDistance;
+                var index = GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.KillDistance);
                 value = LegacyGameOptions.KillDistanceStrings[index];
             }
             else
             {
-                var index = GameOptionsManager.Instance.currentHideNSeekGameOptions.KillDistance;
+                var index = GameOptionsManager.Instance.currentHideNSeekGameOptions.GetInt(Int32OptionNames.KillDistance);
                 value = LegacyGameOptions.KillDistanceStrings[index];
             }
         }

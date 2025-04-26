@@ -27,9 +27,8 @@ internal static class GameSettingMenuPatch
 
         if (tabNum > 2)
         {
-            tabNum -= 3;
-            CustomOption.CurrentGOMTabs[tabNum]?.SetActive(true);
-            CustomOption.CurrentGOMButtons[tabNum]?.SelectButton(true);
+            CustomOption.CurrentGOMTabs[tabNum - 3]?.SetActive(true);
+            CustomOption.CurrentGOMButtons[tabNum - 3]?.SelectButton(true);
         }
     }
 
@@ -43,7 +42,7 @@ internal static class GameSettingMenuPatch
         CustomOption.CurrentGOMButtons = [];
         CustomOption.CurrentGOMs.Clear();
 
-        if (GameOptionsManager.Instance.currentGameOptions.GameMode is GameModes.HideNSeek)
+        if (GameOptionsManager.Instance.CurrentGameOptions.GameMode is GameModes.HideNSeek)
         {
             return;
         }
