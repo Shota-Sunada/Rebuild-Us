@@ -20,6 +20,12 @@ internal static class CustomOptionHolders
     internal static CustomOption ModifiersCountMin;
     internal static CustomOption ModifiersCountMax;
 
+    internal static CustomOption MaxNumberOfMeetings;
+    internal static CustomOption BlockSkippingInMeetings;
+    internal static CustomOption NoVoteIsSelfVote;
+    internal static CustomOption HidePlayerNames;
+    internal static CustomOption AllowParallelMedBayScans;
+
     internal static void Initialize()
     {
         CustomOption.VanillaSettings = RebuildUsPlugin.Instance.Config.Bind("Preset0", "VanillaOptions", "");
@@ -35,5 +41,11 @@ internal static class CustomOptionHolders
         ImpostorRolesCountMax = CustomOption.Create(16, CustomOptionType.General, ("ImpostorRolesCountMax", new Color32(204, 204, 0, 255)), 0f, 0f, 15f, 1f);
         ModifiersCountMin = CustomOption.Create(17, CustomOptionType.General, ("ModifiersCountMin", new Color32(204, 204, 0, 255)), 0f, 0f, 15f, 1f);
         ModifiersCountMax = CustomOption.Create(18, CustomOptionType.General, ("ModifiersCountMax", new Color32(204, 204, 0, 255)), 0f, 0f, 15f, 1f);
+
+        MaxNumberOfMeetings = CustomOption.Create(20, CustomOptionType.General, ("MaxNumberOfMeetings", null), 10f, 0f, 15f, 1f, isHeader: true, header: ("GamePlaySettings", null));
+        BlockSkippingInMeetings = CustomOption.Create(21, CustomOptionType.General, ("BlockSkippingInMeetings", null), false);
+        NoVoteIsSelfVote = CustomOption.Create(22, CustomOptionType.General, ("NoVoteIsSelfVote", null), false, BlockSkippingInMeetings);
+        HidePlayerNames = CustomOption.Create(23, CustomOptionType.General, ("HidePlayerNames", null), false);
+        AllowParallelMedBayScans = CustomOption.Create(24, CustomOptionType.General, ("AllowParallelMedBayScans", null), false);
     }
 }

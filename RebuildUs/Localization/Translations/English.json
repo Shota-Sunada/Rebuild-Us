@@ -19,5 +19,12 @@
     "CategoryHeaderModSettings": "Mod Settings",
     "CategoryHeaderRoleOverview": "Role Overview",
     "RoleOverviewTitle": "Spawn Chance",
-    "KillRangeVeryShort": "Very Short"
+    "KillRangeVeryShort": "Very Short",
+    "ModOptions": "Mod Options...",
+    "MoreOptions": "More Options",
+    "GhostsCanSeeRoles": "Ghosts Can See Roles",
+    "GhostsCanSeeModifiers": "Ghosts Can See Modifiers",
+    "GhostsCanSeeInformation": "Ghosts Can See Information",
+    "GhostsCanSeeVotes": "Ghosts Can See Votes",
+    "ShowGameOverview": "Show Game Overview"
 }

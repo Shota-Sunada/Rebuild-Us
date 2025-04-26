@@ -1,4 +1,5 @@
 using HarmonyLib;
+using RebuildUs.Modules;
 using RebuildUs.Utilities;
 using TMPro;
 using UnityEngine;
@@ -26,5 +27,7 @@ internal static class MainMenuManagerStartPatch
 
         text.transform.SetParent(ruLogo.transform);
         text.transform.localPosition = Vector3.down * 1.25f;
+
+        ClientOptions.SetupTitleText();
     }
 }
