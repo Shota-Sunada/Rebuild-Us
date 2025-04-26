@@ -17,7 +17,7 @@ internal partial class CustomOption
 
     internal static void PreventOutOfRange(StringOption __instance)
     {
-        if (__instance.Title is StringNames.GameKillDistance && __instance.Value is 3)
+        if (__instance.Title is StringNames.GameKillDistance && GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.KillDistance) == 3)
         {
             __instance.Value = 1;
             GameOptionsManager.Instance.currentNormalGameOptions.KillDistance = 1;
