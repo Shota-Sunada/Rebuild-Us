@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "type": "shell",
+    "options": {
+        "shell": {
+            "executable": "powershell.exe"
+        }
+    },
+    "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+    },
+    "problemMatcher": [],
+    "tasks": [
+        {
+            "label": "Build ",
+            "command": "dotnet build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
