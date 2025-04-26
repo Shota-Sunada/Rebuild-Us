@@ -17,8 +17,24 @@
     "problemMatcher": [],
     "tasks": [
         {
-            "label": "Build ",
-            "command": "dotnet build",
+            "label": "Build Debug",
+            "command": "powershell -ExecutionPolicy Bypass .\\build-debug.ps1",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build Relase",
+            "command": "powershell -ExecutionPolicy Bypass .\\build-release.ps1",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Taskkill",
+            "command": "powershell -ExecutionPolicy Bypass .\\taskkill.ps1",
             "group": {
                 "kind": "build",
                 "isDefault": true
