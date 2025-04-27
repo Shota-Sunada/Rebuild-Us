@@ -80,4 +80,54 @@ internal abstract class ModRole
             ? roles.Select(r => r.player)
             : [];
     }
+
+    internal static void SetAllRolesButtonCooldowns()
+    {
+        foreach (var roleList in RoleInstances.Values)
+        {
+            foreach (var role in roleList)
+            {
+                role.SetButtonCooldowns();
+            }
+        }
+    }
+
+    internal static void MakeAllRolesButtons(HudManager hm)
+    {
+        foreach (var roleList in RoleInstances.Values)
+        {
+            foreach (var role in roleList)
+            {
+                role.MakeButtons(hm);
+            }
+        }
+    }
+
+    internal static void OnKill(PlayerControl killer, PlayerControl target)
+    {
+        foreach (var roleList in RoleInstances.Values)
+        {
+            foreach (var role in roleList)
+            {
+                if (role.player.PlayerId == killer.PlayerId)
+                {
+                    role.OnKill(target);
+                }
+            }
+        }
+    }
+
+    internal static void OnDeath(PlayerControl player, PlayerControl killer = null)
+    {
+        foreach (var roleList in RoleInstances.Values)
+        {
+            foreach (var role in roleList)
+            {
+                if (role.player.PlayerId == player.PlayerId)
+                {
+                    role.OnDeath(killer);
+                }
+            }
+        }
+    }
 }

@@ -33,6 +33,8 @@ internal partial class CustomOption
     internal string HeaderKey;
     internal Color? HeaderColor;
 
+    internal virtual bool Enabled { get { return Helpers.IsRoleEnabled() && GetBool(); } }
+
     internal CustomOption(int id, CustomOptionType type, (string key, Color? color) title, object[] selections, object defaultValue, CustomOption parent, bool isHeader, (string Key, Color? color)? header)
     {
         Type = type;
@@ -99,6 +101,50 @@ internal partial class CustomOption
         (string key, Color? color)? header = null)
     {
         return new(id, type, title, [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, header);
+    }
+
+    internal static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        string title,
+        string[] selections,
+        CustomOption parent = null,
+        bool isHeader = false,
+        string header = "")
+    {
+        return new(id, type, (title, Color.white), selections, "", parent, isHeader, (header, Color.white));
+    }
+
+    internal static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        string title,
+        float defaultValue,
+        float min,
+        float max,
+        float interval,
+        CustomOption parent = null,
+        bool isHeader = false,
+        string header = "")
+    {
+        var selections = new List<object>();
+        for (float i = min; i <= max; i += interval)
+        {
+            selections.Add(i);
+        }
+        return new(id, type, (title, Color.white), [.. selections], defaultValue, parent, isHeader, (header, Color.white));
+    }
+
+    internal static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        string title,
+        bool defaultValue,
+        CustomOption parent = null,
+        bool isHeader = false,
+        string header = "")
+    {
+        return new(id, type, (title, Color.white), [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, (header, Color.white));
     }
 
     internal static void SwitchPreset(int newPreset)
@@ -434,7 +480,7 @@ internal partial class CustomOption
                 i = 0;
             }
             // Hides options, for which the parent is disabled!
-            else if (option.Parent != null && (option.Parent.SelectedIndex == 0 || option.Parent.Parent != null && option.Parent.Parent.SelectedIndex == 0))
+            else if (option.Parent != null && (option.Parent.SelectedIndex == 0 || (option.Parent.Parent != null && option.Parent.Parent.SelectedIndex == 0)))
             {
                 continue;
             }
@@ -653,14 +699,14 @@ internal partial class CustomOption
                 num -= 0.63f;
             }
             // Hides options, for which the parent is disabled!
-            else if (option.Parent != null && (option.Parent.SelectedIndex == 0 || option.Parent.Parent != null && option.Parent.Parent.SelectedIndex == 0))
+            else if (option.Parent != null && (option.Parent.SelectedIndex == 0 || (option.Parent.Parent != null && option.Parent.Parent.SelectedIndex == 0)))
             {
                 continue;
             }
-            else if (option.Parent != null && option.Parent.SelectedIndex != 0)
-            {
-                continue;
-            }
+            // else if (option.Parent != null && option.Parent.SelectedIndex != 0)
+            // {
+            //     continue;
+            // }
 
             var optionBehaviour = UnityEngine.Object.Instantiate(menu.stringOptionOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
             optionBehaviour.transform.localPosition = new(0.952f, num, -2f);

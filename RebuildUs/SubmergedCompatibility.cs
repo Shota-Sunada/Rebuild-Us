@@ -73,7 +73,7 @@ internal static class SubmergedCompatibility
     {
         try
         {
-            Plugin.Instance.Logger.LogMessage("Trying to load Submerged...");
+            RebuildUs.Plugin.Instance.Logger.LogMessage("Trying to load Submerged...");
             var thisAsm = Assembly.GetCallingAssembly();
             var resourceName = thisAsm.GetManifestResourceNames().FirstOrDefault(s => s.EndsWith("Submerged.dll"));
             if (resourceName == default) return false;
@@ -94,7 +94,7 @@ internal static class SubmergedCompatibility
         }
         catch (Exception e)
         {
-            Plugin.Instance.Logger.LogError(e);
+            RebuildUs.Plugin.Instance.Logger.LogError(e);
         }
 
         return false;
@@ -178,7 +178,7 @@ internal static class SubmergedCompatibility
         }
         catch (NullReferenceException)
         {
-            Plugin.Instance.Logger.LogMessage("null reference in engineer oxygen fix");
+            RebuildUs.Plugin.Instance.Logger.LogMessage("null reference in engineer oxygen fix");
         }
     }
 }

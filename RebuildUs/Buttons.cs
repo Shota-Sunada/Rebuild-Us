@@ -22,13 +22,13 @@ internal static class Buttons
             }
         }
 
-        RoleHelpers.SetButtonCooldowns();
+        ModRole.SetAllRolesButtonCooldowns();
     }
 
     internal static void CreateButtons(HudManager __instance)
     {
         initialized = false;
-        RoleHelpers.MakeButtons(__instance);
+        ModRole.MakeAllRolesButtons(__instance);
         initialized = true;
         SetCustomButtonCooldowns();
     }

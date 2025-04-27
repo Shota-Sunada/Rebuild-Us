@@ -49,8 +49,8 @@ internal static class PlayerControlPatch
 
         // 追記するならここ
 
-        __instance.OnKill(target);
-        target.OnDeath(__instance);
+        ModRole.OnKill(__instance, target);
+        ModRole.OnDeath(target, __instance);
     }
 
     [HarmonyPostfix]
@@ -67,7 +67,7 @@ internal static class PlayerControlPatch
             __instance.ClearAllTasks();
         }
 
-        __instance.OnDeath(killer: null);
+        ModRole.OnDeath(__instance, killer: null);
 
         // 追記するならここ
     }

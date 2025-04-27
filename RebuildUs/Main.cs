@@ -47,9 +47,9 @@ internal class Plugin : BasePlugin
 
         Tr.Initialize();
 
-        CustomOptionHolders.Initialize();
-
         RolesManager.RegisterRoles();
+
+        CustomOptionHolders.Initialize();
 
         SubmergedCompatibility.Initialize();
 

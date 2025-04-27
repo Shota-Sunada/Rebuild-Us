@@ -71,7 +71,7 @@ internal static class RoleAssignmentExtensions
         var crewSettings = new Dictionary<RoleId, (int rate, int count)>();
         var neutralSettings = new Dictionary<RoleId, (int rate, int count)>();
 
-        crewSettings.Add(RoleId.Sheriff, CustomOptionHolders.SheriffSpawnRate.data);
+        crewSettings.Add(RoleId.Sheriff, CustomOptionHolders.SheriffSpawnRate.Data);
 
         return new RoleAssignmentData
         {
