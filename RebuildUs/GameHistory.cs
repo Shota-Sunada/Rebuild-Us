@@ -8,7 +8,8 @@ namespace RebuildUs;
 internal enum CustomDeathReason
 {
     Kill,
-    Disconnect
+    Exile,
+    Disconnect,
 }
 
 internal static class GameHistory

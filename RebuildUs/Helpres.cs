@@ -17,6 +17,8 @@ internal static class Helpers
         return true;
     }
 
+    internal static bool RefundVotes { get { return CustomOptionHolders.RefundVotesOnDeath.GetBool(); } }
+
     internal static Dictionary<string, Sprite> CachedSprites = [];
 
     internal static Sprite LoadSpriteFromResources(string path, float pixelsPerUnit, bool cache = true)
@@ -137,5 +139,34 @@ internal static class Helpers
     internal static void RpcRepairSystem(this ShipStatus shipStatus, SystemTypes systemType, byte amount)
     {
         shipStatus.RpcUpdateSystem(systemType, amount);
+    }
+
+    internal static PlayerControl PlayerById(byte id)
+    {
+        foreach (var player in PlayerControl.AllPlayerControls)
+        {
+            if (player.PlayerId == id)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public static void ClearAllTasks(this PlayerControl player)
+    {
+        if (player == null) return;
+        for (int i = 0; i < player.myTasks.Count; i++)
+        {
+            var playerTask = player.myTasks[i];
+            playerTask.OnRemove();
+            UnityEngine.Object.Destroy(playerTask.gameObject);
+        }
+        player.myTasks.Clear();
+
+        if (player.Data != null && player.Data.Tasks != null)
+        {
+            player.Data.Tasks.Clear();
+        }
     }
 }

@@ -25,6 +25,14 @@ internal static class CustomOptionHolders
     internal static CustomOption NoVoteIsSelfVote;
     internal static CustomOption HidePlayerNames;
     internal static CustomOption AllowParallelMedBayScans;
+    internal static CustomOption RefundVotesOnDeath;
+
+    internal static CustomOption SheriffSpawnRate;
+    internal static CustomOption SheriffKillCooldown;
+    internal static CustomOption SheriffMaxShots;
+    internal static CustomOption SheriffCanKillNeutrals;
+    internal static CustomOption SheriffKillTargetOnMisfire;
+    internal static CustomOption SheriffCanKillMadmate;
 
     internal static void Initialize()
     {
@@ -47,5 +55,6 @@ internal static class CustomOptionHolders
         NoVoteIsSelfVote = CustomOption.Create(22, CustomOptionType.General, ("NoVoteIsSelfVote", null), false, BlockSkippingInMeetings);
         HidePlayerNames = CustomOption.Create(23, CustomOptionType.General, ("HidePlayerNames", null), false);
         AllowParallelMedBayScans = CustomOption.Create(24, CustomOptionType.General, ("AllowParallelMedBayScans", null), false);
+        RefundVotesOnDeath = CustomOption.Create(25, CustomOptionType.General, ("RefundVotesOnDeath", null), false);
     }
 }

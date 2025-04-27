@@ -26,5 +26,6 @@
     "GhostsCanSeeModifiers": "Ghosts Can See Modifiers",
     "GhostsCanSeeInformation": "Ghosts Can See Information",
     "GhostsCanSeeVotes": "Ghosts Can See Votes",
-    "ShowGameOverview": "Show Game Overview"
+    "ShowGameOverview": "Show Game Overview",
+    "RefundVotesOnDeath": "Refund Votes On Death"
 }
