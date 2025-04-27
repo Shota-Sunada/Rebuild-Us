@@ -32,7 +32,7 @@ internal class CustomRoleOption : CustomOption
     internal (int rate, int count) Data { get { return (Rate, Count); } }
 
     internal CustomRoleOption(int id, int id2, CustomOptionType type, (string key, Color? color) title, int max = 15, bool roleEnabled = true) :
-        base(id, type, title, CustomOptionHolders.Rates, "", null, true, null)
+        base(id, type, title, CustomOptionHolders.Percents, "", null, true, null, UnitType.UnitPercent)
     {
         this.roleEnabled = roleEnabled;
 

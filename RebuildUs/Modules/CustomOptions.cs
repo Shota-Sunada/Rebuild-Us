@@ -7,8 +7,21 @@ using TMPro;
 using BepInEx.Configuration;
 using RebuildUs.Localization;
 using RebuildUs.Utilities;
+using System.Text;
 
 namespace RebuildUs.Modules;
+
+internal enum UnitType
+{
+    None = 0,
+    UnitPercent, // %
+    UnitPlayers, // P, 人
+    UnitSeconds, // s, 秒
+    UnitTimes, // x, 回
+    UnitMinutes, // m, 秒
+    UnitShots, // [], 発
+    UnitVotes, // [], 票
+}
 
 internal partial class CustomOption
 {
@@ -32,10 +45,11 @@ internal partial class CustomOption
     internal CustomOptionType Type;
     internal string HeaderKey;
     internal Color? HeaderColor;
+    internal UnitType UnitType = UnitType.None;
 
     internal virtual bool Enabled { get { return Helpers.IsRoleEnabled() && GetBool(); } }
 
-    internal CustomOption(int id, CustomOptionType type, (string key, Color? color) title, object[] selections, object defaultValue, CustomOption parent, bool isHeader, (string Key, Color? color)? header)
+    internal CustomOption(int id, CustomOptionType type, (string key, Color? color) title, object[] selections, object defaultValue, CustomOption parent, bool isHeader, (string Key, Color? color)? header, UnitType unitType)
     {
         Type = type;
         TitleKey = title.key;
@@ -47,6 +61,7 @@ internal partial class CustomOption
         IsHeader = isHeader;
         HeaderKey = header?.Key ?? "";
         HeaderColor = header?.color ?? null;
+        UnitType = unitType;
 
         SelectedIndex = 0;
 
@@ -66,9 +81,10 @@ internal partial class CustomOption
         string[] selections,
         CustomOption parent = null,
         bool isHeader = false,
-        (string key, Color? color)? header = null)
+        (string key, Color? color)? header = null,
+        UnitType unitType = UnitType.None)
     {
-        return new(id, type, title, selections, "", parent, isHeader, header);
+        return new(id, type, title, selections, "", parent, isHeader, header, unitType);
     }
 
     internal static CustomOption Create(
@@ -81,14 +97,15 @@ internal partial class CustomOption
         float interval,
         CustomOption parent = null,
         bool isHeader = false,
-        (string key, Color? color)? header = null)
+        (string key, Color? color)? header = null,
+        UnitType unitType = UnitType.None)
     {
         var selections = new List<object>();
         for (float i = min; i <= max; i += interval)
         {
             selections.Add(i);
         }
-        return new(id, type, title, [.. selections], defaultValue, parent, isHeader, header);
+        return new(id, type, title, [.. selections], defaultValue, parent, isHeader, header, unitType);
     }
 
     internal static CustomOption Create(
@@ -98,9 +115,10 @@ internal partial class CustomOption
         bool defaultValue,
         CustomOption parent = null,
         bool isHeader = false,
-        (string key, Color? color)? header = null)
+        (string key, Color? color)? header = null,
+        UnitType unitType = UnitType.None)
     {
-        return new(id, type, title, [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, header);
+        return new(id, type, title, [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, header, unitType);
     }
 
     internal static CustomOption Create(
@@ -110,9 +128,10 @@ internal partial class CustomOption
         string[] selections,
         CustomOption parent = null,
         bool isHeader = false,
-        string header = "")
+        string header = "",
+        UnitType unitType = UnitType.None)
     {
-        return new(id, type, (title, Color.white), selections, "", parent, isHeader, (header, Color.white));
+        return new(id, type, (title, Color.white), selections, "", parent, isHeader, (header, Color.white), unitType);
     }
 
     internal static CustomOption Create(
@@ -125,14 +144,15 @@ internal partial class CustomOption
         float interval,
         CustomOption parent = null,
         bool isHeader = false,
-        string header = "")
+        string header = "",
+        UnitType unitType = UnitType.None)
     {
         var selections = new List<object>();
         for (float i = min; i <= max; i += interval)
         {
             selections.Add(i);
         }
-        return new(id, type, (title, Color.white), [.. selections], defaultValue, parent, isHeader, (header, Color.white));
+        return new(id, type, (title, Color.white), [.. selections], defaultValue, parent, isHeader, (header, Color.white), unitType);
     }
 
     internal static CustomOption Create(
@@ -142,9 +162,10 @@ internal partial class CustomOption
         bool defaultValue,
         CustomOption parent = null,
         bool isHeader = false,
-        string header = "")
+        string header = "",
+        UnitType unitType = UnitType.None)
     {
-        return new(id, type, (title, Color.white), [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, (header, Color.white));
+        return new(id, type, (title, Color.white), [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, (header, Color.white), unitType);
     }
 
     internal static void SwitchPreset(int newPreset)
@@ -162,7 +183,9 @@ internal partial class CustomOption
             if (option.OptionBehaviour != null && option.OptionBehaviour is StringOption stringOption)
             {
                 stringOption.oldValue = stringOption.Value = option.SelectedIndex;
-                stringOption.ValueText.text = option.Selections[option.SelectedIndex].ToString();
+                stringOption.ValueText.text = option.UnitType == UnitType.None
+                    ? option.Selections[option.SelectedIndex].ToString()
+                    : new StringBuilder(option.Selections[option.SelectedIndex].ToString()).Append(Tr.Get(Enum.GetName(option.UnitType))).ToString();
             }
         }
 
@@ -275,7 +298,12 @@ internal partial class CustomOption
         newSelection = Mathf.Clamp((newSelection + Selections.Length) % Selections.Length, 0, Selections.Length - 1);
         if (AmongUsClient.Instance.AmClient && notifyUsers && SelectedIndex != newSelection)
         {
-            FastDestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)6000, Selections[newSelection].ToString(), false);
+            FastDestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)6000,
+                UnitType == UnitType.None
+                    ? Selections[newSelection].ToString()
+                    : new StringBuilder(Selections[newSelection].ToString()).Append(Tr.Get(Enum.GetName(UnitType))).ToString(),
+                false
+            );
             try
             {
                 SelectedIndex = newSelection;
@@ -294,7 +322,9 @@ internal partial class CustomOption
         if (OptionBehaviour != null && OptionBehaviour is StringOption stringOption)
         {
             stringOption.oldValue = stringOption.Value = SelectedIndex;
-            stringOption.ValueText.text = Selections[SelectedIndex].ToString();
+            stringOption.ValueText.text = UnitType == UnitType.None
+                    ? Selections[SelectedIndex].ToString()
+                    : new StringBuilder(Selections[SelectedIndex].ToString()).Append(Tr.Get(Enum.GetName(UnitType))).ToString();
             if (AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
             {
                 if (AllOptions[0] == this && SelectedIndex != Preset)
@@ -515,7 +545,10 @@ internal partial class CustomOption
 
             viewSettingsInfoPanel.transform.localPosition = new(num2, num, -2f);
             var value = option.GetSelection();
-            var settingTuple = HandleSpecialOptionsView(option, option.TitleKey, option.Selections[value].ToString());
+            var settingTuple = HandleSpecialOptionsView(option, option.TitleKey, option.UnitType == UnitType.None
+                    ? option.Selections[value].ToString()
+                    : new StringBuilder(option.Selections[value].ToString()).Append(Tr.Get(Enum.GetName(option.UnitType))).ToString()
+            );
             viewSettingsInfoPanel.SetInfo(StringNames.ImpostorsCategory, settingTuple.Item2, 61);
             viewSettingsInfoPanel.titleText.text = settingTuple.Item1;
 
@@ -746,7 +779,9 @@ internal partial class CustomOption
             }
 
             stringOption.Value = stringOption.oldValue = option.SelectedIndex;
-            stringOption.ValueText.text = option.Selections[option.SelectedIndex].ToString();
+            stringOption.ValueText.text = option.UnitType == UnitType.None
+                    ? option.Selections[option.SelectedIndex].ToString()
+                    : new StringBuilder(option.Selections[option.SelectedIndex].ToString()).Append(Tr.Get(Enum.GetName(option.UnitType))).ToString();
             option.OptionBehaviour = stringOption;
 
             menu.Children.Add(optionBehaviour);
@@ -873,7 +908,9 @@ internal partial class CustomOption
         __instance.OnValueChanged = new Action<OptionBehaviour>((o) => { });
         //__instance.TitleText.text = option.name;
         __instance.Value = __instance.oldValue = option.SelectedIndex;
-        __instance.ValueText.text = option.Selections[option.SelectedIndex].ToString();
+        __instance.ValueText.text = option.UnitType == UnitType.None
+                    ? option.Selections[option.SelectedIndex].ToString()
+                    : new StringBuilder(option.Selections[option.SelectedIndex].ToString()).Append(Tr.Get(Enum.GetName(option.UnitType))).ToString();
 
         return false;
     }
