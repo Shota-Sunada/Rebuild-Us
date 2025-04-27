@@ -30,6 +30,9 @@ internal enum RoleId : byte
 
 internal static class RolesManager
 {
+    internal static RoleInfoAttribute Crewmate = new("Crewmate", "CrewmateIntro", "CrewmateShort", "CrewmateFull", RoleType.Crewmate, RoleId.Crewmate);
+    internal static RoleInfoAttribute Impostor = new("Impostor", "ImpostorIntro", "ImpostorShort", "ImpostorFull", RoleType.Impostor, RoleId.Impostor);
+
     internal static Dictionary<RoleId, RoleInfoAttribute> AllRoles { get; } = [];
 
     internal static void RegisterRoles()
@@ -56,6 +59,34 @@ internal static class RolesManager
             }
         }
         return null;
+    }
+
+    internal static List<RoleInfoAttribute> GetRoleInfoForPlayer(PlayerControl player)
+    {
+        var infos = new List<RoleInfoAttribute>();
+        if (player == null) return infos;
+
+        foreach (var (roleId, roleInfo) in AllRoles)
+        {
+            if (ModRole.HasRole(player, roleId))
+            {
+                infos.Add(roleInfo);
+            }
+        }
+
+        if (infos.Count == 0)
+        {
+            if (player.Data.Role.IsImpostor)
+            {
+                infos.Add(Impostor);
+            }
+            else
+            {
+                infos.Add(Crewmate);
+            }
+        }
+
+        return infos;
     }
 
     // internal static RoleId GetRoleId<T>() where T : ModRole
