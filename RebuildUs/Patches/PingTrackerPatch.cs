@@ -16,12 +16,12 @@ internal static class PingTrackerPatch
 
         if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
         {
-            __instance.text.text = $"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n{__instance.text.text}";
+            __instance.text.text = $"{Plugin.MOD_NAME} v{Plugin.MOD_VERSION}\n{__instance.text.text}";
             position.DistanceFromEdge = MeetingHud.Instance ? new(1.25f, 0f, 0) : new(1.55f, 0f, 0);
         }
         else
         {
-            __instance.text.text = $"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n<size=50%>By {RebuildUsPlugin.MOD_DEVELOPER}</size>\n{__instance.text.text}";
+            __instance.text.text = $"{Plugin.MOD_NAME} v{Plugin.MOD_VERSION}\n<size=50%>By {Plugin.MOD_DEVELOPER}</size>\n{__instance.text.text}";
             position.DistanceFromEdge = new(2.7f, 0.15f, 0);
         }
 

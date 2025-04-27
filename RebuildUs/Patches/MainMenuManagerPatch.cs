@@ -21,7 +21,7 @@ internal static class MainMenuManagerStartPatch
 
         var credits = new GameObject("RUModCredits");
         var text = credits.AddComponent<TextMeshPro>();
-        text.SetText($"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n<size=50%>By {RebuildUsPlugin.MOD_DEVELOPER}</size>");
+        text.SetText($"{Plugin.MOD_NAME} v{Plugin.MOD_VERSION}\n<size=50%>By {Plugin.MOD_DEVELOPER}</size>");
         text.alignment = TextAlignmentOptions.Center;
         text.fontSize *= 0.05f;
 

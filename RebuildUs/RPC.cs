@@ -37,7 +37,7 @@ internal static class RPCProcedure
         }
         catch (Exception e)
         {
-            RebuildUsPlugin.Instance.Logger.LogError($"Error while deserializing options: {e.Message}");
+            Plugin.Instance.Logger.LogError($"Error while deserializing options: {e.Message}");
         }
     }
 

@@ -12,11 +12,11 @@ namespace RebuildUs.Modules;
 internal static class ClientOptions
 {
     private static readonly SelectionBehaviour[] AllOptions = {
-        new("GhostsCanSeeRoles", () => RebuildUsPlugin.Instance.GhostsCanSeeRoles.Value = !RebuildUsPlugin.Instance.GhostsCanSeeRoles.Value, RebuildUsPlugin.Instance.GhostsCanSeeRoles.Value),
-        new("GhostsCanSeeModifiers", () => RebuildUsPlugin.Instance.GhostsCanSeeModifiers.Value = !RebuildUsPlugin.Instance.GhostsCanSeeModifiers.Value, RebuildUsPlugin.Instance.GhostsCanSeeModifiers.Value),
-        new("GhostsCanSeeInformation", () => RebuildUsPlugin.Instance.GhostsCanSeeInformation.Value = !RebuildUsPlugin.Instance.GhostsCanSeeInformation.Value, RebuildUsPlugin.Instance.GhostsCanSeeInformation.Value),
-        new("GhostsCanSeeVotes", () => RebuildUsPlugin.Instance.GhostsCanSeeVotes.Value = !RebuildUsPlugin.Instance.GhostsCanSeeVotes.Value, RebuildUsPlugin.Instance.GhostsCanSeeVotes.Value),
-        new("ShowGameOverview", () => RebuildUsPlugin.Instance.ShowGameOverview.Value = !RebuildUsPlugin.Instance.ShowGameOverview.Value, RebuildUsPlugin.Instance.ShowGameOverview.Value),
+        new("GhostsCanSeeRoles", () => Plugin.Instance.GhostsCanSeeRoles.Value = !Plugin.Instance.GhostsCanSeeRoles.Value, Plugin.Instance.GhostsCanSeeRoles.Value),
+        new("GhostsCanSeeModifiers", () => Plugin.Instance.GhostsCanSeeModifiers.Value = !Plugin.Instance.GhostsCanSeeModifiers.Value, Plugin.Instance.GhostsCanSeeModifiers.Value),
+        new("GhostsCanSeeInformation", () => Plugin.Instance.GhostsCanSeeInformation.Value = !Plugin.Instance.GhostsCanSeeInformation.Value, Plugin.Instance.GhostsCanSeeInformation.Value),
+        new("GhostsCanSeeVotes", () => Plugin.Instance.GhostsCanSeeVotes.Value = !Plugin.Instance.GhostsCanSeeVotes.Value, Plugin.Instance.GhostsCanSeeVotes.Value),
+        new("ShowGameOverview", () => Plugin.Instance.ShowGameOverview.Value = !Plugin.Instance.ShowGameOverview.Value, Plugin.Instance.ShowGameOverview.Value),
     };
 
     private static GameObject popup;

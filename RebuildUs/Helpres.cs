@@ -77,7 +77,7 @@ internal static class Helpers
         }
         catch
         {
-            RebuildUsPlugin.Instance.Logger.LogError("Error loading texture from disk: " + path);
+            Plugin.Instance.Logger.LogError("Error loading texture from disk: " + path);
         }
         return null;
     }

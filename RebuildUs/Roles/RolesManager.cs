@@ -40,7 +40,7 @@ internal static class RolesManager
             if (roleInfo == null) continue;
 
             AllRoles.Add(roleInfo);
-            RebuildUsPlugin.Instance.Logger.LogMessage($"Registering role: {roleInfo.NameKey}");
+            Plugin.Instance.Logger.LogMessage($"Registering role: {roleInfo.NameKey}");
         }
     }
 

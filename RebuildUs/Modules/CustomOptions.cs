@@ -50,8 +50,8 @@ internal partial class CustomOption
 
         if (AllOptions.ContainsKey(id))
         {
-            RebuildUsPlugin.Instance.Logger.LogWarning($"The custom option id ({id}) is already exists!");
-            RebuildUsPlugin.Instance.Logger.LogWarning("The old one will be replaced by the new!");
+            Plugin.Instance.Logger.LogWarning($"The custom option id ({id}) is already exists!");
+            Plugin.Instance.Logger.LogWarning("The old one will be replaced by the new!");
         }
 
         AllOptions[id] = this;
@@ -105,13 +105,13 @@ internal partial class CustomOption
     {
         SaveVanillaOptions();
         Preset = newPreset;
-        VanillaSettings = RebuildUsPlugin.Instance.Config.Bind($"Preset{Preset}", "GameOptions", "");
+        VanillaSettings = Plugin.Instance.Config.Bind($"Preset{Preset}", "GameOptions", "");
         LoadVanillaOptions();
         foreach (var (id, option) in AllOptions)
         {
             if (id == 0) continue;
 
-            option.Entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{Preset}", id.ToString(), option.DefaultIndex);
+            option.Entry = Plugin.Instance.Config.Bind($"Preset{Preset}", id.ToString(), option.DefaultIndex);
             option.SelectedIndex = Mathf.Clamp(option.Entry.Value, 0, option.Selections.Length - 1);
             if (option.OptionBehaviour != null && option.OptionBehaviour is StringOption stringOption)
             {
@@ -151,7 +151,7 @@ internal partial class CustomOption
         var gameOptions = GameOptionsManager.Instance.gameOptionsFactory.FromBytes(Convert.FromBase64String(optionsString));
         if (gameOptions.Version < 8)
         {
-            RebuildUsPlugin.Instance.Logger.LogMessage("tried to paste old settings, not doing this!");
+            Plugin.Instance.Logger.LogMessage("tried to paste old settings, not doing this!");
             return false;
         }
 
