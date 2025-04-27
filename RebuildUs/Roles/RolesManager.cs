@@ -29,7 +29,7 @@ internal enum RoleId : uint
 
 internal static class RolesManager
 {
-    internal static List<RoleInfoAttribute> AllRoles { get; } = [];
+    internal static Dictionary<RoleId, RoleInfoAttribute> AllRoles { get; } = [];
 
     internal static void RegisterRoles()
     {
@@ -39,7 +39,7 @@ internal static class RolesManager
             var roleInfo = type.GetCustomAttribute<RoleInfoAttribute>();
             if (roleInfo == null) continue;
 
-            AllRoles.Add(roleInfo);
+            AllRoles.Add(roleInfo.RoleId, roleInfo);
             Plugin.Instance.Logger.LogMessage($"Registering role: {roleInfo.NameKey}");
         }
     }

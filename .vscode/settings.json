@@ -6,6 +6,7 @@
         "Childs",
         "Cooldown",
         "Cooldowns",
+        "Crewmates",
         "Desat",
         "Dont",
         "gamemode",
@@ -17,6 +18,8 @@
         "Mathf",
         "shota",
         "Shudo",
-        "sunada"
+        "sunada",
+        "targetable",
+        "untargetable"
     ]
 }

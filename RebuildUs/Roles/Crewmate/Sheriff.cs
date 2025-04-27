@@ -1,4 +1,5 @@
 using HarmonyLib;
+using RebuildUs.Extensions;
 using RebuildUs.Roles.RoleBase;
 using UnityEngine;
 
@@ -25,7 +26,14 @@ internal class Sheriff : ModRoleBase<Sheriff>
 
     internal override void OnMeetingStart() { }
     internal override void OnMeetingEnd() { }
-    internal override void FixedUpdate() { }
+    internal override void FixedUpdate()
+    {
+        if (player == PlayerControl.LocalPlayer && remainShots > 0)
+        {
+            currentTarget = TargetExtensions.SetTarget();
+            TargetExtensions.SetPlayerOutline(currentTarget, RolesManager.AllRoles[RoleId.Sheriff].Color);
+        }
+    }
     internal override void OnKill(PlayerControl target) { }
     internal override void OnDeath(PlayerControl killer = null) { }
     internal override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
