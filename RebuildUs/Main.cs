@@ -24,6 +24,8 @@ internal class Plugin : BasePlugin
     internal Version Version { get; } = Version.Parse(MOD_VERSION);
     internal ManualLogSource Logger;
 
+    internal Random Random = new((int)DateTime.Now.Ticks);
+
     internal ConfigEntry<bool> GhostsCanSeeRoles { get; private set; }
     internal ConfigEntry<bool> GhostsCanSeeModifiers { get; private set; }
     internal ConfigEntry<bool> GhostsCanSeeInformation { get; private set; }

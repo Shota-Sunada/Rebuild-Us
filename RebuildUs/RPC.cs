@@ -3,12 +3,15 @@ using Hazel;
 using HarmonyLib;
 using RebuildUs.Modules;
 using System.Linq;
+using RebuildUs.Roles.RoleBase;
+using RebuildUs.Roles;
 
 namespace RebuildUs;
 
 internal enum CustomRPC : byte
 {
     ShareOptions = 80,
+    SetRole,
 }
 
 internal static class RPCProcedure
@@ -39,6 +42,14 @@ internal static class RPCProcedure
         {
             Plugin.Instance.Logger.LogError($"Error while deserializing options: {e.Message}");
         }
+    }
+
+    internal static void SetRole(byte roleId, byte playerId)
+    {
+        PlayerControl.AllPlayerControls.ToArray().DoIf(
+            x => x.PlayerId == playerId,
+            x => x.SetRole(roleId)
+        );
     }
 
     internal static void UpdateMeeting(byte targetId, bool dead = true)
