@@ -124,9 +124,9 @@ internal static class RoleAssignmentExtensions
                 foreach (var blockedRoleId in CustomOptionHolders.BlockedRolePairings[roleId])
                 {
                     // ブロックされた役職の確率を100%未満の場合は0に指定
-                    if (data.impSettings.ContainsKey(blockedRoleId)) data.impSettings[blockedRoleId] = 0;
-                    if (data.neutralSettings.ContainsKey(blockedRoleId)) data.neutralSettings[blockedRoleId] = 0;
-                    if (data.crewSettings.ContainsKey(blockedRoleId)) data.crewSettings[blockedRoleId] = 0;
+                    if (data.impSettings.ContainsKey(blockedRoleId)) data.impSettings[blockedRoleId] = (0, 0);
+                    if (data.neutralSettings.ContainsKey(blockedRoleId)) data.neutralSettings[blockedRoleId] = (0, 0);
+                    if (data.crewSettings.ContainsKey(blockedRoleId)) data.crewSettings[blockedRoleId] = (0,0);
                     // 100%でも削除
                     foreach (var ensuredRolesList in rolesToAssign.Values)
                     {
@@ -178,7 +178,7 @@ internal static class RoleAssignmentExtensions
             var players = roleType is RoleType.Crewmate or RoleType.Neutral ? data.Crewmates : data.Impostors;
             var index = Plugin.Instance.Random.Next(0, rolesToAssign[roleType].Count);
             var roleId = rolesToAssign[roleType][index];
-            setRoleToRandomPlayer(roleId, players);
+            SetRoleToRandomPlayer(roleId, players);
             rolesToAssign[roleType].RemoveAll(x => x == roleId);
 
             if (CustomOptionHolders.BlockedRolePairings.ContainsKey(roleId))
@@ -202,7 +202,7 @@ internal static class RoleAssignmentExtensions
         }
     }
 
-    private static byte SetRoleToRandomPlayer(byte roleId, List<PlayerControl> playerList, bool removePlayer = true)
+    private static byte SetRoleToRandomPlayer(RoleId roleId, List<PlayerControl> playerList, bool removePlayer = true)
     {
         var index = Plugin.Instance.Random.Next(0, playerList.Count);
         var playerId = playerList[index].PlayerId;
@@ -210,9 +210,9 @@ internal static class RoleAssignmentExtensions
         if (removePlayer) playerList.RemoveAt(index);
 
         var rpc = RPCProcedure.SendRPC(CustomRPC.SetRole);
-        rpc.Write(roleId);
+        rpc.Write((byte)roleId);
         rpc.Write(playerId);
-        RPCProcedure.SetRole(roleId, playerId);
+        RPCProcedure.SetRole((byte)roleId, playerId);
         return playerId;
     }
 }

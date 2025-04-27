@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using RebuildUs.Localization;
 using RebuildUs.Modules;
+using RebuildUs.Roles;
 using UnityEngine;
 
 namespace RebuildUs;
@@ -33,6 +35,8 @@ internal static class CustomOptionHolders
     internal static CustomOption SheriffCanKillNeutrals;
     internal static CustomOption SheriffKillTargetOnMisfire;
     internal static CustomOption SheriffCanKillMadmate;
+
+    internal static Dictionary<RoleId, RoleId[]> BlockedRolePairings = [];
 
     internal static void Initialize()
     {

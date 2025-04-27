@@ -6,8 +6,8 @@ using UnityEngine;
 namespace RebuildUs.Roles.Crewmate;
 
 [HarmonyPatch]
-[RoleInfo("Sheriff", "SheriffIntro", "SheriffShort", "SheriffFull", RoleType.Crewmate, RoleId.Sheriff, 248, 205, 70)]
-internal class Sheriff : ModRoleBase<Sheriff>
+[RoleInfo(nameof(Sheriff), "SheriffIntro", "SheriffShort", "SheriffFull", RoleType.Crewmate, RoleId.Sheriff, 248, 205, 70)]
+internal class Sheriff : ModRole
 {
     // GLOBAL
     internal static float KillCooldown { get { return CustomOptionHolders.SheriffKillCooldown.GetFloat(); } }

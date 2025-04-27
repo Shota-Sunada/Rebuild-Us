@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using RebuildUs.Roles.RoleBase;
 using UnityEngine;
@@ -14,7 +15,7 @@ internal enum RoleType
     Ignore = 3,
 }
 
-internal enum RoleId : uint
+internal enum RoleId : byte
 {
     // Among Us Roles
     Crewmate = 0,
@@ -44,7 +45,23 @@ internal static class RolesManager
         }
     }
 
+    internal static ModRole CreateRoleInstance(RoleId roleId, PlayerControl player)
+    {
+        if (AllRoles.TryGetValue(roleId, out var roleInfo))
+        {
+            var type = roleInfo.GetType();
+            if (type != null && Activator.CreateInstance(type) is ModRole role)
+            {
+                return ModRole.AssignRole(role, player);
+            }
+        }
+        return null;
+    }
 
+    // internal static RoleId GetRoleId<T>() where T : ModRole
+    // {
+    //     return AllRoles.FirstOrDefault(r => r.Value.NameKey == typeof(T).Name).Key;
+    // }
 }
 
 [AttributeUsage(AttributeTargets.Class)]

@@ -48,7 +48,14 @@ internal static class RPCProcedure
     {
         PlayerControl.AllPlayerControls.ToArray().DoIf(
             x => x.PlayerId == playerId,
-            x => x.SetRole(roleId)
+            x =>
+            {
+                ModRole.RemoveRole(x, (RoleId)roleId);
+                if (RolesManager.AllRoles.ContainsKey((RoleId)roleId))
+                {
+                    RolesManager.CreateRoleInstance((RoleId)roleId, x);
+                }
+            }
         );
     }
 
