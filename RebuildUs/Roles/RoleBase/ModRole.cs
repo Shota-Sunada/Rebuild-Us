@@ -22,6 +22,8 @@ internal abstract class ModRole
     internal abstract void OnDeath(PlayerControl killer = null);
     internal abstract void HandleDisconnect(PlayerControl player, DisconnectReasons reason);
     internal abstract void OnRoleReset();
+    internal abstract void MakeButtons(HudManager hm);
+    internal abstract void SetButtonCooldowns();
 
     internal static void Clear()
     {
@@ -165,5 +167,15 @@ internal static class RoleHelpers
         ModRole.AllRoles.DoIf(x => x.player.PlayerId == player.PlayerId, x => x.OnDeath(killer));
 
         RPCProcedure.UpdateMeeting(player.PlayerId, true);
+    }
+
+    internal static void MakeButtons(HudManager hm)
+    {
+        ModRole.AllRoles.Do(x => x.MakeButtons(hm));
+    }
+
+    internal static void SetButtonCooldowns()
+    {
+        ModRole.AllRoles.Do(x => x.SetButtonCooldowns());
     }
 }

@@ -30,4 +30,6 @@ internal class Sheriff : ModRoleBase<Sheriff>
     internal override void OnDeath(PlayerControl killer = null) { }
     internal override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
     internal override void OnRoleReset() { }
+    internal override void MakeButtons(HudManager hm) { }
+    internal override void SetButtonCooldowns() { }
 }
