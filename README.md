@@ -22,3 +22,4 @@ The mod that adds many roles and features to AmongUs.
 ## License
 This project is under the [GPLv3](https://github.com/Shota-Sunada/Rebuild-Us/blob/main/LICENSE).<br/>
 Please respect the license and all the authors of the mods referenced by us.<br/>
+
