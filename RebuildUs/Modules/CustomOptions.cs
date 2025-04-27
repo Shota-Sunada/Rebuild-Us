@@ -172,7 +172,7 @@ internal partial class CustomOption
 
         var id = AllOptions.FirstOrDefault(x => x.Value == option).Key;
 
-        using var rpc = new RPCSender(PlayerControl.LocalPlayer.NetId, CustomRPC.ShareOptions);
+        using var rpc = RPCProcedure.SendRPC(PlayerControl.LocalPlayer.NetId, CustomRPC.ShareOptions);
         rpc.Write((byte)1);
         rpc.Write((uint)id, true);
         rpc.Write(Convert.ToUInt32(option.SelectedIndex), true);
@@ -192,7 +192,7 @@ internal partial class CustomOption
         {
             // takes less than 3 bytes per option on average
             var amount = (byte)Math.Min(optionsList.Count, 200);
-            using var rpc = new RPCSender(PlayerControl.LocalPlayer.NetId, CustomRPC.ShareOptions);
+            using var rpc = RPCProcedure.SendRPC(PlayerControl.LocalPlayer.NetId, CustomRPC.ShareOptions);
             rpc.Write(amount);
             for (int i = 0; i < amount; i++)
             {
