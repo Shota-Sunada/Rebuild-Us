@@ -36,7 +36,7 @@ internal static class HatsTabPatches
             {
                 if (!packages.ContainsKey(ext.Package))
                 {
-                    packages[ext.Package] = new List<Tuple<HatData, HatExtension>>();
+                    packages[ext.Package] = [];
                 }
                 packages[ext.Package].Add(new Tuple<HatData, HatExtension>(hatBehaviour, ext));
             }
@@ -44,7 +44,7 @@ internal static class HatsTabPatches
             {
                 if (!packages.ContainsKey(CustomHatManager.InnerslothPackageName))
                 {
-                    packages[CustomHatManager.InnerslothPackageName] = new List<Tuple<HatData, HatExtension>>();
+                    packages[CustomHatManager.InnerslothPackageName] = [];
                 }
                 packages[CustomHatManager.InnerslothPackageName].Add(new Tuple<HatData, HatExtension>(hatBehaviour, null));
             }

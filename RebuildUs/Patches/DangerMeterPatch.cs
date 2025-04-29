@@ -2,23 +2,22 @@ using HarmonyLib;
 
 using UnityEngine;
 
-namespace RebuildUs.Patches
+namespace RebuildUs.Patches;
+
+
+[HarmonyPatch]
+
+public class DangerMeterPatch
 {
 
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(DangerMeter), nameof(DangerMeter.SetFirstNBarColors))]
+    [HarmonyPrefix]
 
-    public class DangerMeterPatch
+    public static void Prefix(DangerMeter __instance, ref Color color)
     {
+        if (PlayerControl.LocalPlayer != Tracker.tracker) return;
+        if (__instance == HudManager.Instance.DangerMeter) return;
 
-        [HarmonyPatch(typeof(DangerMeter), nameof(DangerMeter.SetFirstNBarColors))]
-        [HarmonyPrefix]
-
-        public static void Prefix(DangerMeter __instance, ref Color color)
-        {
-            if (PlayerControl.LocalPlayer != Tracker.tracker) return;
-            if (__instance == HudManager.Instance.DangerMeter) return;
-
-            color = color.SetAlpha(0.5f);
-        }
+        color = color.SetAlpha(0.5f);
     }
 }

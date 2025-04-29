@@ -2,22 +2,21 @@ using HarmonyLib;
 using AmongUs.Data;
 using AmongUs.Data.Legacy;
 
-namespace RebuildUs.Patches
+namespace RebuildUs.Patches;
+
+[Harmony]
+public class AccountManagerPatch
 {
-    [Harmony]
-    public class AccountManagerPatch
+    [HarmonyPatch(typeof(AccountManager), nameof(AccountManager.RandomizeName))]
+    public static class RandomizeNamePatch
     {
-        [HarmonyPatch(typeof(AccountManager), nameof(AccountManager.RandomizeName))]
-        public static class RandomizeNamePatch
+        static bool Prefix(AccountManager __instance)
         {
-            static bool Prefix(AccountManager __instance)
-            {
-                if (LegacySaveManager.lastPlayerName == null)
-                    return true;
-                DataManager.Player.Customization.Name = LegacySaveManager.lastPlayerName;
-                __instance.accountTab.UpdateNameDisplay();
-                return false; // Don't execute original
-            }
+            if (LegacySaveManager.lastPlayerName == null)
+                return true;
+            DataManager.Player.Customization.Name = LegacySaveManager.lastPlayerName;
+            __instance.accountTab.UpdateNameDisplay();
+            return false; // Don't execute original
         }
     }
 }

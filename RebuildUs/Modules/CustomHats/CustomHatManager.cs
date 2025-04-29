@@ -30,9 +30,9 @@ public static class CustomHatManager
     internal static string CustomSkinsDirectory => Path.Combine(Path.GetDirectoryName(Application.dataPath)!, ResourcesDirectory);
     internal static string HatsDirectory => CustomSkinsDirectory;
 
-    internal static List<CustomHat> UnregisteredHats = new();
-    internal static readonly Dictionary<string, HatViewData> ViewDataCache = new();
-    internal static readonly Dictionary<string, HatExtension> ExtensionCache = new();
+    internal static List<CustomHat> UnregisteredHats = [];
+    internal static readonly Dictionary<string, HatViewData> ViewDataCache = [];
+    internal static readonly Dictionary<string, HatExtension> ExtensionCache = [];
 
     private static readonly HatsLoader Loader;
 
@@ -281,11 +281,11 @@ public static class CustomHatManager
 
     public static List<CustomHat> loadHorseHats()
     {
-        List<CustomHat> hatdatas = new();
+        List<CustomHat> hatdatas = [];
         Assembly assembly = Assembly.GetExecutingAssembly();
         string[] resourceNames = assembly.GetManifestResourceNames();
-        List<string> hatFiles = new();
-        Dictionary<string, List<string>> hatFilesSorted = new Dictionary<string, List<string>>();
+        List<string> hatFiles = [];
+        Dictionary<string, List<string>> hatFilesSorted = [];
         foreach (string resourceName in resourceNames)
         {
             if (resourceName.Contains("RebuildUs.Resources.HorseHats.") && resourceName.Contains(".png"))
@@ -298,13 +298,13 @@ public static class CustomHatManager
         {
             string value = s.Substring(0, s.LastIndexOf("HorseSpecialHat") + 17);
             if (value.Contains(".")) value.Remove(value.LastIndexOf("."));
-            if (!hatFilesSorted.ContainsKey(value)) hatFilesSorted.Add(value, new List<string>());
+            if (!hatFilesSorted.ContainsKey(value)) hatFilesSorted.Add(value, []);
             hatFilesSorted[value].Add(s);
         }
         int i = 0;
         foreach (var item in hatFilesSorted)
         {
-            CustomHat info = new CustomHat();
+            CustomHat info = new();
             info.Name = $"April Hat {i++:D2}";
             info.Author = "A Fool";
             info.Resource = item.Value.FirstOrDefault(x => !x.Contains("back"));

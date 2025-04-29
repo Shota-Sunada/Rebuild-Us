@@ -8,81 +8,80 @@ using System.Threading.Tasks;
 using RebuildUs.Utilities;
 using UnityEngine;
 
-namespace RebuildUs.Objects
+namespace RebuildUs.Objects;
+
+public class Silhouette
 {
-    public class Silhouette
+    public GameObject gameObject;
+    public float timeRemaining;
+    public bool permanent = false;
+    private bool visibleForEveryOne = false;
+    private SpriteRenderer renderer;
+
+    public static List<Silhouette> silhouettes = [];
+
+
+    private static Sprite SilhouetteSprite;
+    public static Sprite getSilhouetteSprite()
     {
-        public GameObject gameObject;
-        public float timeRemaining;
-        public bool permanent = false;
-        private bool visibleForEveryOne = false;
-        private SpriteRenderer renderer;
+        if (SilhouetteSprite) return SilhouetteSprite;
+        SilhouetteSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.Silhouette.png", 225f);
+        return SilhouetteSprite;
+    }
 
-        public static List<Silhouette> silhouettes = new List<Silhouette>();
-
-
-        private static Sprite SilhouetteSprite;
-        public static Sprite getSilhouetteSprite()
+    public Silhouette(Vector3 p, float duration = 1f, bool visibleForEveryOne = true)
+    {
+        if (duration <= 0f)
         {
-            if (SilhouetteSprite) return SilhouetteSprite;
-            SilhouetteSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.Silhouette.png", 225f);
-            return SilhouetteSprite;
+            permanent = true;
         }
+        this.visibleForEveryOne = visibleForEveryOne;
+        gameObject = new GameObject("Silhouette");
+        gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
+        //Vector3 position = new Vector3(p.x, p.y, PlayerControl.LocalPlayer.transform.localPosition.z + 0.001f); // just behind player
+        Vector3 position = new(p.x, p.y, p.y / 1000f + 0.01f);
+        gameObject.transform.position = position;
+        gameObject.transform.localPosition = position;
 
-        public Silhouette(Vector3 p, float duration = 1f, bool visibleForEveryOne = true)
+        renderer = gameObject.AddComponent<SpriteRenderer>();
+        renderer.sprite = getSilhouetteSprite();
+
+        timeRemaining = duration;
+
+        renderer.color = renderer.color.SetAlpha(Yoyo.SilhouetteVisibility);
+
+        bool visible = visibleForEveryOne || PlayerControl.LocalPlayer == Yoyo.yoyo || PlayerControl.LocalPlayer.Data.IsDead;
+
+        gameObject.SetActive(visible);
+        silhouettes.Add(this);
+    }
+
+    public static void clearSilhouettes()
+    {
+        foreach (var sil in silhouettes)
+            sil.gameObject.Destroy();
+        silhouettes = [];
+    }
+
+    public static void UpdateAll()
+    {
+        foreach (Silhouette current in new List<Silhouette>(silhouettes))
         {
-            if (duration <= 0f)
+            current.timeRemaining -= Time.fixedDeltaTime;
+            bool visible = current.visibleForEveryOne || PlayerControl.LocalPlayer == Yoyo.yoyo || PlayerControl.LocalPlayer.Data.IsDead;
+            current.gameObject.SetActive(visible);
+
+            if (visible && current.timeRemaining > 0 && current.timeRemaining < 0.5)
             {
-                permanent = true;
+                var alphaRatio = current.timeRemaining / 0.5f;
+                current.renderer.color = current.renderer.color.SetAlpha(Yoyo.SilhouetteVisibility * alphaRatio);
             }
-            this.visibleForEveryOne = visibleForEveryOne;
-            gameObject = new GameObject("Silhouette");
-            gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
-            //Vector3 position = new Vector3(p.x, p.y, PlayerControl.LocalPlayer.transform.localPosition.z + 0.001f); // just behind player
-            Vector3 position = new Vector3(p.x, p.y, p.y / 1000f + 0.01f);
-            gameObject.transform.position = position;
-            gameObject.transform.localPosition = position;
 
-            renderer = gameObject.AddComponent<SpriteRenderer>();
-            renderer.sprite = getSilhouetteSprite();
-
-            timeRemaining = duration;
-
-            renderer.color = renderer.color.SetAlpha(Yoyo.SilhouetteVisibility);
-
-            bool visible = visibleForEveryOne || PlayerControl.LocalPlayer == Yoyo.yoyo || PlayerControl.LocalPlayer.Data.IsDead;
-
-            gameObject.SetActive(visible);
-            silhouettes.Add(this);
-        }
-
-        public static void clearSilhouettes()
-        {
-            foreach (var sil in silhouettes)
-                sil.gameObject.Destroy();
-            silhouettes = new();
-        }
-
-        public static void UpdateAll()
-        {
-            foreach (Silhouette current in new List<Silhouette>(silhouettes))
+            if (current.timeRemaining < 0 && !current.permanent)
             {
-                current.timeRemaining -= Time.fixedDeltaTime;
-                bool visible = current.visibleForEveryOne || PlayerControl.LocalPlayer == Yoyo.yoyo || PlayerControl.LocalPlayer.Data.IsDead;
-                current.gameObject.SetActive(visible);
-
-                if (visible && current.timeRemaining > 0 && current.timeRemaining < 0.5)
-                {
-                    var alphaRatio = current.timeRemaining / 0.5f;
-                    current.renderer.color = current.renderer.color.SetAlpha(Yoyo.SilhouetteVisibility * alphaRatio);
-                }
-
-                if (current.timeRemaining < 0 && !current.permanent)
-                {
-                    current.gameObject.SetActive(false);
-                    UnityEngine.Object.Destroy(current.gameObject);
-                    silhouettes.Remove(current);
-                }
+                current.gameObject.SetActive(false);
+                UnityEngine.Object.Destroy(current.gameObject);
+                silhouettes.Remove(current);
             }
         }
     }

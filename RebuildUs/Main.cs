@@ -67,7 +67,7 @@ public class RebuildUsPlugin : BasePlugin
     {
         ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
         var regions = new IRegionInfo[] {
-                new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value, new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("Custom", Ip.Value, Port.Value, false) })).CastFast<IRegionInfo>()
+                new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value, new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new("Custom", Ip.Value, Port.Value, false) })).CastFast<IRegionInfo>()
             };
 
         IRegionInfo currentRegion = serverManager.CurrentRegion;
@@ -173,13 +173,13 @@ public class RebuildUsPlugin : BasePlugin
     public static class DebugManager
     {
         private static readonly string passwordHash = "d1f51dfdfd8d38027fd2ca9dfeb299399b5bdee58e6c0b3b5e9a45cd4e502848";
-        private static readonly System.Random random = new System.Random((int)DateTime.Now.Ticks);
-        private static List<PlayerControl> bots = new List<PlayerControl>();
+        private static readonly System.Random random = new((int)DateTime.Now.Ticks);
+        private static List<PlayerControl> bots = [];
 
         public static void Postfix(KeyboardJoystick __instance)
         {
             // Check if debug mode is active.
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             SHA256 sha = SHA256Managed.Create();
             Byte[] hashed = sha.ComputeHash(Encoding.UTF8.GetBytes(RebuildUsPlugin.DebugMode.Value));
             foreach (var b in hashed)
@@ -198,7 +198,7 @@ public class RebuildUsPlugin : BasePlugin
                 bots.Add(playerControl);
                 GameData.Instance.AddPlayer(playerControl, new InnerNet.ClientData(0));
                 AmongUsClient.Instance.Spawn(playerControl, -2, InnerNet.SpawnFlags.None);
-                
+
                 playerControl.transform.position = PlayerControl.LocalPlayer.transform.position;
                 playerControl.GetComponent<DummyBehaviour>().enabled = true;
                 playerControl.NetTransform.enabled = false;

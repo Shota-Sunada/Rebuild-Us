@@ -52,7 +52,7 @@ public static class EventUtility
         PlayerControlFixedUpdatePatch.setPlayerOutline(currentTarget, Color.yellow);
     }
 
-    public static DateTime enabled = new DateTime(DateTime.Today.Year, 4, 1);
+    public static DateTime enabled = new(DateTime.Today.Year, 4, 1);
     public static bool isEventDate => DateTime.Today.Date == enabled;
 
     public static bool canBeEnabled => DateTime.Today.Date >= enabled && DateTime.Today.Date <= enabled.AddDays(7); // One Week after the EVENT
@@ -90,7 +90,7 @@ public static class EventUtility
         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EventKick, Hazel.SendOption.Reliable, -1);
         writer.Write(PlayerControl.LocalPlayer.PlayerId);
         writer.Write(currentTarget.PlayerId);
-        System.Random rnd = new System.Random();
+        System.Random rnd = new();
         float kickDistance = 1 + (float)rnd.NextDouble() * 1.5f; // 1- 2.5
         writer.Write(kickDistance);
         AmongUsClient.Instance.FinishRpcImmediately(writer);
