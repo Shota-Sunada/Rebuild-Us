@@ -269,7 +269,7 @@ namespace RebuildUs.Objects
                 actionButtonMat.SetFloat(Desat, 1f);
             }
 
-            if (Timer >= 0 && !RoleDraft.isRunning)
+            if (Timer >= 0)
             {  // Make sure role draft has finished or isnt running
                 if (HasEffect && isEffectActive)
                     Timer -= Time.deltaTime;

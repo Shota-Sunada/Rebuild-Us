@@ -19,14 +19,12 @@ namespace RebuildUs.Patches
         public static WinCondition winCondition = WinCondition.Default;
         public static List<WinCondition> additionalWinConditions = new List<WinCondition>();
         public static List<PlayerRoleInfo> playerRoles = new List<PlayerRoleInfo>();
-        public static float timer = 0;
 
         public static void clear()
         {
             playerRoles.Clear();
             additionalWinConditions.Clear();
             winCondition = WinCondition.Default;
-            timer = 0;
         }
 
         internal class PlayerRoleInfo
@@ -36,7 +34,6 @@ namespace RebuildUs.Patches
             public string RoleNames { get; set; }
             public int TasksCompleted { get; set; }
             public int TasksTotal { get; set; }
-            public bool IsGuesser { get; set; }
             public int? Kills { get; set; }
             public bool IsAlive { get; set; }
         }
@@ -64,14 +61,13 @@ namespace RebuildUs.Patches
             {
                 var roles = RoleInfo.getRoleInfoForPlayer(playerControl);
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data);
-                bool isGuesser = HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(playerControl.PlayerId);
                 int? killCount = GameHistory.deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
                 if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor))
                 {
                     killCount = null;
                 }
                 string roleString = RoleInfo.GetRolesString(playerControl, true, true, false);
-                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString, TasksTotal = tasksTotal, TasksCompleted = tasksCompleted, IsGuesser = isGuesser, Kills = killCount, IsAlive = !playerControl.Data.IsDead });
+                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString, TasksTotal = tasksTotal, TasksCompleted = tasksCompleted, Kills = killCount, IsAlive = !playerControl.Data.IsDead });
             }
 
             // Remove Jester, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
@@ -228,10 +224,7 @@ namespace RebuildUs.Patches
                 AdditionalTempData.additionalWinConditions.Add(WinCondition.AdditionalAlivePursuerWin);
             }
 
-            AdditionalTempData.timer = ((float)(DateTime.UtcNow - (HideNSeek.isHideNSeekGM ? HideNSeek.startTime : PropHunt.startTime)).TotalMilliseconds) / 1000;
-
             // Reset Settings
-            if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek) ShipStatusPatch.resetVanillaSettings();
             RPCProcedure.resetVariables();
             EventUtility.gameEndsUpdate();
         }
@@ -389,7 +382,7 @@ namespace RebuildUs.Patches
                 }
             }
 
-            if (TORMapOptions.showRoleSummary || HideNSeek.isHideNSeekGM || PropHunt.isPropHuntGM)
+            if (TORMapOptions.showRoleSummary)
             {
                 var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
                 GameObject roleSummary = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
@@ -397,12 +390,6 @@ namespace RebuildUs.Patches
                 roleSummary.transform.localScale = new Vector3(1f, 1f, 1f);
 
                 var roleSummaryText = new StringBuilder();
-                if (HideNSeek.isHideNSeekGM || PropHunt.isPropHuntGM)
-                {
-                    int minutes = (int)AdditionalTempData.timer / 60;
-                    int seconds = (int)AdditionalTempData.timer % 60;
-                    roleSummaryText.AppendLine($"<color=#FAD934FF>Time: {minutes:00}:{seconds:00}</color> \n");
-                }
                 roleSummaryText.AppendLine("Players and roles at the end of the game:");
                 foreach (var data in AdditionalTempData.playerRoles)
                 {
@@ -530,7 +517,6 @@ namespace RebuildUs.Patches
 
         private static bool CheckAndEndGameForTaskWin(ShipStatus __instance)
         {
-            if (HideNSeek.isHideNSeekGM && !HideNSeek.taskWinPossible || PropHunt.isPropHuntGM) return false;
             if (GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks)
             {
                 //__instance.enabled = false;
@@ -575,9 +561,6 @@ namespace RebuildUs.Patches
 
         private static bool CheckAndEndGameForImpostorWin(ShipStatus __instance, PlayerStatistics statistics)
         {
-            if (HideNSeek.isHideNSeekGM || PropHunt.isPropHuntGM)
-                if ((0 != statistics.TotalAlive - statistics.TeamImpostorsAlive)) return false;
-
             if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && !(statistics.TeamImpostorHasAliveLover && statistics.TeamLoversAlive == 2))
             {
                 //__instance.enabled = false;
@@ -602,17 +585,6 @@ namespace RebuildUs.Patches
 
         private static bool CheckAndEndGameForCrewmateWin(ShipStatus __instance, PlayerStatistics statistics)
         {
-            if (HideNSeek.isHideNSeekGM && HideNSeek.timer <= 0 && !HideNSeek.isWaitingTimer)
-            {
-                //__instance.enabled = false;
-                GameManager.Instance.RpcEndGame(GameOverReason.CrewmatesByVote, false);
-                return true;
-            }
-            if (PropHunt.isPropHuntGM && PropHunt.timer <= 0 && PropHunt.timerRunning)
-            {
-                GameManager.Instance.RpcEndGame(GameOverReason.CrewmatesByVote, false);
-                return true;
-            }
             if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0)
             {
                 //__instance.enabled = false;

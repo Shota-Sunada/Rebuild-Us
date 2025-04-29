@@ -81,13 +81,12 @@ namespace RebuildUs.Patches
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
         public static void showOrHideAbilityButtonPostfix(AbilityButton __instance)
         {
-            bool isGameMode = GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek || PropHunt.isPropHuntGM || HideNSeek.isHideNSeekGM;
-            if (PlayerControl.LocalPlayer.Data.IsDead && (CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool() || isGameMode))
+            if (PlayerControl.LocalPlayer.Data.IsDead)
             {
                 // player has haunt button.
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
                 int numberOfLeftTasks = playerTotal - playerCompleted;
-                if (numberOfLeftTasks <= 0 || isGameMode)
+                if (numberOfLeftTasks <= 0)
                     __instance.Show();
                 else
                     __instance.Hide();

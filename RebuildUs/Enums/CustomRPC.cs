@@ -74,18 +74,6 @@ public enum CustomRPC
     YoyoBlink,
     BreakArmor,
 
-    // Gamemode
-    SetGuesserGm,
-    HuntedShield,
-    HuntedRewindTime,
-    SetProp,
-    SetRevealed,
-    PropHuntStartTimer,
-    PropHuntSetInvis,
-    PropHuntSetSpeedboost,
-    DraftModePickOrder,
-    DraftModePick,
-
     // Other functionality
     ShareTimer,
     ShareGhostInfo,

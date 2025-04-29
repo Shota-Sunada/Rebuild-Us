@@ -507,7 +507,7 @@ namespace RebuildUs
         public static void drawTab(LobbyViewSettingsPane __instance, CustomOptionType optionType)
         {
 
-            var relevantOptions = options.Where(x => x.type == optionType || x.type == CustomOptionType.Guesser && optionType == CustomOptionType.General).ToList();
+            var relevantOptions = options.Where(x => x.type == optionType).ToList();
 
             if ((int)optionType == 99)
             {
@@ -530,9 +530,6 @@ namespace RebuildUs
                     }
                 }
             }
-
-            if (TORMapOptions.gameMode == CustomGamemodes.Guesser) // Exclude guesser options in neutral mode
-                relevantOptions = relevantOptions.Where(x => !(new List<int> { 310, 311, 312, 313, 314, 315, 316, 317, 318 }).Contains(x.id)).ToList();
 
             for (int j = 0; j < __instance.settingsInfo.Count; j++)
             {
@@ -678,9 +675,8 @@ namespace RebuildUs
         {
             // Handle different gamemodes and tabs needed therein.
             int next = 3;
-            if (TORMapOptions.gameMode == CustomGamemodes.Guesser || TORMapOptions.gameMode == CustomGamemodes.Classic)
+            if (TORMapOptions.gameMode == CustomGamemodes.Classic)
             {
-
                 // create TOR settings
                 createCustomButton(__instance, next++, "TORSettings", "TOR Settings", CustomOptionType.General);
                 // create TOR settings
@@ -694,18 +690,6 @@ namespace RebuildUs
                 createCustomButton(__instance, next++, "CrewmateSettings", "Crewmate Roles", CustomOptionType.Crewmate);
                 // Modifier
                 createCustomButton(__instance, next++, "ModifierSettings", "Modifiers", CustomOptionType.Modifier);
-
-            }
-            else if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
-            {
-                // create Main HNS settings
-                createCustomButton(__instance, next++, "HideNSeekMain", "Hide 'N' Seek", CustomOptionType.HideNSeekMain);
-                // create HNS Role settings
-                createCustomButton(__instance, next++, "HideNSeekRoles", "Hide 'N' Seek Roles", CustomOptionType.HideNSeekRoles);
-            }
-            else if (TORMapOptions.gameMode == CustomGamemodes.PropHunt)
-            {
-                createCustomButton(__instance, next++, "PropHunt", "Prop Hunt", CustomOptionType.PropHunt);
             }
         }
     }
@@ -941,8 +925,6 @@ namespace RebuildUs
             torSettingsGOM.scrollBar.transform.FindChild("SliderInner").DestroyChildren();
             torSettingsGOM.Children.Clear();
             var relevantOptions = options.Where(x => x.type == optionType).ToList();
-            if (TORMapOptions.gameMode == CustomGamemodes.Guesser) // Exclude guesser options in neutral mode
-                relevantOptions = relevantOptions.Where(x => !(new List<int> { 310, 311, 312, 313, 314, 315, 316, 317, 318 }).Contains(x.id)).ToList();
             createSettings(torSettingsGOM, relevantOptions);
         }
 
@@ -950,19 +932,13 @@ namespace RebuildUs
         {
             // Handle different gamemodes and tabs needed therein.
             int next = 3;
-            if (TORMapOptions.gameMode == CustomGamemodes.Guesser || TORMapOptions.gameMode == CustomGamemodes.Classic)
+            if (TORMapOptions.gameMode == CustomGamemodes.Classic)
             {
-
                 // create TOR settings
                 createCustomButton(__instance, next++, "TORSettings", "TOR Settings");
                 createGameOptionsMenu(__instance, CustomOptionType.General, "TORSettings");
-                // Guesser if applicable
-                if (TORMapOptions.gameMode == CustomGamemodes.Guesser)
-                {
-                    createCustomButton(__instance, next++, "GuesserSettings", "Guesser Settings");
-                    createGameOptionsMenu(__instance, CustomOptionType.Guesser, "GuesserSettings");
-                }
-                // IMp
+
+                // Imp
                 createCustomButton(__instance, next++, "ImpostorSettings", "Impostor Roles");
                 createGameOptionsMenu(__instance, CustomOptionType.Impostor, "ImpostorSettings");
 
@@ -975,21 +951,6 @@ namespace RebuildUs
                 // Modifier
                 createCustomButton(__instance, next++, "ModifierSettings", "Modifiers");
                 createGameOptionsMenu(__instance, CustomOptionType.Modifier, "ModifierSettings");
-
-            }
-            else if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
-            {
-                // create Main HNS settings
-                createCustomButton(__instance, next++, "HideNSeekMain", "Hide 'N' Seek");
-                createGameOptionsMenu(__instance, CustomOptionType.HideNSeekMain, "HideNSeekMain");
-                // create HNS Role settings
-                createCustomButton(__instance, next++, "HideNSeekRoles", "Hide 'N' Seek Roles");
-                createGameOptionsMenu(__instance, CustomOptionType.HideNSeekRoles, "HideNSeekRoles");
-            }
-            else if (TORMapOptions.gameMode == CustomGamemodes.PropHunt)
-            {
-                createCustomButton(__instance, next++, "PropHunt", "Prop Hunt");
-                createGameOptionsMenu(__instance, CustomOptionType.PropHunt, "PropHunt");
             }
         }
     }
@@ -1019,13 +980,6 @@ namespace RebuildUs
             CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
             if (option == null) return true;
             option.updateSelection(option.selection + 1);
-            if (CustomOptionHolder.isMapSelectionOption(option))
-            {
-                IGameOptions currentGameOptions = GameOptionsManager.Instance.CurrentGameOptions;
-                currentGameOptions.SetByte(ByteOptionNames.MapId, (byte)option.selection);
-                GameOptionsManager.Instance.GameHostOptions = GameOptionsManager.Instance.CurrentGameOptions;
-                GameManager.Instance.LogicOptions.SyncOptions();
-            }
             return false;
         }
     }
@@ -1038,13 +992,6 @@ namespace RebuildUs
             CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
             if (option == null) return true;
             option.updateSelection(option.selection - 1);
-            if (CustomOptionHolder.isMapSelectionOption(option))
-            {
-                IGameOptions currentGameOptions = GameOptionsManager.Instance.CurrentGameOptions;
-                currentGameOptions.SetByte(ByteOptionNames.MapId, (byte)option.selection);
-                GameOptionsManager.Instance.GameHostOptions = GameOptionsManager.Instance.CurrentGameOptions;
-                GameManager.Instance.LogicOptions.SyncOptions();
-            }
             return false;
         }
     }
@@ -1054,19 +1001,19 @@ namespace RebuildUs
     {
         public static void Postfix(StringOption __instance)
         {
-            if (!IL2CPPChainloader.Instance.Plugins.TryGetValue("com.DigiWorm.LevelImposter", out PluginInfo _)) return;
-            CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
-            if (option == null || !CustomOptionHolder.isMapSelectionOption(option)) return;
-            if (GameOptionsManager.Instance.CurrentGameOptions.MapId == 6)
-                if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOption)
-                {
-                    stringOption.ValueText.text = option.selections[option.selection].ToString();
-                }
-                else if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOptionToo)
-                {
-                    stringOptionToo.oldValue = stringOptionToo.Value = option.selection;
-                    stringOptionToo.ValueText.text = option.selections[option.selection].ToString();
-                }
+            // if (!IL2CPPChainloader.Instance.Plugins.TryGetValue("com.DigiWorm.LevelImposter", out PluginInfo _)) return;
+            // CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
+            // if (option == null || !CustomOptionHolder.isMapSelectionOption(option)) return;
+            // if (GameOptionsManager.Instance.CurrentGameOptions.MapId == 6)
+            //     if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOption)
+            //     {
+            //         stringOption.ValueText.text = option.selections[option.selection].ToString();
+            //     }
+            //     else if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOptionToo)
+            //     {
+            //         stringOptionToo.oldValue = stringOptionToo.Value = option.selection;
+            //         stringOptionToo.ValueText.text = option.selections[option.selection].ToString();
+            //     }
         }
     }
 
@@ -1124,19 +1071,10 @@ namespace RebuildUs
         {
             StringBuilder sb = new StringBuilder("\n");
             var options = CustomOption.options.Where(o => o.type == type);
-            if (TORMapOptions.gameMode == CustomGamemodes.Guesser)
+            if (TORMapOptions.gameMode == CustomGamemodes.Classic)
             {
-                if (type == CustomOptionType.General)
-                    options = CustomOption.options.Where(o => o.type == type || o.type == CustomOptionType.Guesser);
-                List<int> remove = new List<int> { 308, 310, 311, 312, 313, 314, 315, 316, 317, 318 };
-                options = options.Where(x => !remove.Contains(x.id));
+                options = options.Where(x => !(x == CustomOptionHolder.crewmateRolesFill));
             }
-            else if (TORMapOptions.gameMode == CustomGamemodes.Classic)
-                options = options.Where(x => !(x.type == CustomOptionType.Guesser || x == CustomOptionHolder.crewmateRolesFill));
-            else if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
-                options = options.Where(x => (x.type == CustomOptionType.HideNSeekMain || x.type == CustomOptionType.HideNSeekRoles));
-            else if (TORMapOptions.gameMode == CustomGamemodes.PropHunt)
-                options = options.Where(x => (x.type == CustomOptionType.PropHunt));
 
             foreach (var option in options)
             {
@@ -1161,8 +1099,6 @@ namespace RebuildUs
 
             foreach (CustomOption option in options)
             {
-                if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek && option.type != CustomOptionType.HideNSeekMain && option.type != CustomOptionType.HideNSeekRoles) continue;
-                if (TORMapOptions.gameMode == CustomGamemodes.PropHunt && option.type != CustomOptionType.PropHunt) continue;
                 if (option.parent != null)
                 {
                     bool isIrrelevant = (option.parent.getSelection() == 0 && !option.invertedParent) || (option.parent.parent != null && option.parent.parent.getSelection() == 0 && !option.parent.invertedParent);
@@ -1245,57 +1181,30 @@ namespace RebuildUs
             int counter = RebuildUsPlugin.optionsPage;
             string hudString = counter != 0 && !hideExtras ? Helpers.cs(DateTime.Now.Second % 2 == 0 ? Color.white : Color.red, "(Use scroll wheel if necessary)\n\n") : "";
 
-            if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
+            maxPage = 7;
+            switch (counter)
             {
-                if (RebuildUsPlugin.optionsPage > 1) RebuildUsPlugin.optionsPage = 0;
-                maxPage = 2;
-                switch (counter)
-                {
-                    case 0:
-                        hudString += "Page 1: Hide N Seek Settings \n\n" + buildOptionsOfType(CustomOptionType.HideNSeekMain, false);
-                        break;
-                    case 1:
-                        hudString += "Page 2: Hide N Seek Role Settings \n\n" + buildOptionsOfType(CustomOptionType.HideNSeekRoles, false);
-                        break;
-                }
-            }
-            else if (TORMapOptions.gameMode == CustomGamemodes.PropHunt)
-            {
-                maxPage = 1;
-                switch (counter)
-                {
-                    case 0:
-                        hudString += "Page 1: Prop Hunt Settings \n\n" + buildOptionsOfType(CustomOptionType.PropHunt, false);
-                        break;
-                }
-            }
-            else
-            {
-                maxPage = 7;
-                switch (counter)
-                {
-                    case 0:
-                        hudString += (!hideExtras ? "" : "Page 1: Vanilla Settings \n\n") + vanillaSettings;
-                        break;
-                    case 1:
-                        hudString += "Page 2: The Other Roles Settings \n" + buildOptionsOfType(CustomOptionType.General, false);
-                        break;
-                    case 2:
-                        hudString += "Page 3: Role and Modifier Rates \n" + buildRoleOptions();
-                        break;
-                    case 3:
-                        hudString += "Page 4: Impostor Role Settings \n" + buildOptionsOfType(CustomOptionType.Impostor, false);
-                        break;
-                    case 4:
-                        hudString += "Page 5: Neutral Role Settings \n" + buildOptionsOfType(CustomOptionType.Neutral, false);
-                        break;
-                    case 5:
-                        hudString += "Page 6: Crewmate Role Settings \n" + buildOptionsOfType(CustomOptionType.Crewmate, false);
-                        break;
-                    case 6:
-                        hudString += "Page 7: Modifier Settings \n" + buildOptionsOfType(CustomOptionType.Modifier, false);
-                        break;
-                }
+                case 0:
+                    hudString += (!hideExtras ? "" : "Page 1: Vanilla Settings \n\n") + vanillaSettings;
+                    break;
+                case 1:
+                    hudString += "Page 2: The Other Roles Settings \n" + buildOptionsOfType(CustomOptionType.General, false);
+                    break;
+                case 2:
+                    hudString += "Page 3: Role and Modifier Rates \n" + buildRoleOptions();
+                    break;
+                case 3:
+                    hudString += "Page 4: Impostor Role Settings \n" + buildOptionsOfType(CustomOptionType.Impostor, false);
+                    break;
+                case 4:
+                    hudString += "Page 5: Neutral Role Settings \n" + buildOptionsOfType(CustomOptionType.Neutral, false);
+                    break;
+                case 5:
+                    hudString += "Page 6: Crewmate Role Settings \n" + buildOptionsOfType(CustomOptionType.Crewmate, false);
+                    break;
+                case 6:
+                    hudString += "Page 7: Modifier Settings \n" + buildOptionsOfType(CustomOptionType.Modifier, false);
+                    break;
             }
 
             if (!hideExtras || counter != 0) hudString += $"\n Press TAB or Page Number for more... ({counter + 1}/{maxPage})";
@@ -1466,7 +1375,6 @@ namespace RebuildUs
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HudManagerUpdate
     {
-        private static GameObject GameSettingsObject;
         private static TextMeshPro GameSettings;
         public static float
             MinX,/*-5.3F*/

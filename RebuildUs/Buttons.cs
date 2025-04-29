@@ -61,23 +61,10 @@ namespace RebuildUs
         public static CustomButton yoyoAdminTableButton;
         public static CustomButton defuseButton;
         public static CustomButton zoomOutButton;
-        private static CustomButton hunterLighterButton;
-        private static CustomButton hunterAdminTableButton;
-        private static CustomButton hunterArrowButton;
-        private static CustomButton huntedShieldButton;
-        public static CustomButton propDisguiseButton;
-        private static CustomButton propHuntUnstuckButton;
-        public static CustomButton propHuntRevealButton;
-        private static CustomButton propHuntInvisButton;
-        private static CustomButton propHuntSpeedboostButton;
-        public static CustomButton propHuntAdminButton;
-        public static CustomButton propHuntFindButton;
         public static CustomButton eventKickButton;
 
         public static Dictionary<byte, List<CustomButton>> deputyHandcuffedButtons = null;
         public static PoolablePlayer targetDisplay;
-        public static GameObject propSpriteHolder;
-        public static SpriteRenderer propSpriteRenderer;
 
         public static TMPro.TMP_Text securityGuardButtonScrewsText;
         public static TMPro.TMP_Text securityGuardChargesText;
@@ -88,7 +75,6 @@ namespace RebuildUs
         public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
-        public static TMPro.TMP_Text huntedShieldCountText;
 
         public static void setCustomButtonCooldowns()
         {
@@ -146,19 +132,8 @@ namespace RebuildUs
             yoyoButton.MaxTimer = Yoyo.markCooldown;
             yoyoAdminTableButton.MaxTimer = Yoyo.adminCooldown;
             yoyoAdminTableButton.EffectDuration = 10f;
-            hunterLighterButton.MaxTimer = Hunter.lightCooldown;
-            hunterAdminTableButton.MaxTimer = Hunter.AdminCooldown;
-            hunterArrowButton.MaxTimer = Hunter.ArrowCooldown;
-            huntedShieldButton.MaxTimer = Hunted.shieldCooldown;
             defuseButton.MaxTimer = 0f;
             defuseButton.Timer = 0f;
-            propDisguiseButton.MaxTimer = 1f;
-            propHuntUnstuckButton.MaxTimer = PropHunt.unstuckCooldown;
-            propHuntRevealButton.MaxTimer = PropHunt.revealCooldown;
-            propHuntInvisButton.MaxTimer = PropHunt.invisCooldown;
-            propHuntSpeedboostButton.MaxTimer = PropHunt.speedboostCooldown;
-            propHuntAdminButton.MaxTimer = PropHunt.adminCooldown;
-            propHuntFindButton.MaxTimer = PropHunt.findCooldown;
 
             timeMasterShieldButton.EffectDuration = TimeMaster.shieldDuration;
             hackerButton.EffectDuration = Hacker.duration;
@@ -173,17 +148,8 @@ namespace RebuildUs
             trackerTrackCorpsesButton.EffectDuration = Tracker.corpsesTrackingDuration;
             witchSpellButton.EffectDuration = Witch.spellCastingDuration;
             securityGuardCamButton.EffectDuration = SecurityGuard.duration;
-            hunterLighterButton.EffectDuration = Hunter.lightDuration;
-            hunterArrowButton.EffectDuration = Hunter.ArrowDuration;
-            huntedShieldButton.EffectDuration = Hunted.shieldDuration;
             defuseButton.EffectDuration = Bomber.defuseDuration;
             bomberButton.EffectDuration = Bomber.destructionTime + Bomber.bombActiveAfter;
-            propHuntUnstuckButton.EffectDuration = PropHunt.unstuckDuration;
-            propHuntRevealButton.EffectDuration = PropHunt.revealDuration;
-            propHuntInvisButton.EffectDuration = PropHunt.invisDuration;
-            propHuntSpeedboostButton.EffectDuration = PropHunt.speedboostDuration;
-            propHuntAdminButton.EffectDuration = PropHunt.adminDuration;
-            propHuntFindButton.EffectDuration = PropHunt.findDuration;
             // Already set the timer to the max, as the button is enabled during the game and not available at the start
             lightsOutButton.Timer = lightsOutButton.MaxTimer;
             zoomOutButton.MaxTimer = 0f;
@@ -194,13 +160,6 @@ namespace RebuildUs
             timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
             timeMasterShieldButton.isEffectActive = false;
             timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-        }
-
-        public static void resetHuntedRewindButton()
-        {
-            huntedShieldButton.Timer = huntedShieldButton.MaxTimer;
-            huntedShieldButton.isEffectActive = false;
-            huntedShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
         }
 
         private static void addReplacementHandcuffedButton(CustomButton button, Vector3? positionOffset = null, Func<bool> couldUse = null)
@@ -959,7 +918,7 @@ namespace RebuildUs
                     writer.EndMessage();
                     RPCProcedure.placeGarlic(buff);
                 },
-                () => { return !Vampire.localPlacedGarlic && !PlayerControl.LocalPlayer.Data.IsDead && Vampire.garlicsActive && !HideNSeek.isHideNSeekGM && !PropHunt.isPropHuntGM; },
+                () => { return !Vampire.localPlacedGarlic && !PlayerControl.LocalPlayer.Data.IsDead && Vampire.garlicsActive; },
                 () => { return PlayerControl.LocalPlayer.CanMove && !Vampire.localPlacedGarlic; },
                 () => { },
                 Vampire.getGarlicButtonSprite(),
@@ -2273,348 +2232,6 @@ namespace RebuildUs
                 KeyCode.KeypadPlus
                 );
             zoomOutButton.Timer = 0f;
-
-
-            hunterLighterButton = new CustomButton(
-                () =>
-                {
-                    Hunter.lightActive.Add(PlayerControl.LocalPlayer.PlayerId);
-
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareTimer, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Hunter.lightPunish);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.shareTimer(Hunter.lightPunish);
-                },
-                () => { return HideNSeek.isHunter() && !PlayerControl.LocalPlayer.Data.IsDead; },
-                () => { return true; },
-                () =>
-                {
-                    hunterLighterButton.Timer = 30f;
-                    hunterLighterButton.isEffectActive = false;
-                    hunterLighterButton.actionButton.graphic.color = Palette.EnabledColor;
-                },
-                Hunter.getLightSprite(),
-                CustomButton.ButtonPositions.upperRowFarLeft,
-                __instance,
-                KeyCode.F,
-                true,
-                Hunter.lightDuration,
-                () =>
-                {
-                    Hunter.lightActive.Remove(PlayerControl.LocalPlayer.PlayerId);
-                    hunterLighterButton.Timer = hunterLighterButton.MaxTimer;
-                }
-            );
-
-            hunterAdminTableButton = new CustomButton(
-               () =>
-               {
-                   if (!MapBehaviour.Instance || !MapBehaviour.Instance.isActiveAndEnabled)
-                   {
-                       HudManager __instance = FastDestroyableSingleton<HudManager>.Instance;
-                       __instance.InitMap();
-                       MapBehaviour.Instance.ShowCountOverlay(allowedToMove: true, showLivePlayerPosition: true, includeDeadBodies: false);
-                   }
-
-                   PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement 
-
-                   MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareTimer, Hazel.SendOption.Reliable, -1);
-                   writer.Write(Hunter.AdminPunish);
-                   AmongUsClient.Instance.FinishRpcImmediately(writer);
-                   RPCProcedure.shareTimer(Hunter.AdminPunish);
-               },
-               () => { return HideNSeek.isHunter() && !PlayerControl.LocalPlayer.Data.IsDead; },
-               () => { return true; },
-               () =>
-               {
-                   hunterAdminTableButton.Timer = hunterAdminTableButton.MaxTimer;
-                   hunterAdminTableButton.isEffectActive = false;
-                   hunterAdminTableButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-               },
-               Hacker.getAdminSprite(),
-               CustomButton.ButtonPositions.lowerRowCenter,
-               __instance,
-               KeyCode.G,
-               true,
-               Hunter.AdminDuration,
-               () =>
-               {
-                   hunterAdminTableButton.Timer = hunterAdminTableButton.MaxTimer;
-                   if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
-               },
-               false,
-               "ADMIN"
-            );
-
-            hunterArrowButton = new CustomButton(
-                () =>
-                {
-                    Hunter.arrowActive = true;
-
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareTimer, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Hunter.ArrowPunish);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.shareTimer(Hunter.ArrowPunish);
-                },
-                () => { return HideNSeek.isHunter() && !PlayerControl.LocalPlayer.Data.IsDead; },
-                () => { return true; },
-                () =>
-                {
-                    hunterArrowButton.Timer = 30f;
-                    hunterArrowButton.isEffectActive = false;
-                    hunterArrowButton.actionButton.graphic.color = Palette.EnabledColor;
-                },
-                Hunter.getArrowSprite(),
-                CustomButton.ButtonPositions.upperRowLeft,
-                __instance,
-                KeyCode.R,
-                true,
-                Hunter.ArrowDuration,
-                () =>
-                {
-                    Hunter.arrowActive = false;
-                    hunterArrowButton.Timer = hunterArrowButton.MaxTimer;
-                }
-            );
-
-            huntedShieldButton = new CustomButton(
-                () =>
-                {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.HuntedShield, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.huntedShield(PlayerControl.LocalPlayer.PlayerId);
-
-                    Hunted.shieldCount--;
-                },
-                () => { return HideNSeek.isHunted() && !PlayerControl.LocalPlayer.Data.IsDead; },
-                () =>
-                {
-                    if (huntedShieldCountText != null) huntedShieldCountText.text = $"{Hunted.shieldCount}";
-                    return PlayerControl.LocalPlayer.CanMove && Hunted.shieldCount > 0;
-                },
-                () =>
-                {
-                    huntedShieldButton.Timer = huntedShieldButton.MaxTimer;
-                    huntedShieldButton.isEffectActive = false;
-                    huntedShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-                },
-                TimeMaster.getButtonSprite(),
-                CustomButton.ButtonPositions.lowerRowRight,
-                __instance,
-                KeyCode.F,
-                true,
-                Hunted.shieldDuration,
-                () =>
-                {
-                    huntedShieldButton.Timer = huntedShieldButton.MaxTimer;
-
-                }
-            );
-
-            huntedShieldCountText = GameObject.Instantiate(huntedShieldButton.actionButton.cooldownTimerText, huntedShieldButton.actionButton.cooldownTimerText.transform.parent);
-            huntedShieldCountText.text = "";
-            huntedShieldCountText.enableWordWrapping = false;
-            huntedShieldCountText.transform.localScale = Vector3.one * 0.5f;
-            huntedShieldCountText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
-
-
-            propDisguiseButton = new CustomButton(
-                () =>
-                {
-                    // Prop stuff
-                    var player = PlayerControl.LocalPlayer;
-                    GameObject disguiseTarget = PropHunt.currentTarget;
-                    if (disguiseTarget != null)
-                    {
-                        player.transform.localScale = disguiseTarget.transform.lossyScale;
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetProp, Hazel.SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(disguiseTarget.gameObject.name);
-                        writer.Write(disguiseTarget.gameObject.transform.position.x);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.propHuntSetProp(PlayerControl.LocalPlayer.PlayerId, disguiseTarget.gameObject.name, disguiseTarget.gameObject.transform.position.x);
-                        propDisguiseButton.Timer = 1f;
-                    }
-                },
-                () => { return PropHunt.isPropHuntGM && !PlayerControl.LocalPlayer.Data.Role.IsImpostor && !PlayerControl.LocalPlayer.Data.IsDead; },
-                () =>
-                {
-                    propSpriteRenderer.sprite = PropHunt.currentTarget?.GetComponent<SpriteRenderer>()?.sprite;
-                    if (propSpriteRenderer.sprite == null) propSpriteRenderer.sprite = PropHunt.currentTarget?.transform.GetComponentInChildren<SpriteRenderer>()?.sprite;
-                    if (propSpriteRenderer.sprite != null)
-                        propSpriteHolder.transform.localScale *= 1 / propSpriteRenderer.bounds.size.magnitude;
-                    return PropHunt.currentTarget != null && PropHunt.currentTarget?.GetComponent<SpriteRenderer>()?.sprite != null;
-                },
-                () => { },
-                null,
-                CustomButton.ButtonPositions.lowerRowRight,
-                __instance,
-                KeyCode.F,
-                buttonText: "DISGUISE"
-                );
-            propSpriteHolder = new GameObject("TORPropButtonPropSpritePreview");
-            propSpriteRenderer = propSpriteHolder.AddComponent<SpriteRenderer>();
-            propSpriteHolder.transform.SetParent(propDisguiseButton.actionButtonGameObject.transform, false);
-            propSpriteHolder.transform.localPosition = new Vector3(0, 0, -2f);
-
-            propHuntUnstuckButton = new CustomButton(
-
-                () =>
-                {
-                    PlayerControl.LocalPlayer.Collider.enabled = false;
-                },
-                () => { return PropHunt.isPropHuntGM && !PlayerControl.LocalPlayer.Data.IsDead; },
-                () => { return true; },
-                () => { },
-                PropHunt.getUnstuckButtonSprite(),
-                CustomButton.ButtonPositions.upperRowLeft,
-                __instance,
-                KeyCode.LeftShift,
-                true,
-                1f,
-                () =>
-                {
-                    PlayerControl.LocalPlayer.Collider.enabled = true;
-                    propHuntUnstuckButton.Timer = propHuntUnstuckButton.MaxTimer;
-                },
-                buttonText: "UNSTUCK"
-                );
-
-            propHuntRevealButton = new CustomButton(
-                () =>
-                {
-                    // select a random crewplayer to reveal.
-                    var candidates = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.Role.IsImpostor && !x.Data.IsDead && !PropHunt.isCurrentlyRevealed.ContainsKey(x.PlayerId)).ToList();
-                    var rng = new System.Random();
-                    PlayerControl selectedPlayer = candidates[rng.Next(candidates.Count)];
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealed, Hazel.SendOption.Reliable, -1);
-                    writer.Write(selectedPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.propHuntSetRevealed(selectedPlayer.PlayerId);
-
-                },
-                () => { return PropHunt.isPropHuntGM && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Data.Role.IsImpostor; },
-                () => { return PropHunt.timer - PropHunt.revealPunish > 0; },
-                () => { },
-                PropHunt.getRevealButtonSprite(),
-                CustomButton.ButtonPositions.upperRowFarLeft,
-                __instance,
-                KeyCode.R,
-                true,
-                5f,
-                () =>
-                {
-                    propHuntRevealButton.Timer = propHuntRevealButton.MaxTimer;
-                }
-                );
-
-            propHuntInvisButton = new CustomButton(
-                () =>
-                {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PropHuntSetInvis, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.propHuntSetInvis(PlayerControl.LocalPlayer.PlayerId);
-                },
-                () => { return PropHunt.isPropHuntGM && !PlayerControl.LocalPlayer.Data.IsDead && !PlayerControl.LocalPlayer.Data.Role.IsImpostor && PropHunt.enableInvis; },
-                () => { return PropHunt.currentObject.ContainsKey(PlayerControl.LocalPlayer.PlayerId); },
-                () => { },
-                PropHunt.getInvisButtonSprite(),
-                CustomButton.ButtonPositions.upperRowFarLeft,
-                __instance,
-                KeyCode.I,
-                true,
-                5f,
-                () =>
-                {
-                    propHuntInvisButton.Timer = propHuntInvisButton.MaxTimer;
-                },
-                buttonText: "INVIS"
-                );
-
-            propHuntSpeedboostButton = new CustomButton(
-                () =>
-                {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PropHuntSetSpeedboost, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.propHuntSetSpeedboost(PlayerControl.LocalPlayer.PlayerId);
-                },
-                () => { return PropHunt.isPropHuntGM && !PlayerControl.LocalPlayer.Data.IsDead && !PlayerControl.LocalPlayer.Data.Role.IsImpostor && PropHunt.enableSpeedboost; },
-                () => { return true; },
-                () => { },
-                PropHunt.getSpeedboostButtonSprite(),
-                CustomButton.ButtonPositions.lowerRowCenter,
-                __instance,
-                KeyCode.G,
-                true,
-                5f,
-                () =>
-                {
-                    propHuntSpeedboostButton.Timer = propHuntSpeedboostButton.MaxTimer;
-                },
-                buttonText: "BOOST"
-                );
-
-            propHuntAdminButton = new CustomButton(
-               () =>
-               {
-                   if (!MapBehaviour.Instance || !MapBehaviour.Instance.isActiveAndEnabled)
-                   {
-                       HudManager __instance = FastDestroyableSingleton<HudManager>.Instance;
-                       __instance.InitMap();
-                       MapBehaviour.Instance.ShowCountOverlay(allowedToMove: true, showLivePlayerPosition: true, includeDeadBodies: false);
-                   }
-
-                   PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
-               },
-               () => { return PropHunt.isPropHuntGM && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Data.Role.IsImpostor; },
-               () =>
-               {
-                   propHuntAdminButton.PositionOffset = PlayerControl.LocalPlayer.inVent ? CustomButton.ButtonPositions.lowerRowRight : CustomButton.ButtonPositions.upperRowCenter;
-                   return !PlayerControl.LocalPlayer.inVent;
-               },
-               () =>
-               {
-                   propHuntAdminButton.Timer = hunterAdminTableButton.MaxTimer;
-                   propHuntAdminButton.isEffectActive = false;
-                   propHuntAdminButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-               },
-               Hacker.getAdminSprite(),
-               CustomButton.ButtonPositions.upperRowCenter,
-               __instance,
-               KeyCode.G,
-               true,
-               PropHunt.adminDuration,
-               () =>
-               {
-                   propHuntAdminButton.Timer = propHuntAdminButton.MaxTimer;
-                   if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
-               },
-               false,
-               "ADMIN"
-            );
-            propHuntFindButton = new CustomButton(
-                () =>
-                {
-                },
-                () => { return PropHunt.isPropHuntGM && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Data.Role.IsImpostor; },
-                () => { return true; },
-                () => { },
-                PropHunt.getFindButtonSprite(),
-                CustomButton.ButtonPositions.lowerRowCenter,
-                __instance,
-                KeyCode.F,
-                true,
-                5f,
-                () =>
-                {
-                    propHuntFindButton.Timer = propHuntFindButton.MaxTimer;
-                    propHuntFindButton.isEffectActive = false;
-                },
-                buttonText: "FIND"
-                );
 
             eventKickButton = new CustomButton(
                 () =>

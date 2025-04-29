@@ -243,9 +243,13 @@ namespace RebuildUs
             if (infos.Count == count)
             {
                 if (p.Data.Role.IsImpostor)
-                    infos.Add(TORMapOptions.gameMode == CustomGamemodes.HideNSeek || TORMapOptions.gameMode == CustomGamemodes.PropHunt ? RoleInfo.hunter : RoleInfo.impostor);
+                {
+                    infos.Add(impostor);
+                }
                 else
-                    infos.Add(TORMapOptions.gameMode == CustomGamemodes.HideNSeek ? RoleInfo.hunted : TORMapOptions.gameMode == CustomGamemodes.PropHunt ? RoleInfo.prop : RoleInfo.crewmate);
+                {
+                    infos.Add(crewmate);
+                }
             }
 
             return infos;
@@ -257,15 +261,6 @@ namespace RebuildUs
             roleName = String.Join(" ", getRoleInfoForPlayer(p, showModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray());
             if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && PlayerControl.LocalPlayer != Lawyer.target)
                 roleName += (useColors ? Helpers.cs(Pursuer.color, " §") : " §");
-            if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId))
-            {
-                int remainingShots = HandleGuesser.remainingShots(p.PlayerId);
-                var (playerCompleted, playerTotal) = TasksHandler.taskInfo(p.Data);
-                if (!Helpers.isEvil(p) && playerCompleted < HandleGuesser.tasksToUnlock || remainingShots == 0)
-                    roleName += Helpers.cs(Color.gray, " (Guesser)");
-                else
-                    roleName += Helpers.cs(Color.white, " (Guesser)");
-            }
 
             if (!suppressGhostInfo && p != null)
             {

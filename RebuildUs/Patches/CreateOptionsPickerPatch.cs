@@ -24,21 +24,6 @@ namespace RebuildUs.Patches
 
             __instance.SetGameMode(GameModes.Normal);
             CustomGamemodes gm = (CustomGamemodes)((int)mode - 2);
-            if (gm == CustomGamemodes.Guesser)
-            {
-                __instance.GameModeText.text = "TOR Guesser";
-                TORMapOptions.gameMode = CustomGamemodes.Guesser;
-            }
-            else if (gm == CustomGamemodes.HideNSeek)
-            {
-                __instance.GameModeText.text = "TOR Hide N Seek";
-                TORMapOptions.gameMode = CustomGamemodes.HideNSeek;
-            }
-            else if (gm == CustomGamemodes.PropHunt)
-            {
-                __instance.GameModeText.text = "TOR Prop Hunt";
-                TORMapOptions.gameMode = CustomGamemodes.PropHunt;
-            }
             return false;
         }
 
@@ -46,18 +31,6 @@ namespace RebuildUs.Patches
         [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.Refresh))]
         public static void Postfix(CreateOptionsPicker __instance)
         {
-            if (TORMapOptions.gameMode == CustomGamemodes.Guesser)
-            {
-                __instance.GameModeText.text = "TOR Guesser";
-            }
-            else if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
-            {
-                __instance.GameModeText.text = "TOR Hide N Seek";
-            }
-            else if (TORMapOptions.gameMode == CustomGamemodes.PropHunt)
-            {
-                __instance.GameModeText.text = "TOR Prop Hunt";
-            }
         }
     }
 
@@ -93,7 +66,7 @@ namespace RebuildUs.Patches
                         __instance.ChooseOption(entry);
                     });
 
-                    bool isCurrentMode = i <= 2 && TORMapOptions.gameMode == CustomGamemodes.Classic ? (long)entry == (long)((ulong)gameMode) : (i == 3 && TORMapOptions.gameMode == CustomGamemodes.Guesser || i == 4 && TORMapOptions.gameMode == CustomGamemodes.HideNSeek || i == 5 && TORMapOptions.gameMode == CustomGamemodes.PropHunt);
+                    bool isCurrentMode = i <= 2 && TORMapOptions.gameMode == CustomGamemodes.Classic && (long)entry == (long)(ulong)gameMode;
                     chatLanguageButton.SetSelected(isCurrentMode);
                     __instance.controllerSelectable.Add(chatLanguageButton.Button);
                     if (isCurrentMode)

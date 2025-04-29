@@ -52,18 +52,6 @@ namespace RebuildUs.Modules
                     {
                         string gm = text.Substring(4).ToLower();
                         CustomGamemodes gameMode = CustomGamemodes.Classic;
-                        if (gm.StartsWith("prop") || gm.StartsWith("ph"))
-                        {
-                            gameMode = CustomGamemodes.PropHunt;
-                        }
-                        else if (gm.StartsWith("guess") || gm.StartsWith("gm"))
-                        {
-                            gameMode = CustomGamemodes.Guesser;
-                        }
-                        else if (gm.StartsWith("hide") || gm.StartsWith("hn"))
-                        {
-                            gameMode = CustomGamemodes.HideNSeek;
-                        }
                         // else its classic!
 
                         if (AmongUsClient.Instance.AmHost)

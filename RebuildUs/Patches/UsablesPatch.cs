@@ -197,11 +197,6 @@ namespace RebuildUs.Patches
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (PropHunt.isPropHuntGM)
-            {
-                KillAnimationCoPerformKillPatch.hideNextAnimation = true;  // dont jump out of bounds!
-                return false;
-            }
             if (__instance.isActiveAndEnabled && __instance.currentTarget && !__instance.isCoolingDown && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.CanMove)
             {
                 // Deputy handcuff update.
@@ -889,9 +884,6 @@ namespace RebuildUs.Patches
     {
         static bool Prefix(MapBehaviour __instance)
         {
-            if (HideNSeek.isHideNSeekGM)
-                return HideNSeek.canSabotage;
-            if (PropHunt.isPropHuntGM) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead && CustomOptionHolder.deadImpsBlockSabotage.getBool())
             {
                 __instance.ShowNormalMap();

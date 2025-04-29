@@ -1089,89 +1089,12 @@ namespace RebuildUs.Patches
             }
         }
 
-        static void hunterUpdate()
-        {
-            if (!HideNSeek.isHideNSeekGM) return;
-            int minutes = (int)HideNSeek.timer / 60;
-            int seconds = (int)HideNSeek.timer % 60;
-            string suffix = $" {minutes:00}:{seconds:00}";
-
-            if (HideNSeek.timerText == null)
-            {
-                RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
-                if (roomTracker != null)
-                {
-                    GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
-
-                    gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
-                    UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
-                    HideNSeek.timerText = gameObject.GetComponent<TMPro.TMP_Text>();
-
-                    // Use local position to place it in the player's view instead of the world location
-                    gameObject.transform.localPosition = new Vector3(0, -1.8f, gameObject.transform.localPosition.z);
-                    if (AmongUs.Data.DataManager.Settings.Gameplay.StreamerMode) gameObject.transform.localPosition = new Vector3(0, 2f, gameObject.transform.localPosition.z);
-                }
-            }
-            else
-            {
-                if (HideNSeek.isWaitingTimer)
-                {
-                    HideNSeek.timerText.text = "<color=#0000cc>" + suffix + "</color>";
-                    HideNSeek.timerText.color = Color.blue;
-                }
-                else
-                {
-                    HideNSeek.timerText.text = "<color=#FF0000FF>" + suffix + "</color>";
-                    HideNSeek.timerText.color = Color.red;
-                }
-            }
-            if (HideNSeek.isHunted() && !Hunted.taskPunish && !HideNSeek.isWaitingTimer)
-            {
-                var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
-                int numberOfTasks = playerTotal - playerCompleted;
-                if (numberOfTasks == 0)
-                {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareTimer, Hazel.SendOption.Reliable, -1);
-                    writer.Write(HideNSeek.taskPunish);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.shareTimer(HideNSeek.taskPunish);
-
-                    Hunted.taskPunish = true;
-                }
-            }
-
-            if (!HideNSeek.isHunter()) return;
-
-            byte playerId = PlayerControl.LocalPlayer.PlayerId;
-            foreach (Arrow arrow in Hunter.localArrows) arrow.arrow.SetActive(false);
-            if (Hunter.arrowActive)
-            {
-                int arrowIndex = 0;
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-                {
-                    if (!p.Data.IsDead && !p.Data.Role.IsImpostor)
-                    {
-                        if (arrowIndex >= Hunter.localArrows.Count)
-                        {
-                            Hunter.localArrows.Add(new Arrow(Color.blue));
-                        }
-                        if (arrowIndex < Hunter.localArrows.Count && Hunter.localArrows[arrowIndex] != null)
-                        {
-                            Hunter.localArrows[arrowIndex].arrow.SetActive(true);
-                            Hunter.localArrows[arrowIndex].Update(p.transform.position, Color.blue);
-                        }
-                        arrowIndex++;
-                    }
-                }
-            }
-        }
-
         public static void Postfix(PlayerControl __instance)
         {
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started || GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return;
 
             // Mini and Morphling shrink
-            if (!PropHunt.isPropHuntGM) playerSizeUpdate(__instance);
+            playerSizeUpdate(__instance);
 
             // set position of colorblind text
             foreach (var pc in PlayerControl.AllPlayerControls)
@@ -1279,10 +1202,6 @@ namespace RebuildUs.Patches
                 // Chameleon (invis stuff, timers)
                 Chameleon.update();
                 Bomb.update();
-
-                // -- GAME MODE --
-                hunterUpdate();
-                PropHunt.update();
             }
         }
     }
@@ -1308,7 +1227,6 @@ namespace RebuildUs.Patches
     {
         public static bool Prefix(PlayerControl __instance)
         {
-            if (HideNSeek.isHideNSeekGM || PropHunt.isPropHuntGM) return false;
             Helpers.handleVampireBiteOnBodyReport();
             return true;
         }
@@ -1520,26 +1438,6 @@ namespace RebuildUs.Patches
                     else if (RoleInfo.getRoleInfoForPlayer(target, false).FirstOrDefault().isNeutral) color = Color.blue;
                 }
                 Helpers.showFlash(color, 1.5f);
-            }
-
-            // HideNSeek
-            if (HideNSeek.isHideNSeekGM)
-            {
-                int visibleCounter = 0;
-                Vector3 bottomLeft = IntroCutsceneOnDestroyPatch.bottomLeft + new Vector3(-0.25f, -0.25f, 0);
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-                {
-                    if (!TORMapOptions.playerIcons.ContainsKey(p.PlayerId) || p.Data.Role.IsImpostor) continue;
-                    if (p.Data.IsDead || p.Data.Disconnected)
-                    {
-                        TORMapOptions.playerIcons[p.PlayerId].gameObject.SetActive(false);
-                    }
-                    else
-                    {
-                        TORMapOptions.playerIcons[p.PlayerId].transform.localPosition = bottomLeft + Vector3.right * visibleCounter * 0.35f;
-                        visibleCounter++;
-                    }
-                }
             }
 
             // Snitch

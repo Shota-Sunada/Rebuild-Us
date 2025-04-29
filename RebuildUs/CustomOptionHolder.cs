@@ -22,13 +22,6 @@ namespace RebuildUs
         public static CustomOption modifiersCountMin;
         public static CustomOption modifiersCountMax;
 
-        public static CustomOption isDraftMode;
-        public static CustomOption draftModeAmountOfChoices;
-        public static CustomOption draftModeTimeToChoose;
-        public static CustomOption draftModeShowRoles;
-        public static CustomOption draftModeHideImpRoles;
-        public static CustomOption draftModeHideNeutralRoles;
-
         public static CustomOption anyPlayerCanStopStart;
         public static CustomOption enableEventMode;
         public static CustomOption eventReallyNoMini;
@@ -347,79 +340,6 @@ namespace RebuildUs
         public static CustomOption dynamicMapEnableSubmerged;
         public static CustomOption dynamicMapSeparateSettings;
 
-        //Guesser Gamemode
-        public static CustomOption guesserGamemodeCrewNumber;
-        public static CustomOption guesserGamemodeNeutralNumber;
-        public static CustomOption guesserGamemodeImpNumber;
-        public static CustomOption guesserForceJackalGuesser;
-        public static CustomOption guesserForceThiefGuesser;
-        public static CustomOption guesserGamemodeHaveModifier;
-        public static CustomOption guesserGamemodeNumberOfShots;
-        public static CustomOption guesserGamemodeHasMultipleShotsPerMeeting;
-        public static CustomOption guesserGamemodeKillsThroughShield;
-        public static CustomOption guesserGamemodeEvilCanKillSpy;
-        public static CustomOption guesserGamemodeCantGuessSnitchIfTaksDone;
-        public static CustomOption guesserGamemodeCrewGuesserNumberOfTasks;
-        public static CustomOption guesserGamemodeSidekickIsAlwaysGuesser;
-
-        // Hide N Seek Gamemode
-        public static CustomOption hideNSeekHunterCount;
-        public static CustomOption hideNSeekKillCooldown;
-        public static CustomOption hideNSeekHunterVision;
-        public static CustomOption hideNSeekHuntedVision;
-        public static CustomOption hideNSeekTimer;
-        public static CustomOption hideNSeekCommonTasks;
-        public static CustomOption hideNSeekShortTasks;
-        public static CustomOption hideNSeekLongTasks;
-        public static CustomOption hideNSeekTaskWin;
-        public static CustomOption hideNSeekTaskPunish;
-        public static CustomOption hideNSeekCanSabotage;
-        public static CustomOption hideNSeekMap;
-        public static CustomOption hideNSeekHunterWaiting;
-
-        public static CustomOption hunterLightCooldown;
-        public static CustomOption hunterLightDuration;
-        public static CustomOption hunterLightVision;
-        public static CustomOption hunterLightPunish;
-        public static CustomOption hunterAdminCooldown;
-        public static CustomOption hunterAdminDuration;
-        public static CustomOption hunterAdminPunish;
-        public static CustomOption hunterArrowCooldown;
-        public static CustomOption hunterArrowDuration;
-        public static CustomOption hunterArrowPunish;
-
-        public static CustomOption huntedShieldCooldown;
-        public static CustomOption huntedShieldDuration;
-        public static CustomOption huntedShieldRewindTime;
-        public static CustomOption huntedShieldNumber;
-
-        // Prop Hunt Settings
-        public static CustomOption propHuntMap;
-        public static CustomOption propHuntTimer;
-        public static CustomOption propHuntNumberOfHunters;
-        public static CustomOption hunterInitialBlackoutTime;
-        public static CustomOption hunterMissCooldown;
-        public static CustomOption hunterHitCooldown;
-        public static CustomOption hunterMaxMissesBeforeDeath;
-        public static CustomOption propBecomesHunterWhenFound;
-        public static CustomOption propHunterVision;
-        public static CustomOption propVision;
-        public static CustomOption propHuntRevealCooldown;
-        public static CustomOption propHuntRevealDuration;
-        public static CustomOption propHuntRevealPunish;
-        public static CustomOption propHuntUnstuckCooldown;
-        public static CustomOption propHuntUnstuckDuration;
-        public static CustomOption propHuntInvisCooldown;
-        public static CustomOption propHuntInvisDuration;
-        public static CustomOption propHuntSpeedboostCooldown;
-        public static CustomOption propHuntSpeedboostDuration;
-        public static CustomOption propHuntSpeedboostSpeed;
-        public static CustomOption propHuntSpeedboostEnabled;
-        public static CustomOption propHuntInvisEnabled;
-        public static CustomOption propHuntAdminCooldown;
-        public static CustomOption propHuntFindCooldown;
-        public static CustomOption propHuntFindDuration;
-
         internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
 
         public static string cs(Color c, string s)
@@ -433,11 +353,6 @@ namespace RebuildUs
             return (byte)(f * 255);
         }
 
-        public static bool isMapSelectionOption(CustomOption option)
-        {
-            return option == CustomOptionHolder.propHuntMap && option == CustomOptionHolder.hideNSeekMap;
-        }
-
         public static void Load()
         {
 
@@ -448,13 +363,6 @@ namespace RebuildUs
 
 
             if (Utilities.EventUtility.canBeEnabled) enableEventMode = CustomOption.Create(10423, CustomOptionType.General, cs(Color.green, "Enable Special Mode"), true, null, true);
-
-            isDraftMode = CustomOption.Create(600, CustomOptionType.General, cs(Color.yellow, "Enable Role Draft"), false, null, true, null, "Role Draft");
-            draftModeAmountOfChoices = CustomOption.Create(601, CustomOptionType.General, cs(Color.yellow, "Max Amount Of Roles\nTo Choose From"), 5f, 2f, 15f, 1f, isDraftMode, false);
-            draftModeTimeToChoose = CustomOption.Create(602, CustomOptionType.General, cs(Color.yellow, "Time For Selection"), 5f, 3f, 20f, 1f, isDraftMode, false);
-            draftModeShowRoles = CustomOption.Create(603, CustomOptionType.General, cs(Color.yellow, "Show Picked Roles"), false, isDraftMode, false);
-            draftModeHideImpRoles = CustomOption.Create(604, CustomOptionType.General, cs(Color.yellow, "Hide Impostor Roles"), false, draftModeShowRoles, false);
-            draftModeHideNeutralRoles = CustomOption.Create(605, CustomOptionType.General, cs(Color.yellow, "Hide Neutral Roles"), false, draftModeShowRoles, false);
 
             // Using new id's for the options to not break compatibilty with older versions
             crewmateRolesCountMin = CustomOption.Create(300, CustomOptionType.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Minimum Crewmate Roles"), 15f, 0f, 15f, 1f, null, true, heading: "Min/Max Roles");
@@ -766,82 +674,6 @@ namespace RebuildUs
 
             modifierShifter = CustomOption.Create(1100, CustomOptionType.Modifier, cs(Color.yellow, "Shifter"), rates, null, true);
             modifierShifterShiftsMedicShield = CustomOption.Create(1102, CustomOptionType.Modifier, "Can Shift Medic Shield", false, modifierShifter);
-
-            // Guesser Gamemode (2000 - 2999)
-            guesserGamemodeCrewNumber = CustomOption.Create(2001, CustomOptionType.Guesser, cs(Guesser.color, "Number of Crew Guessers"), 15f, 0f, 15f, 1f, null, true, heading: "Amount of Guessers");
-            guesserGamemodeNeutralNumber = CustomOption.Create(2002, CustomOptionType.Guesser, cs(Guesser.color, "Number of Neutral Guessers"), 15f, 0f, 15f, 1f, null);
-            guesserGamemodeImpNumber = CustomOption.Create(2003, CustomOptionType.Guesser, cs(Guesser.color, "Number of Impostor Guessers"), 15f, 0f, 15f, 1f, null);
-            guesserForceJackalGuesser = CustomOption.Create(2007, CustomOptionType.Guesser, "Force Jackal Guesser", false, null, true, heading: "Force Guessers");
-            guesserGamemodeSidekickIsAlwaysGuesser = CustomOption.Create(2012, CustomOptionType.Guesser, "Sidekick Is Always Guesser", false, null);
-            guesserForceThiefGuesser = CustomOption.Create(2011, CustomOptionType.Guesser, "Force Thief Guesser", false, null);
-            guesserGamemodeHaveModifier = CustomOption.Create(2004, CustomOptionType.Guesser, "Guessers Can Have A Modifier", true, null, true, heading: "General Guesser Settings");
-            guesserGamemodeNumberOfShots = CustomOption.Create(2005, CustomOptionType.Guesser, "Guesser Number Of Shots", 3f, 1f, 15f, 1f, null);
-            guesserGamemodeHasMultipleShotsPerMeeting = CustomOption.Create(2006, CustomOptionType.Guesser, "Guesser Can Shoot Multiple Times Per Meeting", false, null);
-            guesserGamemodeCrewGuesserNumberOfTasks = CustomOption.Create(2013, CustomOptionType.Guesser, "Number Of Tasks Needed To Unlock Shooting\nFor Crew Guesser", 0f, 0f, 15f, 1f, null);
-            guesserGamemodeKillsThroughShield = CustomOption.Create(2008, CustomOptionType.Guesser, "Guesses Ignore The Medic Shield", true, null);
-            guesserGamemodeEvilCanKillSpy = CustomOption.Create(2009, CustomOptionType.Guesser, "Evil Guesser Can Guess The Spy", true, null);
-            guesserGamemodeCantGuessSnitchIfTaksDone = CustomOption.Create(2010, CustomOptionType.Guesser, "Guesser Can't Guess Snitch When Tasks Completed", true, null);
-
-            // Hide N Seek Gamemode (3000 - 3999)
-            hideNSeekMap = CustomOption.Create(3020, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Map"), new string[] { "The Skeld", "Mira", "Polus", "Airship", "Fungle", "Submerged", "LI Map" }, null, true, onChange: () => { int map = hideNSeekMap.selection; if (map >= 3) map++; GameOptionsManager.Instance.currentNormalGameOptions.MapId = (byte)map; });
-            hideNSeekHunterCount = CustomOption.Create(3000, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Number Of Hunters"), 1f, 1f, 3f, 1f);
-            hideNSeekKillCooldown = CustomOption.Create(3021, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Kill Cooldown"), 10f, 2.5f, 60f, 2.5f);
-            hideNSeekHunterVision = CustomOption.Create(3001, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Hunter Vision"), 0.5f, 0.25f, 2f, 0.25f);
-            hideNSeekHuntedVision = CustomOption.Create(3002, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Hunted Vision"), 2f, 0.25f, 5f, 0.25f);
-            hideNSeekCommonTasks = CustomOption.Create(3023, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Common Tasks"), 1f, 0f, 4f, 1f);
-            hideNSeekShortTasks = CustomOption.Create(3024, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Short Tasks"), 3f, 1f, 23f, 1f);
-            hideNSeekLongTasks = CustomOption.Create(3025, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Long Tasks"), 3f, 0f, 15f, 1f);
-            hideNSeekTimer = CustomOption.Create(3003, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Timer In Min"), 5f, 1f, 30f, 0.5f);
-            hideNSeekTaskWin = CustomOption.Create(3004, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Task Win Is Possible"), false);
-            hideNSeekTaskPunish = CustomOption.Create(3017, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Finish Tasks Punish In Sec"), 10f, 0f, 30f, 1f);
-            hideNSeekCanSabotage = CustomOption.Create(3019, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Enable Sabotages"), false);
-            hideNSeekHunterWaiting = CustomOption.Create(3022, CustomOptionType.HideNSeekMain, cs(Color.yellow, "Time The Hunter Needs To Wait"), 15f, 2.5f, 60f, 2.5f);
-
-            hunterLightCooldown = CustomOption.Create(3005, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Light Cooldown"), 30f, 5f, 60f, 1f, null, true, heading: "Hunter Lights Settings");
-            hunterLightDuration = CustomOption.Create(3006, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Light Duration"), 5f, 1f, 60f, 1f);
-            hunterLightVision = CustomOption.Create(3007, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Light Vision"), 3f, 1f, 5f, 0.25f);
-            hunterLightPunish = CustomOption.Create(3008, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Light Punish In Sec"), 5f, 0f, 30f, 1f);
-            hunterAdminCooldown = CustomOption.Create(3009, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Admin Cooldown"), 30f, 5f, 60f, 1f);
-            hunterAdminDuration = CustomOption.Create(3010, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Admin Duration"), 5f, 1f, 60f, 1f);
-            hunterAdminPunish = CustomOption.Create(3011, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Admin Punish In Sec"), 5f, 0f, 30f, 1f);
-            hunterArrowCooldown = CustomOption.Create(3012, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Arrow Cooldown"), 30f, 5f, 60f, 1f);
-            hunterArrowDuration = CustomOption.Create(3013, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Arrow Duration"), 5f, 0f, 60f, 1f);
-            hunterArrowPunish = CustomOption.Create(3014, CustomOptionType.HideNSeekRoles, cs(Color.red, "Hunter Arrow Punish In Sec"), 5f, 0f, 30f, 1f);
-
-            huntedShieldCooldown = CustomOption.Create(3015, CustomOptionType.HideNSeekRoles, cs(Color.gray, "Hunted Shield Cooldown"), 30f, 5f, 60f, 1f, null, true, heading: "Hunter Shields Settings");
-            huntedShieldDuration = CustomOption.Create(3016, CustomOptionType.HideNSeekRoles, cs(Color.gray, "Hunted Shield Duration"), 5f, 1f, 60f, 1f);
-            huntedShieldRewindTime = CustomOption.Create(3018, CustomOptionType.HideNSeekRoles, cs(Color.gray, "Hunted Rewind Time"), 3f, 1f, 10f, 1f);
-            huntedShieldNumber = CustomOption.Create(3026, CustomOptionType.HideNSeekRoles, cs(Color.gray, "Hunted Shield Number"), 3f, 1f, 15f, 1f);
-
-            // Prop Hunt General Options
-            propHuntMap = CustomOption.Create(4020, CustomOptionType.PropHunt, cs(Color.yellow, "Map"), new string[] { "The Skeld", "Mira", "Polus", "Airship", "Fungle", "Submerged", "LI Map" }, null, true, onChange: () => { int map = propHuntMap.selection; if (map >= 3) map++; GameOptionsManager.Instance.currentNormalGameOptions.MapId = (byte)map; });
-            propHuntTimer = CustomOption.Create(4021, CustomOptionType.PropHunt, cs(Color.yellow, "Timer In Min"), 5f, 1f, 30f, 0.5f, null, true, heading: "General PropHunt Settings");
-            propHuntUnstuckCooldown = CustomOption.Create(4011, CustomOptionType.PropHunt, cs(Color.yellow, "Unstuck Cooldown"), 30f, 2.5f, 60f, 2.5f);
-            propHuntUnstuckDuration = CustomOption.Create(4012, CustomOptionType.PropHunt, cs(Color.yellow, "Unstuck Duration"), 2f, 1f, 60f, 1f);
-            propHunterVision = CustomOption.Create(4006, CustomOptionType.PropHunt, cs(Color.yellow, "Hunter Vision"), 0.5f, 0.25f, 2f, 0.25f);
-            propVision = CustomOption.Create(4007, CustomOptionType.PropHunt, cs(Color.yellow, "Prop Vision"), 2f, 0.25f, 5f, 0.25f);
-            // Hunter Options
-            propHuntNumberOfHunters = CustomOption.Create(4000, CustomOptionType.PropHunt, cs(Color.red, "Number Of Hunters"), 1f, 1f, 5f, 1f, null, true, heading: "Hunter Settings");
-            hunterInitialBlackoutTime = CustomOption.Create(4001, CustomOptionType.PropHunt, cs(Color.red, "Hunter Initial Blackout Duration"), 10f, 5f, 20f, 1f);
-            hunterMissCooldown = CustomOption.Create(4004, CustomOptionType.PropHunt, cs(Color.red, "Kill Cooldown After Miss"), 10f, 2.5f, 60f, 2.5f);
-            hunterHitCooldown = CustomOption.Create(4005, CustomOptionType.PropHunt, cs(Color.red, "Kill Cooldown After Hit"), 10f, 2.5f, 60f, 2.5f);
-            propHuntRevealCooldown = CustomOption.Create(4008, CustomOptionType.PropHunt, cs(Color.red, "Reveal Prop Cooldown"), 30f, 10f, 90f, 2.5f);
-            propHuntRevealDuration = CustomOption.Create(4009, CustomOptionType.PropHunt, cs(Color.red, "Reveal Prop Duration"), 5f, 1f, 60f, 1f);
-            propHuntRevealPunish = CustomOption.Create(4010, CustomOptionType.PropHunt, cs(Color.red, "Reveal Time Punish"), 10f, 0f, 1800f, 5f);
-            propHuntAdminCooldown = CustomOption.Create(4022, CustomOptionType.PropHunt, cs(Color.red, "Hunter Admin Cooldown"), 30f, 2.5f, 1800f, 2.5f);
-            propHuntFindCooldown = CustomOption.Create(4023, CustomOptionType.PropHunt, cs(Color.red, "Find Cooldown"), 60f, 2.5f, 1800f, 2.5f);
-            propHuntFindDuration = CustomOption.Create(4024, CustomOptionType.PropHunt, cs(Color.red, "Find Duration"), 5f, 1f, 15f, 1f);
-            // Prop Options
-            propBecomesHunterWhenFound = CustomOption.Create(4003, CustomOptionType.PropHunt, cs(Palette.CrewmateBlue, "Props Become Hunters When Found"), false, null, true, heading: "Prop Settings");
-            propHuntInvisEnabled = CustomOption.Create(4013, CustomOptionType.PropHunt, cs(Palette.CrewmateBlue, "Invisibility Enabled"), true, null, true);
-            propHuntInvisCooldown = CustomOption.Create(4014, CustomOptionType.PropHunt, cs(Palette.CrewmateBlue, "Invisibility Cooldown"), 120f, 10f, 1800f, 2.5f, propHuntInvisEnabled);
-            propHuntInvisDuration = CustomOption.Create(4015, CustomOptionType.PropHunt, cs(Palette.CrewmateBlue, "Invisibility Duration"), 5f, 1f, 30f, 1f, propHuntInvisEnabled);
-            propHuntSpeedboostEnabled = CustomOption.Create(4016, CustomOptionType.PropHunt, cs(Palette.CrewmateBlue, "Speedboost Enabled"), true, null, true);
-            propHuntSpeedboostCooldown = CustomOption.Create(4017, CustomOptionType.PropHunt, cs(Palette.CrewmateBlue, "Speedboost Cooldown"), 60f, 2.5f, 1800f, 2.5f, propHuntSpeedboostEnabled);
-            propHuntSpeedboostDuration = CustomOption.Create(4018, CustomOptionType.PropHunt, cs(Palette.CrewmateBlue, "Speedboost Duration"), 5f, 1f, 15f, 1f, propHuntSpeedboostEnabled);
-            propHuntSpeedboostSpeed = CustomOption.Create(4019, CustomOptionType.PropHunt, cs(Palette.CrewmateBlue, "Speedboost Ratio"), 2f, 1.25f, 5f, 0.25f, propHuntSpeedboostEnabled);
-
-
 
             // Other options
             maxNumberOfMeetings = CustomOption.Create(3, CustomOptionType.General, "Number Of Meetings (excluding Mayor meeting)", 10, 0, 15, 1, null, true, heading: "Gameplay Settings");

@@ -7,8 +7,4 @@ public enum CustomOptionType
     Neutral,
     Crewmate,
     Modifier,
-    Guesser,
-    HideNSeekMain,
-    HideNSeekRoles,
-    PropHunt,
 }

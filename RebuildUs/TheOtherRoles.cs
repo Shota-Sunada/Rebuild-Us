@@ -78,8 +78,6 @@ namespace RebuildUs
 
             // Gamemodes
             HandleGuesser.clearAndReload();
-            HideNSeek.clearAndReload();
-            PropHunt.clearAndReload();
         }
 
         public static class Jester

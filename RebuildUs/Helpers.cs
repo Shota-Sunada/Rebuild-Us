@@ -518,7 +518,7 @@ namespace RebuildUs
             if (AmongUsClient.Instance.IsGameOver) return MurderAttemptResult.SuppressKill;
             if (killer == null || killer.Data == null || (killer.Data.IsDead && !ignoreIfKillerIsDead) || killer.Data.Disconnected) return MurderAttemptResult.SuppressKill; // Allow non Impostor kills compared to vanilla code
             if (target == null || target.Data == null || target.Data.IsDead || target.Data.Disconnected) return MurderAttemptResult.SuppressKill; // Allow killing players in vents compared to vanilla code
-            if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek || PropHunt.isPropHuntGM) return MurderAttemptResult.PerformKill;
+            if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return MurderAttemptResult.PerformKill;
 
             // Handle first kill attempt
             if (TORMapOptions.shieldFirstKill && TORMapOptions.firstKillPlayer == target) return MurderAttemptResult.SuppressKill;
@@ -577,16 +577,6 @@ namespace RebuildUs
                 return MurderAttemptResult.BlankKill;
             }
 
-            // Block hunted with time shield kill
-            else if (Hunted.timeshieldActive.Contains(target.PlayerId))
-            {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.HuntedRewindTime, Hazel.SendOption.Reliable, -1);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.huntedRewindTime(target.PlayerId);
-
-                return MurderAttemptResult.SuppressKill;
-            }
             if (TransportationToolPatches.isUsingTransportation(target) && !blockRewind && killer == Vampire.vampire)
             {
                 return MurderAttemptResult.DelayVampireKill;

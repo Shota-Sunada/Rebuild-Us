@@ -297,18 +297,8 @@ namespace RebuildUs.Patches
                             break;
                         }
                     }
-                    if (continueStart && (TORMapOptions.gameMode == CustomGamemodes.HideNSeek || TORMapOptions.gameMode == CustomGamemodes.PropHunt) && GameOptionsManager.Instance.CurrentGameOptions.MapId != 6)
-                    {
-                        byte mapId = 0;
-                        if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek) mapId = (byte)CustomOptionHolder.hideNSeekMap.getSelection();
-                        else if (TORMapOptions.gameMode == CustomGamemodes.PropHunt) mapId = (byte)CustomOptionHolder.propHuntMap.getSelection();
-                        if (mapId >= 3) mapId++;
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DynamicMapOption, Hazel.SendOption.Reliable, -1);
-                        writer.Write(mapId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.dynamicMapOption(mapId);
-                    }
-                    else if (CustomOptionHolder.dynamicMap.getBool() && continueStart)
+
+                    if (CustomOptionHolder.dynamicMap.getBool() && continueStart)
                     {
                         // 0 = Skeld
                         // 1 = Mira HQ

@@ -21,7 +21,6 @@ namespace RebuildUs.Patches
         {
             // Generate and initialize player icons
             int playerCounter = 0;
-            int hideNSeekCounter = 0;
             if (PlayerControl.LocalPlayer != null && FastDestroyableSingleton<HudManager>.Instance != null)
             {
                 float aspect = Camera.main.aspect;
@@ -51,33 +50,6 @@ namespace RebuildUs.Patches
                         player.setSemiTransparent(true);
                         player.gameObject.SetActive(true);
                     }
-                    else if (HideNSeek.isHideNSeekGM)
-                    {
-                        if (HideNSeek.isHunted() && p.Data.Role.IsImpostor)
-                        {
-                            player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0.4f, 0) + Vector3.right * playerCounter++ * 0.6f;
-                            player.transform.localScale = Vector3.one * 0.3f;
-                            player.cosmetics.nameText.text += $"{Helpers.cs(Color.red, " (Hunter)")}";
-                            player.gameObject.SetActive(true);
-                        }
-                        else if (!p.Data.Role.IsImpostor)
-                        {
-                            player.transform.localPosition = bottomLeft + new Vector3(-0.35f, -0.25f, 0) + Vector3.right * hideNSeekCounter++ * 0.35f;
-                            player.transform.localScale = Vector3.one * 0.2f;
-                            player.setSemiTransparent(true);
-                            player.gameObject.SetActive(true);
-                        }
-
-                    }
-                    else if (PropHunt.isPropHuntGM)
-                    {
-                        player.transform.localPosition = bottomLeft + new Vector3(-1.25f, -0.1f, 0) + Vector3.right * hideNSeekCounter++ * 0.4f;
-                        player.transform.localScale = Vector3.one * 0.24f;
-                        player.setSemiTransparent(false);
-                        player.cosmetics.nameText.transform.localPosition += Vector3.up * 0.2f * (hideNSeekCounter % 2 == 0 ? 1 : -1);
-                        player.SetFlipX(false);
-                        player.gameObject.SetActive(true);
-                    }
                     else
                     {   //  This can be done for all players not just for the bounty hunter as it was before. Allows the thief to have the correct position and scaling
                         player.transform.localPosition = bottomLeft;
@@ -102,7 +74,7 @@ namespace RebuildUs.Patches
             }
 
             // First kill
-            if (AmongUsClient.Instance.AmHost && TORMapOptions.shieldFirstKill && TORMapOptions.firstKillName != "" && !HideNSeek.isHideNSeekGM && !PropHunt.isPropHuntGM)
+            if (AmongUsClient.Instance.AmHost && TORMapOptions.shieldFirstKill && TORMapOptions.firstKillName != "")
             {
                 PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(TORMapOptions.firstKillName));
                 if (target != null)
@@ -116,56 +88,6 @@ namespace RebuildUs.Patches
             TORMapOptions.firstKillName = "";
 
             EventUtility.gameStartsUpdate();
-
-            if (HideNSeek.isHideNSeekGM)
-            {
-                foreach (PlayerControl player in HideNSeek.getHunters())
-                {
-                    player.moveable = false;
-                    player.NetTransform.Halt();
-                    HideNSeek.timer = HideNSeek.hunterWaitingTime;
-                    FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(HideNSeek.hunterWaitingTime, new Action<float>((p) =>
-                    {
-                        if (p == 1f)
-                        {
-                            player.moveable = true;
-                            HideNSeek.timer = CustomOptionHolder.hideNSeekTimer.getFloat() * 60;
-                            HideNSeek.isWaitingTimer = false;
-                        }
-                    })));
-                    player.MyPhysics.SetBodyType(PlayerBodyTypes.Seeker);
-                }
-
-                if (HideNSeek.polusVent == null && GameOptionsManager.Instance.currentNormalGameOptions.MapId == 2)
-                {
-                    var list = GameObject.FindObjectsOfType<Vent>().ToList();
-                    var adminVent = list.FirstOrDefault(x => x.gameObject.name == "AdminVent");
-                    var bathroomVent = list.FirstOrDefault(x => x.gameObject.name == "BathroomVent");
-                    HideNSeek.polusVent = UnityEngine.Object.Instantiate<Vent>(adminVent);
-                    HideNSeek.polusVent.gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
-                    HideNSeek.polusVent.transform.position = new Vector3(36.55068f, -21.5168f, -0.0215168f);
-                    HideNSeek.polusVent.Left = adminVent;
-                    HideNSeek.polusVent.Right = bathroomVent;
-                    HideNSeek.polusVent.Center = null;
-                    HideNSeek.polusVent.Id = MapUtilities.CachedShipStatus.AllVents.Select(x => x.Id).Max() + 1; // Make sure we have a unique id
-                    var allVentsList = MapUtilities.CachedShipStatus.AllVents.ToList();
-                    allVentsList.Add(HideNSeek.polusVent);
-                    MapUtilities.CachedShipStatus.AllVents = allVentsList.ToArray();
-                    HideNSeek.polusVent.gameObject.SetActive(true);
-                    HideNSeek.polusVent.name = "newVent_" + HideNSeek.polusVent.Id;
-
-                    adminVent.Center = HideNSeek.polusVent;
-                    bathroomVent.Center = HideNSeek.polusVent;
-                }
-
-                ShipStatusPatch.originalNumCrewVisionOption = GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
-                ShipStatusPatch.originalNumImpVisionOption = GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod;
-                ShipStatusPatch.originalNumKillCooldownOption = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
-
-                GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod = CustomOptionHolder.hideNSeekHunterVision.getFloat();
-                GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod = CustomOptionHolder.hideNSeekHuntedVision.getFloat();
-                GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown = CustomOptionHolder.hideNSeekKillCooldown.getFloat();
-            }
         }
     }
 
@@ -212,12 +134,9 @@ namespace RebuildUs.Patches
             var neutralColor = new Color32(76, 84, 78, 255);
             if (roleInfo == null || roleInfo == RoleInfo.crewmate)
             {
-                if (RoleDraft.isEnabled && CustomOptionHolder.neutralRolesCountMax.getSelection() > 0)
-                {
-                    __instance.TeamTitle.text = "<size=60%>Crewmate" + Helpers.cs(Color.white, " / ") + Helpers.cs(neutralColor, "Neutral") + "</size>";
-                }
                 return;
             }
+
             if (roleInfo.isNeutral)
             {
                 __instance.BackgroundBar.material.color = neutralColor;

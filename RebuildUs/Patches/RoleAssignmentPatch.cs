@@ -27,12 +27,7 @@ namespace RebuildUs.Patches
     {
         public static void Postfix(ref int __result)
         {
-            if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek || TORMapOptions.gameMode == CustomGamemodes.PropHunt)
-            {
-                int impCount = TORMapOptions.gameMode == CustomGamemodes.HideNSeek ? Mathf.RoundToInt(CustomOptionHolder.hideNSeekHunterCount.getFloat()) : CustomOptionHolder.propHuntNumberOfHunters.getQuantity();
-                __result = impCount; ; // Set Imp Num
-            }
-            else if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.Normal)
+            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.Normal)
             {  // Ignore Vanilla impostor limits in TOR Games.
                 __result = Mathf.Clamp(GameOptionsManager.Instance.CurrentGameOptions.NumImpostors, 1, 3);
             }
@@ -44,9 +39,6 @@ namespace RebuildUs.Patches
     {
         public static void Postfix(LegacyGameOptions __instance)
         {
-            if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek || GameOptionsManager.Instance.CurrentGameOptions.GameMode != GameModes.Normal) return;
-            if (TORMapOptions.gameMode == CustomGamemodes.PropHunt)
-                __instance.NumImpostors = CustomOptionHolder.propHuntNumberOfHunters.getQuantity();
             __instance.NumImpostors = GameOptionsManager.Instance.CurrentGameOptions.NumImpostors;
         }
     }
@@ -58,14 +50,12 @@ namespace RebuildUs.Patches
         private static int impValues;
         private static bool isEvilGuesser;
         private static List<Tuple<byte, byte>> playerRoleMap = new List<Tuple<byte, byte>>();
-        public static bool isGuesserGamemode { get { return TORMapOptions.gameMode == CustomGamemodes.Guesser; } }
         public static void Postfix()
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ResetVaribles, Hazel.SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.resetVariables();
-            if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek || TORMapOptions.gameMode == CustomGamemodes.PropHunt || GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek
-                || RoleDraft.isEnabled) return; // Don't assign Roles in Hide N Seek
+            if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return; // Don't assign Roles in Hide N Seek
             assignRoles();
         }
 
@@ -78,7 +68,6 @@ namespace RebuildUs.Patches
             assignDependentRoles(data); // Assign roles that may have a dependent role
             assignChanceRoles(data); // Assign roles that may or may not be in the game last
             assignRoleTargets(data); // Assign targets for Lawyer & Prosecutor
-            if (isGuesserGamemode) assignGuesserGamemode();
             assignModifiers(); // Assign modifier
             //setRolesAgain();
         }
@@ -200,18 +189,14 @@ namespace RebuildUs.Patches
 
         private static void selectFactionForFactionIndependentRoles(RoleAssignmentData data)
         {
-            if (!isGuesserGamemode)
+            // Assign Guesser (chance to be impostor based on setting)
+            isEvilGuesser = rnd.Next(1, 101) <= CustomOptionHolder.guesserIsImpGuesserRate.getSelection() * 10;
+            if ((CustomOptionHolder.guesserSpawnBothRate.getSelection() > 0 &&
+                CustomOptionHolder.guesserSpawnRate.getSelection() == 10) ||
+                CustomOptionHolder.guesserSpawnBothRate.getSelection() == 0)
             {
-                // Assign Guesser (chance to be impostor based on setting)
-                isEvilGuesser = rnd.Next(1, 101) <= CustomOptionHolder.guesserIsImpGuesserRate.getSelection() * 10;
-                if ((CustomOptionHolder.guesserSpawnBothRate.getSelection() > 0 &&
-                    CustomOptionHolder.guesserSpawnRate.getSelection() == 10) ||
-                    CustomOptionHolder.guesserSpawnBothRate.getSelection() == 0)
-                {
-                    if (isEvilGuesser) data.impSettings.Add((byte)RoleId.EvilGuesser, CustomOptionHolder.guesserSpawnRate.getSelection());
-                    else data.crewSettings.Add((byte)RoleId.NiceGuesser, CustomOptionHolder.guesserSpawnRate.getSelection());
-
-                }
+                if (isEvilGuesser) data.impSettings.Add((byte)RoleId.EvilGuesser, CustomOptionHolder.guesserSpawnRate.getSelection());
+                else data.crewSettings.Add((byte)RoleId.NiceGuesser, CustomOptionHolder.guesserSpawnRate.getSelection());
             }
 
             // Assign Sheriff
@@ -290,7 +275,6 @@ namespace RebuildUs.Patches
             bool sheriffFlag = CustomOptionHolder.deputySpawnRate.getSelection() > 0
                 && CustomOptionHolder.sheriffSpawnRate.getSelection() > 0;
 
-            if (isGuesserGamemode) guesserFlag = false;
             if (!guesserFlag && !sheriffFlag) return; // assignDependentRoles is not needed
 
             int crew = data.crewmates.Count < data.maxCrewmateRoles ? data.crewmates.Count : data.maxCrewmateRoles; // Max number of crew loops
@@ -324,20 +308,17 @@ namespace RebuildUs.Patches
                 data.crewmates.ToList().RemoveAll(x => x.PlayerId == sheriff);
                 data.maxCrewmateRoles--;
             }
-            if (!isGuesserGamemode)
-            {
-                if (!isEvilGuesser && isGuesser && Guesser.niceGuesser == null && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0 && guesserFlag)
-                { // Set Nice Guesser cause he won the lottery
-                    byte niceGuesser = setRoleToRandomPlayer((byte)RoleId.NiceGuesser, data.crewmates);
-                    data.crewmates.ToList().RemoveAll(x => x.PlayerId == niceGuesser);
-                    data.maxCrewmateRoles--;
-                }
-                else if (isEvilGuesser && isGuesser && Guesser.evilGuesser == null && data.impostors.Count > 0 && data.maxImpostorRoles > 0 && guesserFlag)
-                { // Set Evil Guesser cause he won the lottery
-                    byte evilGuesser = setRoleToRandomPlayer((byte)RoleId.EvilGuesser, data.impostors);
-                    data.impostors.ToList().RemoveAll(x => x.PlayerId == evilGuesser);
-                    data.maxImpostorRoles--;
-                }
+            if (!isEvilGuesser && isGuesser && Guesser.niceGuesser == null && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0 && guesserFlag)
+            { // Set Nice Guesser cause he won the lottery
+                byte niceGuesser = setRoleToRandomPlayer((byte)RoleId.NiceGuesser, data.crewmates);
+                data.crewmates.ToList().RemoveAll(x => x.PlayerId == niceGuesser);
+                data.maxCrewmateRoles--;
+            }
+            else if (isEvilGuesser && isGuesser && Guesser.evilGuesser == null && data.impostors.Count > 0 && data.maxImpostorRoles > 0 && guesserFlag)
+            { // Set Evil Guesser cause he won the lottery
+                byte evilGuesser = setRoleToRandomPlayer((byte)RoleId.EvilGuesser, data.impostors);
+                data.impostors.ToList().RemoveAll(x => x.PlayerId == evilGuesser);
+                data.maxImpostorRoles--;
             }
 
             // --- Assign Dependent Roles if main role exists ---
@@ -355,30 +336,27 @@ namespace RebuildUs.Patches
 
             if (!data.crewSettings.ContainsKey((byte)RoleId.Sheriff)) data.crewSettings.Add((byte)RoleId.Sheriff, 0);
 
-            if (!isGuesserGamemode)
-            {
-                if (!isEvilGuesser && Guesser.niceGuesser != null)
-                { // Other Guesser (evil)
-                    if (CustomOptionHolder.guesserSpawnBothRate.getSelection() == 10 && data.impostors.Count > 0 && data.maxImpostorRoles > 0)
-                    { // Force other guesser (evil)
-                        byte bothGuesser = setRoleToRandomPlayer((byte)RoleId.EvilGuesser, data.impostors);
-                        data.impostors.ToList().RemoveAll(x => x.PlayerId == bothGuesser);
-                        data.maxImpostorRoles--;
-                    }
-                    else if (CustomOptionHolder.guesserSpawnBothRate.getSelection() < 10) // Dont force, add Guesser (evil) to the ticket system
-                        data.impSettings.Add((byte)RoleId.EvilGuesser, CustomOptionHolder.guesserSpawnBothRate.getSelection());
+            if (!isEvilGuesser && Guesser.niceGuesser != null)
+            { // Other Guesser (evil)
+                if (CustomOptionHolder.guesserSpawnBothRate.getSelection() == 10 && data.impostors.Count > 0 && data.maxImpostorRoles > 0)
+                { // Force other guesser (evil)
+                    byte bothGuesser = setRoleToRandomPlayer((byte)RoleId.EvilGuesser, data.impostors);
+                    data.impostors.ToList().RemoveAll(x => x.PlayerId == bothGuesser);
+                    data.maxImpostorRoles--;
                 }
-                else if (isEvilGuesser && Guesser.evilGuesser != null)
-                { // ELSE other Guesser (nice)
-                    if (CustomOptionHolder.guesserSpawnBothRate.getSelection() == 10 && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0)
-                    { // Force other guesser (nice)
-                        byte bothGuesser = setRoleToRandomPlayer((byte)RoleId.NiceGuesser, data.crewmates);
-                        data.crewmates.ToList().RemoveAll(x => x.PlayerId == bothGuesser);
-                        data.maxCrewmateRoles--;
-                    }
-                    else if (CustomOptionHolder.guesserSpawnBothRate.getSelection() < 10) // Dont force, add Guesser (nice) to the ticket system
-                        data.crewSettings.Add((byte)RoleId.NiceGuesser, CustomOptionHolder.guesserSpawnBothRate.getSelection());
+                else if (CustomOptionHolder.guesserSpawnBothRate.getSelection() < 10) // Dont force, add Guesser (evil) to the ticket system
+                    data.impSettings.Add((byte)RoleId.EvilGuesser, CustomOptionHolder.guesserSpawnBothRate.getSelection());
+            }
+            else if (isEvilGuesser && Guesser.evilGuesser != null)
+            { // ELSE other Guesser (nice)
+                if (CustomOptionHolder.guesserSpawnBothRate.getSelection() == 10 && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0)
+                { // Force other guesser (nice)
+                    byte bothGuesser = setRoleToRandomPlayer((byte)RoleId.NiceGuesser, data.crewmates);
+                    data.crewmates.ToList().RemoveAll(x => x.PlayerId == bothGuesser);
+                    data.maxCrewmateRoles--;
                 }
+                else if (CustomOptionHolder.guesserSpawnBothRate.getSelection() < 10) // Dont force, add Guesser (nice) to the ticket system
+                    data.crewSettings.Add((byte)RoleId.NiceGuesser, CustomOptionHolder.guesserSpawnBothRate.getSelection());
             }
         }
         private static void assignChanceRoles(RoleAssignmentData data)
@@ -480,8 +458,6 @@ namespace RebuildUs.Patches
             if (modifierMin > modifierMax) modifierMin = modifierMax;
             int modifierCountSettings = rnd.Next(modifierMin, modifierMax + 1);
             List<PlayerControl> players = PlayerControl.AllPlayerControls.ToArray().ToList();
-            if (isGuesserGamemode && !CustomOptionHolder.guesserGamemodeHaveModifier.getBool())
-                players.RemoveAll(x => GuesserGM.isGuesser(x.PlayerId));
             int modifierCount = Mathf.Min(players.Count, modifierCountSettings);
 
             if (modifierCount == 0) return;
@@ -548,46 +524,6 @@ namespace RebuildUs.Patches
             }
 
             assignModifiersToPlayers(chanceModifierToAssign, players, modifierCount); // Assign chance modifier
-        }
-
-        public static void assignGuesserGamemode()
-        {
-            List<PlayerControl> impPlayer = PlayerControl.AllPlayerControls.ToArray().ToList().OrderBy(x => Guid.NewGuid()).ToList();
-            List<PlayerControl> neutralPlayer = PlayerControl.AllPlayerControls.ToArray().ToList().OrderBy(x => Guid.NewGuid()).ToList();
-            List<PlayerControl> crewPlayer = PlayerControl.AllPlayerControls.ToArray().ToList().OrderBy(x => Guid.NewGuid()).ToList();
-            impPlayer.RemoveAll(x => !x.Data.Role.IsImpostor);
-            neutralPlayer.RemoveAll(x => !Helpers.isNeutral(x));
-            crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || Helpers.isNeutral(x));
-            assignGuesserGamemodeToPlayers(crewPlayer, Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeCrewNumber.getFloat()));
-            assignGuesserGamemodeToPlayers(neutralPlayer, Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeNeutralNumber.getFloat()), CustomOptionHolder.guesserForceJackalGuesser.getBool(), CustomOptionHolder.guesserForceThiefGuesser.getBool());
-            assignGuesserGamemodeToPlayers(impPlayer, Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeImpNumber.getFloat()));
-        }
-
-        private static void assignGuesserGamemodeToPlayers(List<PlayerControl> playerList, int count, bool forceJackal = false, bool forceThief = false)
-        {
-            for (int i = 0; i < count && playerList.Count > 0; i++)
-            {
-                var index = rnd.Next(0, playerList.Count);
-                if (forceThief && !forceJackal)
-                {
-                    if (Thief.thief != null)
-                        index = playerList.FindIndex(x => x == Thief.thief);
-                    forceThief = false;
-                }
-                if (forceJackal)
-                {
-                    if (Jackal.jackal != null)
-                        index = playerList.FindIndex(x => x == Jackal.jackal);
-                    forceJackal = false;
-                }
-                byte playerId = playerList[index].PlayerId;
-                playerList.RemoveAt(index);
-
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGuesserGm, Hazel.SendOption.Reliable, -1);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.setGuesserGm(playerId);
-            }
         }
 
         private static byte setRoleToRandomPlayer(byte roleId, List<PlayerControl> playerList, bool removePlayer = true)
