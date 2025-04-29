@@ -1,6 +1,6 @@
 namespace RebuildUs.Modules;
 
-internal enum CustomOptionType
+public enum CustomOptionType
 {
     General,
     Crewmate,
@@ -9,7 +9,7 @@ internal enum CustomOptionType
     Modifier,
 }
 
-internal enum CustomGameMode
+public enum CustomGameMode
 {
     Classic,
 }

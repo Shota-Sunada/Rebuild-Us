@@ -2,22 +2,22 @@ using RebuildUs.Modules;
 
 namespace RebuildUs;
 
-internal static class MapOptions
+public static class MapOptions
 {
-    internal static CustomGameMode GameMode = CustomGameMode.Classic;
+    public static CustomGameMode GameMode = CustomGameMode.Classic;
 
     // OPTIONS
-    internal static int MaxNumberOfMeetings = 10;
-    internal static bool BlockSkippingInMeetings = false;
-    internal static bool NoVoteIsSelfVote = false;
-    internal static bool HidePlayerNames = false;
-    internal static bool ShowGameOverview = true;
-    internal static bool AllowParallelMedBayScans = false;
+    public static int MaxNumberOfMeetings = 10;
+    public static bool BlockSkippingInMeetings = false;
+    public static bool NoVoteIsSelfVote = false;
+    public static bool HidePlayerNames = false;
+    public static bool ShowGameResult = true;
+    public static bool AllowParallelMedBayScans = false;
 
     // UPDATING VALUES
-    internal static int CurrentMeetingCount = 0;
+    public static int CurrentMeetingCount = 0;
 
-    internal static void ClearAndReload()
+    public static void ClearAndReload()
     {
         CurrentMeetingCount = 0;
 

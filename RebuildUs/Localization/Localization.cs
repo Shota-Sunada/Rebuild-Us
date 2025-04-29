@@ -5,11 +5,11 @@ using RebuildUs.Utilities;
 
 namespace RebuildUs.Localization;
 
-internal static class Tr
+public static class Tr
 {
     private static readonly Dictionary<string, Dictionary<SupportedLangs, string>> Translations = [];
 
-    internal static void Initialize()
+    public static void Initialize()
     {
         for (var i = SupportedLangs.English; i <= SupportedLangs.Irish; i++)
         {
@@ -29,7 +29,7 @@ internal static class Tr
         }
     }
 
-    internal static string Get(string key, params string[] args)
+    public static string Get(string key, params string[] args)
     {
         var lang = TranslationController.InstanceExists ? FastDestroyableSingleton<TranslationController>.Instance.currentLanguage.languageID : SupportedLangs.English;
 

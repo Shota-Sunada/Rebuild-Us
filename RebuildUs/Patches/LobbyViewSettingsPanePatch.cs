@@ -4,11 +4,11 @@ using RebuildUs.Modules;
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-internal static class LobbyViewSettingsPanePatch
+public static class LobbyViewSettingsPanePatch
 {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.Update))]
-    internal static void UpdatePostfix(LobbyViewSettingsPane __instance)
+    public static void UpdatePostfix(LobbyViewSettingsPane __instance)
     {
         if (CustomOption.CurrentLVSButtons.Count == 0)
         {
@@ -19,7 +19,7 @@ internal static class LobbyViewSettingsPanePatch
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.SetTab))]
-    internal static bool SetTabPrefix(LobbyViewSettingsPane __instance)
+    public static bool SetTabPrefix(LobbyViewSettingsPane __instance)
     {
         if ((int)__instance.currentTab < 15)
         {
@@ -32,14 +32,14 @@ internal static class LobbyViewSettingsPanePatch
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.ChangeTab))]
-    internal static void ChangeTabPostfix(LobbyViewSettingsPane __instance, StringNames category)
+    public static void ChangeTabPostfix(LobbyViewSettingsPane __instance, StringNames category)
     {
         CustomOption.ChangeTab(__instance, category);
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.Awake))]
-    internal static void AwakePostfix(LobbyViewSettingsPane __instance)
+    public static void AwakePostfix(LobbyViewSettingsPane __instance)
     {
         CustomOption.CurrentLVSButtons.ForEach(x => x?.Destroy());
         CustomOption.CurrentLVSButtons.Clear();

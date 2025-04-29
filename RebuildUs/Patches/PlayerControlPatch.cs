@@ -1,18 +1,18 @@
 using System;
 using HarmonyLib;
-using RebuildUs.Roles.RoleBase;
+using RebuildUs.Roles;
 
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-internal static class PlayerControlPatch
+public static class PlayerControlPatch
 {
     private static bool resetToCrewmate = false;
     private static bool resetToDead = false;
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSyncSettings))]
-    internal static void RpcSyncSettingsPostfix()
+    public static void RpcSyncSettingsPostfix()
     {
         // CustomOption.ShareOptionSelections();
         // CustomOption.SaveVanillaOptions();
@@ -20,7 +20,7 @@ internal static class PlayerControlPatch
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
-    internal static void MurderPlayerPrefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
+    public static void MurderPlayerPrefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
     {
         // Allow everyone to murder players
         resetToCrewmate = !__instance.Data.Role.IsImpostor;
@@ -31,7 +31,7 @@ internal static class PlayerControlPatch
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
-    internal static void MurderPlayerPostfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
+    public static void MurderPlayerPostfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
     {
         // Collect dead player info
         var deadPlayer = new DeadPlayer(target, DateTime.UtcNow, CustomDeathReason.Kill, __instance);
@@ -49,13 +49,13 @@ internal static class PlayerControlPatch
 
         // 追記するならここ
 
-        ModRole.OnKill(__instance, target);
-        ModRole.OnDeath(target, __instance);
+        RoleHelpers.OnKill(__instance, target);
+        RoleHelpers.OnDeath(target, __instance);
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Exiled))]
-    internal static void ExiledPostfix(PlayerControl __instance)
+    public static void ExiledPostfix(PlayerControl __instance)
     {
         // Collect dead player info
         var deadPlayer = new DeadPlayer(__instance, DateTime.UtcNow, CustomDeathReason.Exile, null);
@@ -67,7 +67,7 @@ internal static class PlayerControlPatch
             __instance.ClearAllTasks();
         }
 
-        ModRole.OnDeath(__instance, killer: null);
+        RoleHelpers.OnDeath(__instance, killer: null);
 
         // 追記するならここ
     }

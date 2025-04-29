@@ -10,18 +10,18 @@ using UnityEngine;
 
 namespace RebuildUs;
 
-internal static class Helpers
+public static class Helpers
 {
-    internal static bool IsRoleEnabled()
+    public static bool IsRoleEnabled()
     {
         return true;
     }
 
-    internal static bool RefundVotes { get { return CustomOptionHolders.RefundVotesOnDeath.GetBool(); } }
+    public static bool RefundVotes { get { return CustomOptionHolders.RefundVotesOnDeath.GetBool(); } }
 
-    internal static Dictionary<string, Sprite> CachedSprites = [];
+    public static Dictionary<string, Sprite> CachedSprites = [];
 
-    internal static Sprite LoadSpriteFromResources(string path, float pixelsPerUnit, bool cache = true)
+    public static Sprite LoadSpriteFromResources(string path, float pixelsPerUnit, bool cache = true)
     {
         try
         {
@@ -39,7 +39,7 @@ internal static class Helpers
         return null;
     }
 
-    internal static unsafe Texture2D LoadTextureFromResources(string path)
+    public static unsafe Texture2D LoadTextureFromResources(string path)
     {
         try
         {
@@ -63,7 +63,7 @@ internal static class Helpers
         return null;
     }
 
-    internal static Texture2D LoadTextureFromDisk(string path)
+    public static Texture2D LoadTextureFromDisk(string path)
     {
         try
         {
@@ -82,27 +82,27 @@ internal static class Helpers
         return null;
     }
 
-    internal static void Destroy(this UnityEngine.Object obj)
+    public static void Destroy(this UnityEngine.Object obj)
     {
         UnityEngine.Object.Destroy(obj);
     }
 
-    internal static bool IsCrewmate(this PlayerControl player)
+    public static bool IsCrewmate(this PlayerControl player)
     {
         return player != null && !player.IsImpostor() && !player.IsNeutral();
     }
 
-    internal static bool IsImpostor(this PlayerControl player)
+    public static bool IsImpostor(this PlayerControl player)
     {
         return player != null && player.Data.Role.IsImpostor;
     }
 
-    internal static bool IsNeutral(this PlayerControl player)
+    public static bool IsNeutral(this PlayerControl player)
     {
         return false;
     }
 
-    internal static bool IsDead(this PlayerControl player)
+    public static bool IsDead(this PlayerControl player)
     {
         return
             player == null ||
@@ -110,38 +110,38 @@ internal static class Helpers
             player.Data.Disconnected;
     }
 
-    internal static bool IsAlive(this PlayerControl player)
+    public static bool IsAlive(this PlayerControl player)
     {
         return !IsDead(player);
     }
 
-    internal static string Cs(this string str, Color c)
+    public static string Cs(this string str, Color c)
     {
         return string.Format("<color=#{0:X2}{1:X2}{2:X2}{3:X2}>{4}</color>", ToByte(c.r), ToByte(c.g), ToByte(c.b), ToByte(c.a), str);
     }
 
-    internal static byte ToByte(float f)
+    public static byte ToByte(float f)
     {
         f = Mathf.Clamp01(f);
         return (byte)(f * 255);
     }
 
-    internal static bool HasFakeTasks(this PlayerControl player)
+    public static bool HasFakeTasks(this PlayerControl player)
     {
         return false;
     }
 
-    internal static object TryCast(this Il2CppObjectBase self, Type type)
+    public static object TryCast(this Il2CppObjectBase self, Type type)
     {
         return AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self, []);
     }
 
-    internal static void RpcRepairSystem(this ShipStatus shipStatus, SystemTypes systemType, byte amount)
+    public static void RpcRepairSystem(this ShipStatus shipStatus, SystemTypes systemType, byte amount)
     {
         shipStatus.RpcUpdateSystem(systemType, amount);
     }
 
-    internal static PlayerControl PlayerById(byte id)
+    public static PlayerControl PlayerById(byte id)
     {
         foreach (var player in PlayerControl.AllPlayerControls)
         {

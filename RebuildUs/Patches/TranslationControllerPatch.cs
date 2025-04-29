@@ -6,12 +6,12 @@ using RebuildUs.Modules;
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-internal static class TranslationControllerPatch
+public static class TranslationControllerPatch
 {
     [HarmonyPrefix]
     [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), [typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>)])]
     [HarmonyPriority(Priority.Last)]
-    internal static bool GetStringPrefix(ref string __result, ref StringNames id)
+    public static bool GetStringPrefix(ref string __result, ref StringNames id)
     {
         if (id is CustomOption.KILL_RANGE_VERY_SHORT)
         {
@@ -24,7 +24,7 @@ internal static class TranslationControllerPatch
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.Initialize))]
-    internal static void InitializePostfix(TranslationController __instance)
+    public static void InitializePostfix(TranslationController __instance)
     {
         CustomOption.AddKillDistance();
     }

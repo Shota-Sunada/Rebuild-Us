@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace RebuildUs.Extensions;
 
-internal static class RoleAssignmentExtensions
+public static class RoleAssignmentExtensions
 {
     private static int crewValues;
     private static int impValues;
@@ -20,7 +20,7 @@ internal static class RoleAssignmentExtensions
         AssignChanceRoles(data);
     }
 
-    internal static RoleAssignmentData GetRoleAssignmentData()
+    public static RoleAssignmentData GetRoleAssignmentData()
     {
         // 役職を付与するプレイヤーの取得
         // クルーメイトにはクルーまたは第三
@@ -126,7 +126,7 @@ internal static class RoleAssignmentExtensions
                     // ブロックされた役職の確率を100%未満の場合は0に指定
                     if (data.impSettings.ContainsKey(blockedRoleId)) data.impSettings[blockedRoleId] = (0, 0);
                     if (data.neutralSettings.ContainsKey(blockedRoleId)) data.neutralSettings[blockedRoleId] = (0, 0);
-                    if (data.crewSettings.ContainsKey(blockedRoleId)) data.crewSettings[blockedRoleId] = (0,0);
+                    if (data.crewSettings.ContainsKey(blockedRoleId)) data.crewSettings[blockedRoleId] = (0, 0);
                     // 100%でも削除
                     foreach (var ensuredRolesList in rolesToAssign.Values)
                     {
@@ -217,14 +217,14 @@ internal static class RoleAssignmentExtensions
     }
 }
 
-internal class RoleAssignmentData
+public class RoleAssignmentData
 {
-    internal List<PlayerControl> Crewmates { get; set; }
-    internal List<PlayerControl> Impostors { get; set; }
-    internal Dictionary<RoleId, (int rate, int count)> impSettings = [];
-    internal Dictionary<RoleId, (int rate, int count)> neutralSettings = [];
-    internal Dictionary<RoleId, (int rate, int count)> crewSettings = [];
-    internal int MaxCrewmateRoles { get; set; }
-    internal int MaxNeutralRoles { get; set; }
-    internal int MaxImpostorRoles { get; set; }
+    public List<PlayerControl> Crewmates { get; set; }
+    public List<PlayerControl> Impostors { get; set; }
+    public Dictionary<RoleId, (int rate, int count)> impSettings = [];
+    public Dictionary<RoleId, (int rate, int count)> neutralSettings = [];
+    public Dictionary<RoleId, (int rate, int count)> crewSettings = [];
+    public int MaxCrewmateRoles { get; set; }
+    public int MaxNeutralRoles { get; set; }
+    public int MaxImpostorRoles { get; set; }
 }

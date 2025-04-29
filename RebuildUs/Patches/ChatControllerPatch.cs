@@ -6,11 +6,11 @@ using RebuildUs.Utilities;
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-internal static class ChatControllerAwakePatch
+public static class ChatControllerAwakePatch
 {
     [HarmonyPrefix]
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake))]
-    internal static void AwakePrefix()
+    public static void AwakePrefix()
     {
         if (!FastDestroyableSingleton<EOSManager>.Instance.isKWSMinor)
         {

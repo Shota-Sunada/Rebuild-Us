@@ -7,11 +7,11 @@ using UnityEngine;
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-internal static class MainMenuManagerStartPatch
+public static class MainMenuManagerStartPatch
 {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
-    internal static void Postfix(MainMenuManager __instance)
+    public static void Postfix(MainMenuManager __instance)
     {
         FastDestroyableSingleton<ModManager>.Instance.ShowModStamp();
 

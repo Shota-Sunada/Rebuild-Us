@@ -5,32 +5,32 @@ using UnityEngine.UI;
 
 namespace RebuildUs.Objects;
 
-internal class CustomButton
+public class CustomButton
 {
-    internal static List<CustomButton> AllButtons = [];
+    public static List<CustomButton> AllButtons = [];
 
-    internal ActionButton actionButton;
-    internal Vector3 positionOffset;
-    internal Vector3 localScale = Vector3.one;
-    internal float maxTimer = float.MaxValue;
-    internal float timer = 0f;
-    internal bool cancellable = false;
+    public ActionButton actionButton;
+    public Vector3 positionOffset;
+    public Vector3 localScale = Vector3.one;
+    public float maxTimer = float.MaxValue;
+    public float timer = 0f;
+    public bool cancellable = false;
     private readonly Action onClick;
     private readonly Action onMeetingEnds;
     private readonly Func<bool> hasButton;
     private readonly Func<bool> couldUse;
     private readonly Action onEffectEnds;
-    internal bool hasEffect;
-    internal bool isEffectActive = false;
-    internal bool showButtonText = true;
-    internal string buttonText = null;
-    internal float effectDuration;
-    internal Sprite sprite;
+    public bool hasEffect;
+    public bool isEffectActive = false;
+    public bool showButtonText = true;
+    public string buttonText = null;
+    public float effectDuration;
+    public Sprite sprite;
     private readonly HudManager hudManager;
     private readonly bool isMirror;
     private readonly KeyCode? hotkey;
 
-    internal CustomButton(
+    public CustomButton(
         Action onClick,
         Func<bool> hasButton,
         Func<bool> couldUse,
@@ -78,7 +78,7 @@ internal class CustomButton
         SetActive(false);
     }
 
-    internal CustomButton(
+    public CustomButton(
         Action onClick,
         Func<bool> hasButton,
         Func<bool> couldUse,

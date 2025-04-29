@@ -6,40 +6,40 @@ using UnityEngine;
 
 namespace RebuildUs;
 
-internal static class CustomOptionHolders
+public static class CustomOptionHolders
 {
-    internal static readonly string[] Percents = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"];
-    internal static readonly string[] Presets = ["Preset 1", "Preset 2", "Random Preset Skeld", "Random Preset Mira HQ", "Random Preset Polus", "Random Preset Airship", "Random Preset Submerged"];
+    public static readonly string[] Percents = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"];
+    public static readonly string[] Presets = ["Preset 1", "Preset 2", "Random Preset Skeld", "Random Preset Mira HQ", "Random Preset Polus", "Random Preset Airship", "Random Preset Submerged"];
 
-    internal static CustomOption PresetSelection;
+    public static CustomOption PresetSelection;
 
-    internal static CustomOption CrewmateRolesCountMin;
-    internal static CustomOption CrewmateRolesCountMax;
-    internal static CustomOption CrewmateRolesFill;
-    internal static CustomOption NeutralRolesCountMin;
-    internal static CustomOption NeutralRolesCountMax;
-    internal static CustomOption ImpostorRolesCountMin;
-    internal static CustomOption ImpostorRolesCountMax;
-    internal static CustomOption ModifiersCountMin;
-    internal static CustomOption ModifiersCountMax;
+    public static CustomOption CrewmateRolesCountMin;
+    public static CustomOption CrewmateRolesCountMax;
+    public static CustomOption CrewmateRolesFill;
+    public static CustomOption NeutralRolesCountMin;
+    public static CustomOption NeutralRolesCountMax;
+    public static CustomOption ImpostorRolesCountMin;
+    public static CustomOption ImpostorRolesCountMax;
+    public static CustomOption ModifiersCountMin;
+    public static CustomOption ModifiersCountMax;
 
-    internal static CustomOption MaxNumberOfMeetings;
-    internal static CustomOption BlockSkippingInMeetings;
-    internal static CustomOption NoVoteIsSelfVote;
-    internal static CustomOption HidePlayerNames;
-    internal static CustomOption AllowParallelMedBayScans;
-    internal static CustomOption RefundVotesOnDeath;
+    public static CustomOption MaxNumberOfMeetings;
+    public static CustomOption BlockSkippingInMeetings;
+    public static CustomOption NoVoteIsSelfVote;
+    public static CustomOption HidePlayerNames;
+    public static CustomOption AllowParallelMedBayScans;
+    public static CustomOption RefundVotesOnDeath;
 
-    internal static CustomRoleOption SheriffSpawnRate;
-    internal static CustomOption SheriffKillCooldown;
-    internal static CustomOption SheriffMaxShots;
-    internal static CustomOption SheriffCanKillNeutrals;
-    internal static CustomOption SheriffKillTargetOnMisfire;
-    internal static CustomOption SheriffCanKillMadmate;
+    public static CustomRoleOption SheriffSpawnRate;
+    public static CustomOption SheriffKillCooldown;
+    public static CustomOption SheriffMaxShots;
+    public static CustomOption SheriffCanKillNeutrals;
+    public static CustomOption SheriffKillTargetOnMisfire;
+    public static CustomOption SheriffCanKillMadmate;
 
-    internal static Dictionary<RoleId, RoleId[]> BlockedRolePairings = [];
+    public static Dictionary<RoleId, RoleId[]> BlockedRolePairings = [];
 
-    internal static void Initialize()
+    public static void Initialize()
     {
         CustomOption.VanillaSettings = Plugin.Instance.Config.Bind("Preset0", "VanillaOptions", "");
 
@@ -62,7 +62,7 @@ internal static class CustomOptionHolders
         AllowParallelMedBayScans = CustomOption.Create(24, CustomOptionType.General, "AllowParallelMedBayScans", false);
         RefundVotesOnDeath = CustomOption.Create(25, CustomOptionType.General, "RefundVotesOnDeath", false);
 
-        SheriffSpawnRate = new CustomRoleOption(50, 51, CustomOptionType.Crewmate, ("Sheriff", RolesManager.AllRoles[RoleId.Sheriff].Color));
+        SheriffSpawnRate = new CustomRoleOption(50, 51, CustomOptionType.Crewmate, ("Sheriff", Colors.SheriffYellow));
         SheriffKillCooldown = CustomOption.Create(52, CustomOptionType.Crewmate, "KillCooldown", 30f, 15f, 60f, 2.5f, SheriffSpawnRate, unitType: UnitType.UnitSeconds);
         SheriffMaxShots = CustomOption.Create(53, CustomOptionType.Crewmate, "SheriffMaxShots", 1f, 1f, 15f, 1f, SheriffSpawnRate, unitType: UnitType.UnitShots);
         SheriffCanKillNeutrals = CustomOption.Create(54, CustomOptionType.Crewmate, "SheriffCanKillNeutrals", true, SheriffSpawnRate);

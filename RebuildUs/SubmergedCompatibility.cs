@@ -14,30 +14,30 @@ using Object = UnityEngine.Object;
 
 namespace RebuildUs;
 
-internal static class SubmergedCompatibility
+public static class SubmergedCompatibility
 {
-    internal static class Classes
+    public static class Classes
     {
-        internal const string ElevatorMover = "ElevatorMover";
+        public const string ElevatorMover = "ElevatorMover";
     }
 
-    internal const string SUBMERGED_GUID = "Submerged";
-    internal const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType)6;
+    public const string SUBMERGED_GUID = "Submerged";
+    public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType)6;
 
-    internal static SemanticVersioning.Version Version { get; private set; }
-    internal static bool Loaded { get; private set; }
-    internal static bool LoadedExternally { get; private set; }
-    internal static BasePlugin Plugin { get; private set; }
-    internal static Assembly Assembly { get; private set; }
-    internal static Type[] Types { get; private set; }
-    internal static Dictionary<string, Type> InjectedTypes { get; private set; }
+    public static SemanticVersioning.Version Version { get; private set; }
+    public static bool Loaded { get; private set; }
+    public static bool LoadedExternally { get; private set; }
+    public static BasePlugin Plugin { get; private set; }
+    public static Assembly Assembly { get; private set; }
+    public static Type[] Types { get; private set; }
+    public static Dictionary<string, Type> InjectedTypes { get; private set; }
 
-    internal static MonoBehaviour SubmarineStatus { get; private set; }
+    public static MonoBehaviour SubmarineStatus { get; private set; }
 
-    internal static bool IsSubmerged { get; private set; }
+    public static bool IsSubmerged { get; private set; }
 
 
-    internal static void SetupMap(ShipStatus map)
+    public static void SetupMap(ShipStatus map)
     {
         if (map == null)
         {
@@ -64,12 +64,12 @@ internal static class SubmergedCompatibility
 
     private static Type CustomTaskTypesType;
     private static FieldInfo RetrieveOxygenMaskField;
-    internal static TaskTypes RetrieveOxygenMask;
+    public static TaskTypes RetrieveOxygenMask;
     private static Type SubmarineOxygenSystemType;
     private static MethodInfo SubmarineOxygenSystemInstanceField;
     private static MethodInfo RepairDamageMethod;
 
-    internal static bool TryLoadSubmerged()
+    public static bool TryLoadSubmerged()
     {
         try
         {
@@ -100,7 +100,7 @@ internal static class SubmergedCompatibility
         return false;
     }
 
-    internal static void Initialize()
+    public static void Initialize()
     {
         Loaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SUBMERGED_GUID, out PluginInfo plugin);
         if (!Loaded)
@@ -142,33 +142,33 @@ internal static class SubmergedCompatibility
         RepairDamageMethod = AccessTools.Method(SubmarineOxygenSystemType, "RepairDamage");
     }
 
-    internal static MonoBehaviour AddSubmergedComponent(this GameObject obj, string typeName)
+    public static MonoBehaviour AddSubmergedComponent(this GameObject obj, string typeName)
     {
         if (!Loaded) return obj.AddComponent<MissingSubmergedBehaviour>();
         bool validType = InjectedTypes.TryGetValue(typeName, out Type type);
         return validType ? obj.AddComponent(Il2CppType.From(type)).TryCast<MonoBehaviour>() : obj.AddComponent<MissingSubmergedBehaviour>();
     }
 
-    internal static float GetSubmergedNeutralLightRadius(bool isImpostor)
+    public static float GetSubmergedNeutralLightRadius(bool isImpostor)
     {
         if (!Loaded) return 0;
         return (float)CalculateLightRadiusMethod.Invoke(SubmarineStatus, [null, true, isImpostor]);
     }
 
-    internal static void ChangeFloor(bool toUpper)
+    public static void ChangeFloor(bool toUpper)
     {
         if (!Loaded) return;
         MonoBehaviour _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, [PlayerControl.LocalPlayer])).TryCast(FloorHandlerType) as MonoBehaviour;
         RpcRequestChangeFloorMethod.Invoke(_floorHandler, [toUpper]);
     }
 
-    internal static bool GetInTransition()
+    public static bool GetInTransition()
     {
         if (!Loaded) return false;
         return (bool)InTransitionField.GetValue(null);
     }
 
-    internal static void RepairOxygen()
+    public static void RepairOxygen()
     {
         if (!Loaded) return;
         try
@@ -183,8 +183,8 @@ internal static class SubmergedCompatibility
     }
 }
 
-internal class MissingSubmergedBehaviour : MonoBehaviour
+public class MissingSubmergedBehaviour : MonoBehaviour
 {
     static MissingSubmergedBehaviour() => ClassInjector.RegisterTypeInIl2Cpp<MissingSubmergedBehaviour>();
-    internal MissingSubmergedBehaviour(IntPtr ptr) : base(ptr) { }
+    public MissingSubmergedBehaviour(IntPtr ptr) : base(ptr) { }
 }

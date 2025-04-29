@@ -5,11 +5,11 @@ using AmongUs.GameOptions;
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-internal static class GameSettingMenuPatch
+public static class GameSettingMenuPatch
 {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.ChangeTab))]
-    internal static void ChangeTabPostfix(GameSettingMenu __instance, int tabNum, bool previewOnly)
+    public static void ChangeTabPostfix(GameSettingMenu __instance, int tabNum, bool previewOnly)
     {
         if (previewOnly)
         {
@@ -34,7 +34,7 @@ internal static class GameSettingMenuPatch
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Start))]
-    internal static void StartPostfix(GameSettingMenu __instance)
+    public static void StartPostfix(GameSettingMenu __instance)
     {
         CustomOption.CurrentGOMTabs.ForEach(x => x?.Destroy());
         CustomOption.CurrentGOMButtons.ForEach(x => x?.Destroy());

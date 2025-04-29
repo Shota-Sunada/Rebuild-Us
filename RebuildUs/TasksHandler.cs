@@ -2,9 +2,9 @@ using RebuildUs.Utilities;
 
 namespace RebuildUs;
 
-internal static class TasksHandler
+public static class TasksHandler
 {
-    internal static (int completedTasks, int totalTasks) TaskInfo(NetworkedPlayerInfo playerInfo)
+    public static (int completedTasks, int totalTasks) TaskInfo(NetworkedPlayerInfo playerInfo)
     {
         var totalTasks = 0;
         var completedTasks = 0;

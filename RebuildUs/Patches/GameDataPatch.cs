@@ -1,14 +1,17 @@
 using HarmonyLib;
+using RebuildUs.Extensions;
+using RebuildUs.Roles;
 using RebuildUs.Utilities;
+using System;
 
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-internal static class GameDataPatch
+public static class GameDataPatch
 {
     [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]
     [HarmonyPrefix]
-    internal static bool RecomputeTaskCountsPrefix(GameData __instance)
+    public static bool RecomputeTaskCountsPrefix(GameData __instance)
     {
         var totalTasks = 0;
         var completedTasks = 0;
@@ -28,5 +31,18 @@ internal static class GameDataPatch
         __instance.TotalTasks = totalTasks;
         __instance.CompletedTasks = completedTasks;
         return false;
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), [typeof(PlayerControl), typeof(DisconnectReasons)])]
+    public static void Postfix(GameData __instance, PlayerControl player, DisconnectReasons reason)
+    {
+        if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
+        {
+            Role.AllRoles.Do(x => x.HandleDisconnect(player, reason));
+            Modifier.AllModifiers.Do(x => x.HandleDisconnect(player, reason));
+
+            GameHistory.FinalStatuses[player.PlayerId] = FinalStatus.Disconnected;
+        }
     }
 }

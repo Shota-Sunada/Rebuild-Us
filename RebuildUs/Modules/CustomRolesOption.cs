@@ -2,16 +2,16 @@ using UnityEngine;
 
 namespace RebuildUs.Modules;
 
-internal class CustomRoleOption : CustomOption
+public class CustomRoleOption : CustomOption
 {
-    internal CustomOption countOption = null;
-    internal bool roleEnabled = true;
+    public CustomOption countOption = null;
+    public bool roleEnabled = true;
 
-    internal override bool Enabled { get { return Helpers.IsRoleEnabled() && GetBool() && SelectedIndex > 0; } }
+    public override bool Enabled { get { return Helpers.IsRoleEnabled() && GetBool() && SelectedIndex > 0; } }
 
-    internal int Rate { get { return Enabled ? SelectedIndex : 0; } }
+    public int Rate { get { return Enabled ? SelectedIndex : 0; } }
 
-    internal int Count
+    public int Count
     {
         get
         {
@@ -29,9 +29,9 @@ internal class CustomRoleOption : CustomOption
         }
     }
 
-    internal (int rate, int count) Data { get { return (Rate, Count); } }
+    public (int rate, int count) Data { get { return (Rate, Count); } }
 
-    internal CustomRoleOption(int id, int id2, CustomOptionType type, (string key, Color? color) title, int max = 15, bool roleEnabled = true) :
+    public CustomRoleOption(int id, int id2, CustomOptionType type, (string key, Color? color) title, int max = 15, bool roleEnabled = true) :
         base(id, type, title, CustomOptionHolders.Percents, "", null, true, null, UnitType.UnitPercent)
     {
         this.roleEnabled = roleEnabled;

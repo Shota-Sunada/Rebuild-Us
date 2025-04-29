@@ -4,9 +4,9 @@ using RebuildUs.Utilities;
 
 namespace RebuildUs.Modules;
 
-internal partial class CustomOption
+public partial class CustomOption
 {
-    internal static bool RestrictOptions(LegacyGameOptions __instance, ref int maxExpectedPlayers)
+    public static bool RestrictOptions(LegacyGameOptions __instance, ref int maxExpectedPlayers)
     {
         return __instance.MaxPlayers > maxExpectedPlayers
             || __instance.NumImpostors is < 1 or > 3
@@ -15,7 +15,7 @@ internal partial class CustomOption
             || __instance.KillDistance >= LegacyGameOptions.KillDistances.Count;
     }
 
-    internal static void PreventOutOfRange(StringOption __instance)
+    public static void PreventOutOfRange(StringOption __instance)
     {
         if (__instance.Title is StringNames.GameKillDistance && GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.KillDistance) == 3)
         {
@@ -25,7 +25,7 @@ internal partial class CustomOption
         }
     }
 
-    internal static void OverrideBaseOptionSelections(ref StringNames stringName, ref string value)
+    public static void OverrideBaseOptionSelections(ref StringNames stringName, ref string value)
     {
         if (stringName is StringNames.GameKillDistance)
         {
@@ -42,7 +42,7 @@ internal partial class CustomOption
         }
     }
 
-    internal static void AddKillDistance()
+    public static void AddKillDistance()
     {
         if (TranslationController.InstanceExists)
         {

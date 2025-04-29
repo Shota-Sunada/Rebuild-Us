@@ -4,11 +4,11 @@ using RebuildUs.Modules;
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-internal static class PlayerPhysicsPatch
+public static class PlayerPhysicsPatch
 {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.CoSpawnPlayer))]
-    internal static void CoSpawnPlayerPostfix()
+    public static void CoSpawnPlayerPostfix()
     {
         if (PlayerControl.LocalPlayer != null && AmongUsClient.Instance.AmHost)
         {

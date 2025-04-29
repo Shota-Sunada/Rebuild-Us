@@ -4,18 +4,18 @@ using Il2CppSystem;
 
 namespace RebuildUs.Utilities;
 
-internal static class MapUtilities
+public static class MapUtilities
 {
-    internal static ShipStatus CachedShipStatus = ShipStatus.Instance;
+    public static ShipStatus CachedShipStatus = ShipStatus.Instance;
 
-    internal static void MapDestroyed()
+    public static void MapDestroyed()
     {
         CachedShipStatus = ShipStatus.Instance;
         _systems.Clear();
     }
 
     private static readonly Dictionary<SystemTypes, Object> _systems = [];
-    internal static Dictionary<SystemTypes, Object> Systems
+    public static Dictionary<SystemTypes, Object> Systems
     {
         get
         {
@@ -40,10 +40,10 @@ internal static class MapUtilities
 }
 
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
-internal static class ShipStatus_Awake_Patch
+public static class ShipStatus_Awake_Patch
 {
     [HarmonyPostfix, HarmonyPriority(Priority.Last)]
-    internal static void Postfix(ShipStatus __instance)
+    public static void Postfix(ShipStatus __instance)
     {
         MapUtilities.CachedShipStatus = __instance;
         // SubmergedCompatibility.SetupMap(__instance);
@@ -51,10 +51,10 @@ internal static class ShipStatus_Awake_Patch
 }
 
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.OnDestroy))]
-internal static class ShipStatus_OnDestroy_Patch
+public static class ShipStatus_OnDestroy_Patch
 {
     [HarmonyPostfix, HarmonyPriority(Priority.Last)]
-    internal static void Postfix()
+    public static void Postfix()
     {
         MapUtilities.CachedShipStatus = null;
         MapUtilities.MapDestroyed();

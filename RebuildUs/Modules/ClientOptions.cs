@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace RebuildUs.Modules;
 
-internal static class ClientOptions
+public static class ClientOptions
 {
     private static readonly SelectionBehaviour[] AllOptions = {
         new("GhostsCanSeeRoles", () => Plugin.Instance.GhostsCanSeeRoles.Value = !Plugin.Instance.GhostsCanSeeRoles.Value, Plugin.Instance.GhostsCanSeeRoles.Value),
@@ -25,7 +25,7 @@ internal static class ClientOptions
     private static ToggleButtonBehaviour buttonPrefab;
     private static Vector3? _origin;
 
-    internal static void SetupTitleText()
+    public static void SetupTitleText()
     {
         var go = new GameObject("TitleTextRU");
         var tmp = go.AddComponent<TextMeshPro>();
@@ -37,7 +37,7 @@ internal static class ClientOptions
         UnityEngine.Object.DontDestroyOnLoad(titleText);
     }
 
-    internal static void Initialize(OptionsMenuBehaviour __instance)
+    public static void Initialize(OptionsMenuBehaviour __instance)
     {
         if (!__instance.CensorChatButton) return;
 
@@ -199,13 +199,13 @@ internal static class ClientOptions
     }
 }
 
-internal class SelectionBehaviour
+public class SelectionBehaviour
 {
-    internal string TitleKey;
-    internal Func<bool> OnClick;
-    internal bool DefaultValue;
+    public string TitleKey;
+    public Func<bool> OnClick;
+    public bool DefaultValue;
 
-    internal SelectionBehaviour(string titleKey, Func<bool> onClick, bool defaultValue)
+    public SelectionBehaviour(string titleKey, Func<bool> onClick, bool defaultValue)
     {
         TitleKey = titleKey;
         OnClick = onClick;

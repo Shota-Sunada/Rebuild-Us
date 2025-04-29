@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RebuildUs.Utilities;
 
-internal static unsafe class FastDestroyableSingleton<T> where T : MonoBehaviour
+public static unsafe class FastDestroyableSingleton<T> where T : MonoBehaviour
 {
     private static readonly IntPtr _fieldPtr;
     private static readonly Func<IntPtr, T> _createObject;
@@ -20,7 +20,7 @@ internal static unsafe class FastDestroyableSingleton<T> where T : MonoBehaviour
         _createObject = lambda.Compile();
     }
 
-    internal static T Instance
+    public static T Instance
     {
         get
         {

@@ -3,30 +3,33 @@ using Hazel;
 using HarmonyLib;
 using RebuildUs.Modules;
 using System.Linq;
-using RebuildUs.Roles.RoleBase;
 using RebuildUs.Roles;
 
 namespace RebuildUs;
 
-internal enum CustomRPC : byte
+public enum CustomRPC : byte
 {
     ShareOptions = 80,
     SetRole,
 }
 
-internal static class RPCProcedure
+public static class RPCProcedure
 {
-    internal static RPCSender SendRPC(uint netId, CustomRPC callId, int targetId = -1)
+    public static RPCSender SendRPC(uint netId, CustomRPC callId, int targetId = -1)
     {
         return new RPCSender(netId, callId, targetId);
     }
 
-    internal static RPCSender SendRPC(CustomRPC callId, int targetId = -1)
+    public static RPCSender SendRPC(CustomRPC callId, int targetId = -1)
     {
         return new RPCSender(PlayerControl.LocalPlayer.NetId, callId, targetId);
     }
 
-    internal static void HandleShareOptions(byte optionsCount, MessageReader reader)
+    public static void ResetVariables()
+    {
+    }
+
+    public static void HandleShareOptions(byte optionsCount, MessageReader reader)
     {
         try
         {
@@ -44,22 +47,15 @@ internal static class RPCProcedure
         }
     }
 
-    internal static void SetRole(byte roleId, byte playerId)
+    public static void SetRole(byte roleId, byte playerId)
     {
         PlayerControl.AllPlayerControls.ToArray().DoIf(
             x => x.PlayerId == playerId,
-            x =>
-            {
-                ModRole.RemoveRole(x, (RoleId)roleId);
-                if (RolesManager.AllRoles.ContainsKey((RoleId)roleId))
-                {
-                    RolesManager.CreateRoleInstance((RoleId)roleId, x);
-                }
-            }
+            x => x.SetRole((RoleId)roleId)
         );
     }
 
-    internal static void UpdateMeeting(byte targetId, bool dead = true)
+    public static void UpdateMeeting(byte targetId, bool dead = true)
     {
         if (MeetingHud.Instance)
         {
@@ -91,9 +87,9 @@ internal static class RPCProcedure
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
-internal static class HandleRpcPatch
+public static class HandleRpcPatch
 {
-    internal static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
+    public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
     {
         if (__instance == null) return;
         if (reader == null) return;
@@ -122,7 +118,7 @@ internal static class HandleRpcPatch
 //     rpc.Write(1);
 // } // Disposeが呼ばれる
 // ↑っていうのをCopilotが生成してくれた
-internal class RPCSender(uint netId, CustomRPC callId, int targetId = -1) : IDisposable
+public class RPCSender(uint netId, CustomRPC callId, int targetId = -1) : IDisposable
 {
     // Send RPC to player with netId
     private readonly MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(netId, (byte)callId, SendOption.Reliable, targetId);
@@ -132,17 +128,17 @@ internal class RPCSender(uint netId, CustomRPC callId, int targetId = -1) : IDis
         AmongUsClient.Instance.FinishRpcImmediately(writer);
     }
 
-    internal void Write(bool value)
+    public void Write(bool value)
     {
         writer.Write(value);
     }
 
-    internal void Write(byte value)
+    public void Write(byte value)
     {
         writer.Write(value);
     }
 
-    internal void Write(uint value, bool isPacked = false)
+    public void Write(uint value, bool isPacked = false)
     {
         if (isPacked)
         {
@@ -154,7 +150,7 @@ internal class RPCSender(uint netId, CustomRPC callId, int targetId = -1) : IDis
         }
     }
 
-    internal void Write(int value, bool isPacked = false)
+    public void Write(int value, bool isPacked = false)
     {
         if (isPacked)
         {
@@ -166,12 +162,12 @@ internal class RPCSender(uint netId, CustomRPC callId, int targetId = -1) : IDis
         }
     }
 
-    internal void Write(float value)
+    public void Write(float value)
     {
         writer.Write(value);
     }
 
-    internal void Write(string value)
+    public void Write(string value)
     {
         writer.Write(value);
     }

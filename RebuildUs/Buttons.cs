@@ -1,13 +1,12 @@
-using AmongUs.GameOptions;
-using RebuildUs.Roles.RoleBase;
+using RebuildUs.Roles;
 
 namespace RebuildUs;
 
-internal static class Buttons
+public static class Buttons
 {
     private static bool initialized = false;
 
-    internal static void SetCustomButtonCooldowns()
+    public static void SetCustomButtonCooldowns()
     {
         if (!initialized)
         {
@@ -22,13 +21,13 @@ internal static class Buttons
             }
         }
 
-        ModRole.SetAllRolesButtonCooldowns();
+        RoleData.SetButtonCooldowns();
     }
 
-    internal static void CreateButtons(HudManager __instance)
+    public static void CreateButtons(HudManager __instance)
     {
         initialized = false;
-        ModRole.MakeAllRolesButtons(__instance);
+        RoleData.MakeButtons(__instance);
         initialized = true;
         SetCustomButtonCooldowns();
     }

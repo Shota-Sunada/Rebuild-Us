@@ -11,7 +11,7 @@ using System.Text;
 
 namespace RebuildUs.Modules;
 
-internal enum UnitType
+public enum UnitType
 {
     None = 0,
     UnitPercent, // %
@@ -23,33 +23,33 @@ internal enum UnitType
     UnitVotes, // [], 票
 }
 
-internal partial class CustomOption
+public partial class CustomOption
 {
-    internal const int ROLE_OVERVIEW_ID = 99;
-    internal const StringNames KILL_RANGE_VERY_SHORT = (StringNames)49999;
+    public const int ROLE_OVERVIEW_ID = 99;
+    public const StringNames KILL_RANGE_VERY_SHORT = (StringNames)49999;
 
-    internal static Dictionary<int, CustomOption> AllOptions = [];
-    internal static ConfigEntry<string> VanillaSettings;
-    internal static int Preset = 0;
+    public static Dictionary<int, CustomOption> AllOptions = [];
+    public static ConfigEntry<string> VanillaSettings;
+    public static int Preset = 0;
 
-    internal string TitleKey;
-    internal Color? TitleColor;
-    internal object[] Selections;
-    internal OptionBehaviour OptionBehaviour;
-    internal ConfigEntry<int> Entry;
+    public string TitleKey;
+    public Color? TitleColor;
+    public object[] Selections;
+    public OptionBehaviour OptionBehaviour;
+    public ConfigEntry<int> Entry;
 
-    internal int DefaultIndex;
-    internal int SelectedIndex;
-    internal CustomOption Parent;
-    internal bool IsHeader;
-    internal CustomOptionType Type;
-    internal string HeaderKey;
-    internal Color? HeaderColor;
-    internal UnitType UnitType = UnitType.None;
+    public int DefaultIndex;
+    public int SelectedIndex;
+    public CustomOption Parent;
+    public bool IsHeader;
+    public CustomOptionType Type;
+    public string HeaderKey;
+    public Color? HeaderColor;
+    public UnitType UnitType = UnitType.None;
 
-    internal virtual bool Enabled { get { return Helpers.IsRoleEnabled() && GetBool(); } }
+    public virtual bool Enabled { get { return Helpers.IsRoleEnabled() && GetBool(); } }
 
-    internal CustomOption(int id, CustomOptionType type, (string key, Color? color) title, object[] selections, object defaultValue, CustomOption parent, bool isHeader, (string Key, Color? color)? header, UnitType unitType)
+    public CustomOption(int id, CustomOptionType type, (string key, Color? color) title, object[] selections, object defaultValue, CustomOption parent, bool isHeader, (string Key, Color? color)? header, UnitType unitType)
     {
         Type = type;
         TitleKey = title.key;
@@ -74,7 +74,7 @@ internal partial class CustomOption
         AllOptions[id] = this;
     }
 
-    internal static CustomOption Create(
+    public static CustomOption Create(
         int id,
         CustomOptionType type,
         (string key, Color? color) title,
@@ -87,7 +87,7 @@ internal partial class CustomOption
         return new(id, type, title, selections, "", parent, isHeader, header, unitType);
     }
 
-    internal static CustomOption Create(
+    public static CustomOption Create(
         int id,
         CustomOptionType type,
         (string key, Color? color) title,
@@ -108,7 +108,7 @@ internal partial class CustomOption
         return new(id, type, title, [.. selections], defaultValue, parent, isHeader, header, unitType);
     }
 
-    internal static CustomOption Create(
+    public static CustomOption Create(
         int id,
         CustomOptionType type,
         (string key, Color? color) title,
@@ -121,7 +121,7 @@ internal partial class CustomOption
         return new(id, type, title, [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, header, unitType);
     }
 
-    internal static CustomOption Create(
+    public static CustomOption Create(
         int id,
         CustomOptionType type,
         string title,
@@ -134,7 +134,7 @@ internal partial class CustomOption
         return new(id, type, (title, Color.white), selections, "", parent, isHeader, (header, Color.white), unitType);
     }
 
-    internal static CustomOption Create(
+    public static CustomOption Create(
         int id,
         CustomOptionType type,
         string title,
@@ -155,7 +155,7 @@ internal partial class CustomOption
         return new(id, type, (title, Color.white), [.. selections], defaultValue, parent, isHeader, (header, Color.white), unitType);
     }
 
-    internal static CustomOption Create(
+    public static CustomOption Create(
         int id,
         CustomOptionType type,
         string title,
@@ -168,7 +168,7 @@ internal partial class CustomOption
         return new(id, type, (title, Color.white), [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, (header, Color.white), unitType);
     }
 
-    internal static void SwitchPreset(int newPreset)
+    public static void SwitchPreset(int newPreset)
     {
         SaveVanillaOptions();
         Preset = newPreset;
@@ -204,12 +204,12 @@ internal partial class CustomOption
         }
     }
 
-    internal static void SaveVanillaOptions()
+    public static void SaveVanillaOptions()
     {
         VanillaSettings.Value = Convert.ToBase64String(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameManager.Instance.LogicOptions.currentGameOptions, false));
     }
 
-    internal static bool LoadVanillaOptions()
+    public static bool LoadVanillaOptions()
     {
         var optionsString = VanillaSettings.Value;
         if (optionsString == "")
@@ -232,7 +232,7 @@ internal partial class CustomOption
         return true;
     }
 
-    internal static void ShareOptionChange(CustomOption option)
+    public static void ShareOptionChange(CustomOption option)
     {
         if (option is null)
         {
@@ -247,7 +247,7 @@ internal partial class CustomOption
         rpc.Write(Convert.ToUInt32(option.SelectedIndex), true);
     }
 
-    internal static void ShareOptionSelections()
+    public static void ShareOptionSelections()
     {
         if (PlayerControl.AllPlayerControls.Count <= 1 ||
             !AmongUsClient.Instance.AmHost &&
@@ -273,27 +273,27 @@ internal partial class CustomOption
         }
     }
 
-    internal int GetSelection()
+    public int GetSelection()
     {
         return SelectedIndex;
     }
 
-    internal bool GetBool()
+    public bool GetBool()
     {
         return SelectedIndex > 0;
     }
 
-    internal float GetFloat()
+    public float GetFloat()
     {
         return (float)Selections[SelectedIndex];
     }
 
-    internal int GetQuantity()
+    public int GetQuantity()
     {
         return SelectedIndex + 1;
     }
 
-    internal void UpdateSelection(int newSelection, bool notifyUsers = true)
+    public void UpdateSelection(int newSelection, bool notifyUsers = true)
     {
         newSelection = Mathf.Clamp((newSelection + Selections.Length) % Selections.Length, 0, Selections.Length - 1);
         if (AmongUsClient.Instance.AmClient && notifyUsers && SelectedIndex != newSelection)
@@ -361,7 +361,7 @@ internal partial class CustomOption
         }
     }
 
-    internal static void ChangeTab(LobbyViewSettingsPane __instance, StringNames category)
+    public static void ChangeTab(LobbyViewSettingsPane __instance, StringNames category)
     {
         int tabNum = (int)category;
 
@@ -386,11 +386,11 @@ internal partial class CustomOption
         }
     }
 
-    internal static List<PassiveButton> CurrentLVSButtons = [];
-    internal static List<CustomOptionType> CurrentLVSButtonTypes = [];
-    internal static bool GameModeChangedFlag = false;
+    public static List<PassiveButton> CurrentLVSButtons = [];
+    public static List<CustomOptionType> CurrentLVSButtonTypes = [];
+    public static bool GameModeChangedFlag = false;
 
-    internal static void CreateCustomButton(LobbyViewSettingsPane __instance, int targetMenu, string buttonName, string buttonText, CustomOptionType optionType)
+    public static void CreateCustomButton(LobbyViewSettingsPane __instance, int targetMenu, string buttonName, string buttonText, CustomOptionType optionType)
     {
         buttonName = "View" + buttonName;
         var buttonTemplate = GameObject.Find("OverviewTab");
@@ -415,7 +415,7 @@ internal partial class CustomOption
         }
     }
 
-    internal static void RemoveVanillaTabs(LobbyViewSettingsPane __instance)
+    public static void RemoveVanillaTabs(LobbyViewSettingsPane __instance)
     {
         GameObject.Find("RolesTabs")?.Destroy();
         var overview = GameObject.Find("OverviewTab");
@@ -430,7 +430,7 @@ internal partial class CustomOption
         GameModeChangedFlag = false;
     }
 
-    internal static void DrawTab(LobbyViewSettingsPane __instance, CustomOptionType optionType)
+    public static void DrawTab(LobbyViewSettingsPane __instance, CustomOptionType optionType)
     {
         var relevantOptions = AllOptions.Values.Where(x => x.Type == optionType || optionType == CustomOptionType.General).ToList();
 
@@ -661,7 +661,7 @@ internal partial class CustomOption
         return (name, val);
     }
 
-    internal static void CreateSettingTabs(LobbyViewSettingsPane __instance)
+    public static void CreateSettingTabs(LobbyViewSettingsPane __instance)
     {
         // Handle different gamemodes and tabs needed therein.
         int next = 3;
@@ -689,7 +689,7 @@ internal partial class CustomOption
         // }
     }
 
-    internal static void AdaptTaskCount(GameOptionsMenu __instance)
+    public static void AdaptTaskCount(GameOptionsMenu __instance)
     {
         // Adapt task count for main options
         var commonTasksOption = __instance.Children.ToArray().FirstOrDefault(x => x.TryCast<NumberOption>()?.intOptionName == Int32OptionNames.NumCommonTasks).Cast<NumberOption>();
@@ -709,9 +709,9 @@ internal partial class CustomOption
         }
     }
 
-    internal static List<GameObject> CurrentGOMTabs = [];
-    internal static List<PassiveButton> CurrentGOMButtons = [];
-    internal static Dictionary<byte, GameOptionsMenu> CurrentGOMs = [];
+    public static List<GameObject> CurrentGOMTabs = [];
+    public static List<PassiveButton> CurrentGOMButtons = [];
+    public static Dictionary<byte, GameOptionsMenu> CurrentGOMs = [];
 
     private static void CreateSettings(GameOptionsMenu menu, List<CustomOption> options)
     {
@@ -799,7 +799,7 @@ internal partial class CustomOption
         }
     }
 
-    internal static void RemoveVanillaTabs(GameSettingMenu __instance)
+    public static void RemoveVanillaTabs(GameSettingMenu __instance)
     {
         GameObject.Find("What Is This?")?.Destroy();
         GameObject.Find("GamePresetButton")?.Destroy();
@@ -807,7 +807,7 @@ internal partial class CustomOption
         __instance.ChangeTab(1, false);
     }
 
-    internal static void CreateCustomButton(GameSettingMenu __instance, int targetMenu, string buttonName, string buttonText)
+    public static void CreateCustomButton(GameSettingMenu __instance, int targetMenu, string buttonName, string buttonText)
     {
         var leftPanel = GameObject.Find("LeftPanel");
         var buttonTemplate = GameObject.Find("GameSettingsButton");
@@ -835,7 +835,7 @@ internal partial class CustomOption
         }
     }
 
-    internal static void CreateGameOptionsMenu(GameSettingMenu __instance, CustomOptionType optionType, string settingName)
+    public static void CreateGameOptionsMenu(GameSettingMenu __instance, CustomOptionType optionType, string settingName)
     {
         var template = GameObject.Find("GAME SETTINGS TAB");
         CurrentGOMTabs.RemoveAll(x => x == null);
@@ -852,7 +852,7 @@ internal partial class CustomOption
         CurrentGOMs.Add((byte)optionType, modSettingsGOM);
     }
 
-    internal static void UpdateGameOptionsMenu(CustomOptionType optionType, GameOptionsMenu modSettingsGOM)
+    public static void UpdateGameOptionsMenu(CustomOptionType optionType, GameOptionsMenu modSettingsGOM)
     {
         foreach (var child in modSettingsGOM.Children)
         {
@@ -864,7 +864,7 @@ internal partial class CustomOption
         CreateSettings(modSettingsGOM, relevantOptions);
     }
 
-    internal static void CreateSettingTabs(GameSettingMenu __instance)
+    public static void CreateSettingTabs(GameSettingMenu __instance)
     {
         // Handle different gamemodes and tabs needed therein.
         var next = 3;
@@ -897,7 +897,7 @@ internal partial class CustomOption
         // }
     }
 
-    internal static bool EnableStringOption(StringOption __instance)
+    public static bool EnableStringOption(StringOption __instance)
     {
         var option = AllOptions.Values.FirstOrDefault(option => option.OptionBehaviour == __instance);
         if (option == null)
@@ -915,7 +915,7 @@ internal partial class CustomOption
         return false;
     }
 
-    internal static bool IncreaseStringOption(StringOption __instance)
+    public static bool IncreaseStringOption(StringOption __instance)
     {
         var option = AllOptions.Values.FirstOrDefault(option => option.OptionBehaviour == __instance);
         if (option == null)
@@ -934,7 +934,7 @@ internal partial class CustomOption
         return false;
     }
 
-    internal static bool DecreaseStringOption(StringOption __instance)
+    public static bool DecreaseStringOption(StringOption __instance)
     {
         var option = AllOptions.Values.FirstOrDefault(option => option.OptionBehaviour == __instance);
         if (option == null)

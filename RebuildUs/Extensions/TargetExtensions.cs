@@ -6,9 +6,9 @@ using AmongUs.GameOptions;
 
 namespace RebuildUs.Extensions;
 
-internal static class TargetExtensions
+public static class TargetExtensions
 {
-    internal static PlayerControl SetTarget(bool onlyCrewmates = false, bool targetPlayersInVents = false, List<PlayerControl> untargetablePlayers = null, PlayerControl targetingPlayer = null)
+    public static PlayerControl SetTarget(bool onlyCrewmates = false, bool targetPlayersInVents = false, List<PlayerControl> untargetablePlayers = null, PlayerControl targetingPlayer = null)
     {
         PlayerControl result = null;
         var num = LegacyGameOptions.KillDistances[Mathf.Clamp(GameOptionsManager.Instance.currentNormalGameOptions.KillDistance, 0, 2)];

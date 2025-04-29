@@ -12,25 +12,25 @@ namespace RebuildUs;
 
 [BepInPlugin(MOD_ID, MOD_NAME, MOD_VERSION)]
 [BepInProcess("Among Us.exe")]
-internal class Plugin : BasePlugin
+public class Plugin : BasePlugin
 {
-    internal const string MOD_ID = "com.shota-sunada.rebuild-us";
-    internal const string MOD_NAME = "Rebuild Us";
-    internal const string MOD_VERSION = "1.0.0";
-    internal const string MOD_DEVELOPER = "Shota Sunada";
+    public const string MOD_ID = "com.shota-sunada.rebuild-us";
+    public const string MOD_NAME = "Rebuild Us";
+    public const string MOD_VERSION = "1.0.0";
+    public const string MOD_DEVELOPER = "Shota Sunada";
 
-    internal static Plugin Instance;
-    internal Harmony Harmony { get; } = new(MOD_ID);
-    internal Version Version { get; } = Version.Parse(MOD_VERSION);
-    internal ManualLogSource Logger;
+    public static Plugin Instance;
+    public Harmony Harmony { get; } = new(MOD_ID);
+    public Version Version { get; } = Version.Parse(MOD_VERSION);
+    public ManualLogSource Logger;
 
-    internal Random Random = new((int)DateTime.Now.Ticks);
+    public Random Random = new((int)DateTime.Now.Ticks);
 
-    internal ConfigEntry<bool> GhostsCanSeeRoles { get; private set; }
-    internal ConfigEntry<bool> GhostsCanSeeModifiers { get; private set; }
-    internal ConfigEntry<bool> GhostsCanSeeInformation { get; private set; }
-    internal ConfigEntry<bool> GhostsCanSeeVotes { get; private set; }
-    internal ConfigEntry<bool> ShowGameOverview { get; private set; }
+    public ConfigEntry<bool> GhostsCanSeeRoles { get; private set; }
+    public ConfigEntry<bool> GhostsCanSeeModifiers { get; private set; }
+    public ConfigEntry<bool> GhostsCanSeeInformation { get; private set; }
+    public ConfigEntry<bool> GhostsCanSeeVotes { get; private set; }
+    public ConfigEntry<bool> ShowGameOverview { get; private set; }
 
     public override void Load()
     {
@@ -46,8 +46,6 @@ internal class Plugin : BasePlugin
         Harmony.PatchAll();
 
         Tr.Initialize();
-
-        RolesManager.RegisterRoles();
 
         CustomOptionHolders.Initialize();
 
