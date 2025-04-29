@@ -14,10 +14,7 @@
 
   <ItemGroup>
 		<EmbeddedResource Include="Localization\Translations\*.json" />
+    <EmbeddedResource Include="Resources\**" />
   </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\**" />
-    </ItemGroup>
 
 </Project>
