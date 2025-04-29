@@ -323,7 +323,7 @@ public static class PlayerControlFixedUpdatePatch
         if (Spy.spy != null) untargetables.Add(Spy.spy);
         if (Sidekick.wasTeamRed) untargetables.Add(Sidekick.sidekick);
         if (Jackal.wasTeamRed) untargetables.Add(Jackal.jackal);
-        Eraser.currentTarget = setTarget(onlyCrewmates: !Eraser.canEraseAnyone, untargetablePlayers: Eraser.canEraseAnyone ? [] : untargetables);
+        Eraser.currentTarget = setTarget(onlyCrewmates: !Eraser.canEraseAnyone, untargetablePlayers: Eraser.canEraseAnyone?[] : untargetables);
         setPlayerOutline(Eraser.currentTarget, Eraser.color);
     }
 

@@ -537,7 +537,7 @@ class RoleManagerSelectRolesPatch
         writer.Write(roleId);
         writer.Write(playerId);
         RPCProcedure.setRole(roleId, playerId);
-        
+
         return playerId;
     }
 

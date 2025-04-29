@@ -12,7 +12,7 @@ public class CustomColors
     protected static Dictionary<int, string> ColorStrings = [];
     public static List<int> lighterColors = [3, 4, 5, 7, 10, 11, 13, 14, 17];
     public static uint pickableColors = (uint)Palette.ColorNames.Length;
-    private static readonly List<int> ORDER = [ 7, 37, 14, 5, 33, 41, 25,
+    private static readonly List<int> ORDER = [7, 37, 14, 5, 33, 41, 25,
                                                                 4, 30, 0, 35, 3, 27, 17,
                                                                 13, 23, 8, 32, 38, 1, 21,
                                                                 40, 31, 10, 34, 22, 28, 36,
