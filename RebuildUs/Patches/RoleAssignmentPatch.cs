@@ -28,7 +28,7 @@ namespace RebuildUs.Patches
         public static void Postfix(ref int __result)
         {
             if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.Normal)
-            {  // Ignore Vanilla impostor limits in TOR Games.
+            {  // Ignore Vanilla impostor limits in RU Games.
                 __result = Mathf.Clamp(GameOptionsManager.Instance.CurrentGameOptions.NumImpostors, 1, 3);
             }
         }

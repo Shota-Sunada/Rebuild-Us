@@ -14,14 +14,14 @@ namespace RebuildUs.Patches
     public static class ClientOptionsPatch
     {
         private static readonly SelectionBehaviour[] AllOptions = {
-            new("Ghosts See Tasks & Other Info", () => TORMapOptions.ghostsSeeInformation = RebuildUsPlugin.GhostsSeeInformation.Value = !RebuildUsPlugin.GhostsSeeInformation.Value, RebuildUsPlugin.GhostsSeeInformation.Value),
-            new("Ghosts Can See Votes", () => TORMapOptions.ghostsSeeVotes = RebuildUsPlugin.GhostsSeeVotes.Value = !RebuildUsPlugin.GhostsSeeVotes.Value, RebuildUsPlugin.GhostsSeeVotes.Value),
-            new("Ghosts Can See Roles", () => TORMapOptions.ghostsSeeRoles = RebuildUsPlugin.GhostsSeeRoles.Value = !RebuildUsPlugin.GhostsSeeRoles.Value, RebuildUsPlugin.GhostsSeeRoles.Value),
-            new("Ghosts Can Additionally See Modifier", () => TORMapOptions.ghostsSeeModifier = RebuildUsPlugin.GhostsSeeModifier.Value = !RebuildUsPlugin.GhostsSeeModifier.Value, RebuildUsPlugin.GhostsSeeModifier.Value),
-            new("Show Role Summary", () => TORMapOptions.showRoleSummary = RebuildUsPlugin.ShowRoleSummary.Value = !RebuildUsPlugin.ShowRoleSummary.Value, RebuildUsPlugin.ShowRoleSummary.Value),
-            new("Show Lighter / Darker", () => TORMapOptions.showLighterDarker = RebuildUsPlugin.ShowLighterDarker.Value = !RebuildUsPlugin.ShowLighterDarker.Value, RebuildUsPlugin.ShowLighterDarker.Value),
-            new("Show Vents On Map", () => TORMapOptions.ShowVentsOnMap = RebuildUsPlugin.ShowVentsOnMap.Value = !RebuildUsPlugin.ShowVentsOnMap.Value, RebuildUsPlugin.ShowVentsOnMap.Value),
-            new("Show Chat Notifications", () => TORMapOptions.ShowChatNotifications = RebuildUsPlugin.ShowChatNotifications.Value = !RebuildUsPlugin.ShowChatNotifications.Value, RebuildUsPlugin.ShowChatNotifications.Value),
+            new("Ghosts See Tasks & Other Info", () => MapOptions.ghostsSeeInformation = RebuildUsPlugin.GhostsSeeInformation.Value = !RebuildUsPlugin.GhostsSeeInformation.Value, RebuildUsPlugin.GhostsSeeInformation.Value),
+            new("Ghosts Can See Votes", () => MapOptions.ghostsSeeVotes = RebuildUsPlugin.GhostsSeeVotes.Value = !RebuildUsPlugin.GhostsSeeVotes.Value, RebuildUsPlugin.GhostsSeeVotes.Value),
+            new("Ghosts Can See Roles", () => MapOptions.ghostsSeeRoles = RebuildUsPlugin.GhostsSeeRoles.Value = !RebuildUsPlugin.GhostsSeeRoles.Value, RebuildUsPlugin.GhostsSeeRoles.Value),
+            new("Ghosts Can Additionally See Modifier", () => MapOptions.ghostsSeeModifier = RebuildUsPlugin.GhostsSeeModifier.Value = !RebuildUsPlugin.GhostsSeeModifier.Value, RebuildUsPlugin.GhostsSeeModifier.Value),
+            new("Show Role Summary", () => MapOptions.showRoleSummary = RebuildUsPlugin.ShowRoleSummary.Value = !RebuildUsPlugin.ShowRoleSummary.Value, RebuildUsPlugin.ShowRoleSummary.Value),
+            new("Show Lighter / Darker", () => MapOptions.showLighterDarker = RebuildUsPlugin.ShowLighterDarker.Value = !RebuildUsPlugin.ShowLighterDarker.Value, RebuildUsPlugin.ShowLighterDarker.Value),
+            new("Show Vents On Map", () => MapOptions.ShowVentsOnMap = RebuildUsPlugin.ShowVentsOnMap.Value = !RebuildUsPlugin.ShowVentsOnMap.Value, RebuildUsPlugin.ShowVentsOnMap.Value),
+            new("Show Chat Notifications", () => MapOptions.ShowChatNotifications = RebuildUsPlugin.ShowChatNotifications.Value = !RebuildUsPlugin.ShowChatNotifications.Value, RebuildUsPlugin.ShowChatNotifications.Value),
         };
 
         private static GameObject popUp;
@@ -35,7 +35,7 @@ namespace RebuildUs.Patches
         public static void MainMenuManager_StartPostfix(MainMenuManager __instance)
         {
             // Prefab for the title
-            var go = new GameObject("TitleTextTOR");
+            var go = new GameObject("TitleTextRU");
             var tmp = go.AddComponent<TextMeshPro>();
             tmp.fontSize = 4;
             tmp.alignment = TextAlignmentOptions.Center;

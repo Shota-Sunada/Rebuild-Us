@@ -261,7 +261,7 @@ namespace RebuildUs.Modules
             {
                 public static bool Prefix(ChatNotification __instance, PlayerControl sender, string text)
                 {
-                    if (ShipStatus.Instance && !TORMapOptions.ShowChatNotifications)
+                    if (ShipStatus.Instance && !MapOptions.ShowChatNotifications)
                     {
                         return false;
                     }

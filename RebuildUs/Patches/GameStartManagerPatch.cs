@@ -85,7 +85,7 @@ namespace RebuildUs.Patches
                     else if (!playerVersions.ContainsKey(client.Id))
                     {
                         versionMismatch = true;
-                        message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a different or no version of The Other Roles\n</color>";
+                        message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a different or no version of Rebuild Us\n</color>";
                     }
                     else
                     {
@@ -93,17 +93,17 @@ namespace RebuildUs.Patches
                         int diff = RebuildUsPlugin.Instance.Version.CompareTo(PV.version);
                         if (diff > 0)
                         {
-                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has an older version of The Other Roles (v{playerVersions[client.Id].version.ToString()})\n</color>";
+                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has an older version of Rebuild Us (v{playerVersions[client.Id].version.ToString()})\n</color>";
                             versionMismatch = true;
                         }
                         else if (diff < 0)
                         {
-                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a newer version of The Other Roles (v{playerVersions[client.Id].version.ToString()})\n</color>";
+                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a newer version of Rebuild Us (v{playerVersions[client.Id].version.ToString()})\n</color>";
                             versionMismatch = true;
                         }
                         else if (!PV.GuidMatches())
                         { // version presumably matches, check if Guid matches
-                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a modified version of TOR v{playerVersions[client.Id].version.ToString()} <size=30%>({PV.guid.ToString()})</size>\n</color>";
+                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a modified version of RU v{playerVersions[client.Id].version.ToString()} <size=30%>({PV.guid.ToString()})</size>\n</color>";
                             versionMismatch = true;
                         }
                     }
@@ -182,7 +182,7 @@ namespace RebuildUs.Patches
                             SceneChanger.ChangeScene("MainMenu");
                         }
 
-                        __instance.GameStartText.text = $"<color=#FF0000FF>The host has no or a different version of The Other Roles\nYou will be kicked in {Math.Round(10 - kickingTimer)}s</color>";
+                        __instance.GameStartText.text = $"<color=#FF0000FF>The host has no or a different version of Rebuild Us\nYou will be kicked in {Math.Round(10 - kickingTimer)}s</color>";
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 5;
                         __instance.GameStartText.transform.localScale = new Vector3(2f, 2f, 1f);
                         __instance.GameStartTextParent.SetActive(true);
@@ -258,9 +258,9 @@ namespace RebuildUs.Patches
                 if (AmongUsClient.Instance.AmHost && sendGamemode && PlayerControl.LocalPlayer != null)
                 {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGamemode, Hazel.SendOption.Reliable, -1);
-                    writer.Write((byte)TORMapOptions.gameMode);
+                    writer.Write((byte)MapOptions.gameMode);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.shareGamemode((byte)TORMapOptions.gameMode);
+                    RPCProcedure.shareGamemode((byte)MapOptions.gameMode);
                     sendGamemode = false;
                 }
             }

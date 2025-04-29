@@ -3,7 +3,7 @@ using Hazel;
 using System.Collections.Generic;
 using System.Linq;
 using static RebuildUs.RebuildUs;
-using static RebuildUs.TORMapOptions;
+using static RebuildUs.MapOptions;
 using RebuildUs.Objects;
 using System;
 
@@ -161,7 +161,7 @@ namespace RebuildUs.Patches
             {
                 var spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
                 var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
-                                      (PlayerControl.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) ||
+                                      (PlayerControl.LocalPlayer.Data.IsDead && MapOptions.ghostsSeeVotes) ||
                                       (Mayor.mayor != null && Mayor.mayor == PlayerControl.LocalPlayer && Mayor.canSeeVoteColors && TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors);
                 if (showVoteColors)
                 {
@@ -887,7 +887,7 @@ namespace RebuildUs.Patches
                 if (__instance.state >= MeetingHud.VoteStates.Discussion)
                 {
                     // Remove first kill shield
-                    TORMapOptions.firstKillPlayer = null;
+                    MapOptions.firstKillPlayer = null;
                 }
             }
         }

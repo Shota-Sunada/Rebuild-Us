@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace RebuildUs
 {
-    static class TORMapOptions
+    static class MapOptions
     {
         // Set values
         public static int maxNumberOfMeetings = 10;

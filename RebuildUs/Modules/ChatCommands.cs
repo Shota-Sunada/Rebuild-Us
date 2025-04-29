@@ -57,10 +57,10 @@ namespace RebuildUs.Modules
                         if (AmongUsClient.Instance.AmHost)
                         {
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGamemode, Hazel.SendOption.Reliable, -1);
-                            writer.Write((byte)TORMapOptions.gameMode);
+                            writer.Write((byte)MapOptions.gameMode);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.shareGamemode((byte)gameMode);
-                            RPCProcedure.shareGamemode((byte)TORMapOptions.gameMode);
+                            RPCProcedure.shareGamemode((byte)MapOptions.gameMode);
                         }
                         else
                         {

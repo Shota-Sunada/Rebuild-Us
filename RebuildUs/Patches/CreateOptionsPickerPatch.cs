@@ -18,7 +18,7 @@ namespace RebuildUs.Patches
         {
             if (mode <= GameModes.HideNSeek)
             {
-                TORMapOptions.gameMode = CustomGamemodes.Classic;
+                MapOptions.gameMode = CustomGamemodes.Classic;
                 return true;
             }
 
@@ -53,20 +53,17 @@ namespace RebuildUs.Patches
                     ChatLanguageButton chatLanguageButton = __instance.ButtonPool.Get<ChatLanguageButton>();
                     chatLanguageButton.transform.localPosition = new Vector3(num + (float)(num2 / 10) * 2.5f, 2f - (float)(num2 % 10) * 0.5f, 0f);
                     if (i <= 2)
-                        chatLanguageButton.Text.text = DestroyableSingleton<TranslationController>.Instance.GetString(GameModesHelpers.ModeToName[entry], new Il2CppReferenceArray<Il2CppSystem.Object>(0));
-                    else
                     {
-                        chatLanguageButton.Text.text = i == 3 ? "TOR Guesser" : "TOR Hide N Seek";
-                        if (i == 5)
-                            chatLanguageButton.Text.text = "TOR Prop Hunt";
+                        chatLanguageButton.Text.text = DestroyableSingleton<TranslationController>.Instance.GetString(GameModesHelpers.ModeToName[entry], new Il2CppReferenceArray<Il2CppSystem.Object>(0));
                     }
+
                     chatLanguageButton.Button.OnClick.RemoveAllListeners();
                     chatLanguageButton.Button.OnClick.AddListener((System.Action)delegate
                     {
                         __instance.ChooseOption(entry);
                     });
 
-                    bool isCurrentMode = i <= 2 && TORMapOptions.gameMode == CustomGamemodes.Classic && (long)entry == (long)(ulong)gameMode;
+                    bool isCurrentMode = i <= 2 && MapOptions.gameMode == CustomGamemodes.Classic && (long)entry == (long)(ulong)gameMode;
                     chatLanguageButton.SetSelected(isCurrentMode);
                     __instance.controllerSelectable.Add(chatLanguageButton.Button);
                     if (isCurrentMode)

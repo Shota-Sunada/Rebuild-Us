@@ -80,7 +80,7 @@ $@"<size=60%> <color=#FCCE03FF>Special thanks to Smeggy</color></size>";
 
             static void Postfix(PingTracker __instance)
             {
-                var torLogo = new GameObject("bannerLogo_TOR");
+                var torLogo = new GameObject("bannerLogo_RU");
                 torLogo.transform.SetParent(GameObject.Find("RightPanel").transform, false);
                 torLogo.transform.localPosition = new Vector3(-0.4f, 1f, 5f);
 
@@ -90,9 +90,8 @@ $@"<size=60%> <color=#FCCE03FF>Special thanks to Smeggy</color></size>";
 
                 instance = __instance;
                 loadSprites();
-                // renderer.sprite = TORMapOptions.enableHorseMode ? horseBannerSprite : bannerSprite;
                 renderer.sprite = EventUtility.isEnabled ? banner2Sprite : bannerSprite;
-                var credentialObject = new GameObject("credentialsTOR");
+                var credentialObject = new GameObject("credentialsRU");
                 var credentials = credentialObject.AddComponent<TextMeshPro>();
                 credentials.SetText($"v{RebuildUsPlugin.Instance.Version.ToString() + (RebuildUsPlugin.betaDays > 0 ? "-BETA" : "")}\n<size=30f%>\n</size>{mainMenuCredentials}\n<size=30%>\n</size>{contributorsCredentials}");
                 credentials.alignment = TMPro.TextAlignmentOptions.Center;
@@ -100,7 +99,7 @@ $@"<size=60%> <color=#FCCE03FF>Special thanks to Smeggy</color></size>";
 
                 credentials.transform.SetParent(torLogo.transform);
                 credentials.transform.localPosition = Vector3.down * 1.25f;
-                motdObject = new GameObject("torMOTD");
+                motdObject = new GameObject("ruMOTD");
                 motdText = motdObject.AddComponent<TextMeshPro>();
                 motdText.alignment = TMPro.TextAlignmentOptions.Center;
                 motdText.fontSize *= 0.04f;
@@ -136,7 +135,7 @@ $@"<size=60%> <color=#FCCE03FF>Special thanks to Smeggy</color></size>";
                         renderer.color = new Color(1, 1, 1, 1 - p);
                         if (p == 1)
                         {
-                            renderer.sprite = TORMapOptions.enableHorseMode ? horseBannerSprite : bannerSprite;
+                            renderer.sprite = MapOptions.enableHorseMode ? horseBannerSprite : bannerSprite;
                             instance.StartCoroutine(Effects.Lerp(fadeDuration, new Action<float>((p) =>
                             {
                                 renderer.color = new Color(1, 1, 1, p);

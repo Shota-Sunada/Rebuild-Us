@@ -1382,7 +1382,7 @@ namespace RebuildUs
             douseTarget = null;
             triggerArsonistWin = false;
             dousedPlayers = new List<PlayerControl>();
-            foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values)
+            foreach (PoolablePlayer p in MapOptions.playerIcons.Values)
             {
                 if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
             }
@@ -1464,7 +1464,7 @@ namespace RebuildUs
             arrow = null;
             if (cooldownText != null && cooldownText.gameObject != null) UnityEngine.Object.Destroy(cooldownText.gameObject);
             cooldownText = null;
-            foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values)
+            foreach (PoolablePlayer p in MapOptions.playerIcons.Values)
             {
                 if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
             }

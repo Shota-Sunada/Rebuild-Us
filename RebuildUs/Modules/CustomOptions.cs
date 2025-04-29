@@ -346,7 +346,7 @@ namespace RebuildUs
                 if (RebuildUsPlugin.Instance.Version > versionInfo && versionInfo < Version.Parse("4.6.0"))
                 {
                     vanillaOptionsFine = false;
-                    FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Host Info: Pasting vanilla settings failed, TOR Options applied!");
+                    FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Host Info: Pasting vanilla settings failed, RU Options applied!");
                 }
                 else
                 {
@@ -675,11 +675,11 @@ namespace RebuildUs
         {
             // Handle different gamemodes and tabs needed therein.
             int next = 3;
-            if (TORMapOptions.gameMode == CustomGamemodes.Classic)
+            if (MapOptions.gameMode == CustomGamemodes.Classic)
             {
-                // create TOR settings
-                createCustomButton(__instance, next++, "TORSettings", "TOR Settings", CustomOptionType.General);
-                // create TOR settings
+                // create RU settings
+                createCustomButton(__instance, next++, "RUSettings", "RU Settings", CustomOptionType.General);
+                // create Role overview
                 createCustomButton(__instance, next++, "RoleOverview", "Role Overview", (CustomOptionType)99);
                 // IMp
                 createCustomButton(__instance, next++, "ImpostorSettings", "Impostor Roles", CustomOptionType.Impostor);
@@ -932,11 +932,11 @@ namespace RebuildUs
         {
             // Handle different gamemodes and tabs needed therein.
             int next = 3;
-            if (TORMapOptions.gameMode == CustomGamemodes.Classic)
+            if (MapOptions.gameMode == CustomGamemodes.Classic)
             {
-                // create TOR settings
-                createCustomButton(__instance, next++, "TORSettings", "TOR Settings");
-                createGameOptionsMenu(__instance, CustomOptionType.General, "TORSettings");
+                // create RU settings
+                createCustomButton(__instance, next++, "RUSettings", "RU Settings");
+                createGameOptionsMenu(__instance, CustomOptionType.General, "RUSettings");
 
                 // Imp
                 createCustomButton(__instance, next++, "ImpostorSettings", "Impostor Roles");
@@ -1071,7 +1071,7 @@ namespace RebuildUs
         {
             StringBuilder sb = new StringBuilder("\n");
             var options = CustomOption.options.Where(o => o.type == type);
-            if (TORMapOptions.gameMode == CustomGamemodes.Classic)
+            if (MapOptions.gameMode == CustomGamemodes.Classic)
             {
                 options = options.Where(x => !(x == CustomOptionHolder.crewmateRolesFill));
             }
@@ -1188,7 +1188,7 @@ namespace RebuildUs
                     hudString += (!hideExtras ? "" : "Page 1: Vanilla Settings \n\n") + vanillaSettings;
                     break;
                 case 1:
-                    hudString += "Page 2: The Other Roles Settings \n" + buildOptionsOfType(CustomOptionType.General, false);
+                    hudString += "Page 2: Rebuild Us Settings \n" + buildOptionsOfType(CustomOptionType.General, false);
                     break;
                 case 2:
                     hudString += "Page 3: Role and Modifier Rates \n" + buildRoleOptions();

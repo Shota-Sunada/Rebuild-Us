@@ -1516,9 +1516,9 @@ namespace RebuildUs
 
                     foreach (PlayerControl p in Arsonist.dousedPlayers)
                     {
-                        if (TORMapOptions.playerIcons.ContainsKey(p.PlayerId))
+                        if (MapOptions.playerIcons.ContainsKey(p.PlayerId))
                         {
-                            TORMapOptions.playerIcons[p.PlayerId].setSemiTransparent(false);
+                            MapOptions.playerIcons[p.PlayerId].setSemiTransparent(false);
                         }
                     }
 

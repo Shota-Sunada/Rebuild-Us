@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 using static RebuildUs.RebuildUs;
 using static RebuildUs.GameHistory;
-using static RebuildUs.TORMapOptions;
+using static RebuildUs.MapOptions;
 using System.Collections.Generic;
 
 using RebuildUs.Utilities;
@@ -872,7 +872,7 @@ namespace RebuildUs.Patches
     {
         static void Prefix(MedScanMinigame __instance)
         {
-            if (TORMapOptions.allowParallelMedBayScans)
+            if (MapOptions.allowParallelMedBayScans)
             {
                 __instance.medscan.CurrentUser = PlayerControl.LocalPlayer.PlayerId;
                 __instance.medscan.UsersList.Clear();

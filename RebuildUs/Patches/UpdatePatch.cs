@@ -244,7 +244,7 @@ namespace RebuildUs.Patches
             }
 
             // Display lighter / darker color for all alive players
-            if (PlayerControl.LocalPlayer != null && MeetingHud.Instance != null && TORMapOptions.showLighterDarker)
+            if (PlayerControl.LocalPlayer != null && MeetingHud.Instance != null && MapOptions.showLighterDarker)
             {
                 foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
                 {

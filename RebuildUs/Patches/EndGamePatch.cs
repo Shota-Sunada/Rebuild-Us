@@ -382,7 +382,7 @@ namespace RebuildUs.Patches
                 }
             }
 
-            if (TORMapOptions.showRoleSummary)
+            if (MapOptions.showRoleSummary)
             {
                 var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
                 GameObject roleSummary = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);

@@ -81,7 +81,7 @@ namespace RebuildUs.Patches
                 if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && Medic.shieldVisible(target))
                     hasVisibleShield = true;
 
-                if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && TORMapOptions.firstKillPlayer != null && TORMapOptions.shieldFirstKill && ((target == TORMapOptions.firstKillPlayer && !isMorphedMorphling) || (isMorphedMorphling && Morphling.morphTarget == TORMapOptions.firstKillPlayer)))
+                if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && MapOptions.firstKillPlayer != null && MapOptions.shieldFirstKill && ((target == MapOptions.firstKillPlayer && !isMorphedMorphling) || (isMorphedMorphling && Morphling.morphTarget == MapOptions.firstKillPlayer)))
                 {
                     hasVisibleShield = true;
                     color = Color.blue;
@@ -626,7 +626,7 @@ namespace RebuildUs.Patches
 
                     var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(p.Data);
                     string roleNames = RoleInfo.GetRolesString(p, true, false);
-                    string roleText = RoleInfo.GetRolesString(p, true, TORMapOptions.ghostsSeeModifier);
+                    string roleText = RoleInfo.GetRolesString(p, true, MapOptions.ghostsSeeModifier);
                     string taskInfo = tasksTotal > 0 ? $"<color=#FAD934FF>({tasksCompleted}/{tasksTotal})</color>" : "";
 
                     string playerInfoText = "";
@@ -643,17 +643,17 @@ namespace RebuildUs.Patches
                         }
                         meetingInfoText = $"{roleNames} {taskInfo}".Trim();
                     }
-                    else if (TORMapOptions.ghostsSeeRoles && TORMapOptions.ghostsSeeInformation)
+                    else if (MapOptions.ghostsSeeRoles && MapOptions.ghostsSeeInformation)
                     {
                         playerInfoText = $"{roleText} {taskInfo}".Trim();
                         meetingInfoText = playerInfoText;
                     }
-                    else if (TORMapOptions.ghostsSeeInformation)
+                    else if (MapOptions.ghostsSeeInformation)
                     {
                         playerInfoText = $"{taskInfo}".Trim();
                         meetingInfoText = playerInfoText;
                     }
-                    else if (TORMapOptions.ghostsSeeRoles || (Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer == Lawyer.lawyer && p == Lawyer.target))
+                    else if (MapOptions.ghostsSeeRoles || (Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer == Lawyer.lawyer && p == Lawyer.target))
                     {
                         playerInfoText = $"{roleText}";
                         meetingInfoText = playerInfoText;
@@ -770,7 +770,7 @@ namespace RebuildUs.Patches
                 if (BountyHunter.cooldownText != null && BountyHunter.cooldownText.gameObject != null) UnityEngine.Object.Destroy(BountyHunter.cooldownText.gameObject);
                 BountyHunter.cooldownText = null;
                 BountyHunter.bounty = null;
-                foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values)
+                foreach (PoolablePlayer p in MapOptions.playerIcons.Values)
                 {
                     if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
                 }
@@ -804,15 +804,15 @@ namespace RebuildUs.Patches
                 // Show poolable player
                 if (FastDestroyableSingleton<HudManager>.Instance != null && FastDestroyableSingleton<HudManager>.Instance.UseButton != null)
                 {
-                    foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
-                    if (TORMapOptions.playerIcons.ContainsKey(BountyHunter.bounty.PlayerId) && TORMapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject != null)
-                        TORMapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject.SetActive(true);
+                    foreach (PoolablePlayer pp in MapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+                    if (MapOptions.playerIcons.ContainsKey(BountyHunter.bounty.PlayerId) && MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject != null)
+                        MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject.SetActive(true);
                 }
             }
 
             // Hide in meeting
-            if (MeetingHud.Instance && TORMapOptions.playerIcons.ContainsKey(BountyHunter.bounty.PlayerId) && TORMapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject != null)
-                TORMapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject.SetActive(false);
+            if (MeetingHud.Instance && MapOptions.playerIcons.ContainsKey(BountyHunter.bounty.PlayerId) && MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject != null)
+                MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject.SetActive(false);
 
             // Update Cooldown Text
             if (BountyHunter.cooldownText != null)
@@ -1323,7 +1323,7 @@ namespace RebuildUs.Patches
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
-            if (TORMapOptions.firstKillName == "") TORMapOptions.firstKillName = target.Data.PlayerName;
+            if (MapOptions.firstKillName == "") MapOptions.firstKillName = target.Data.PlayerName;
 
             // Lover suicide trigger on murder
             if ((Lovers.lover1 != null && target == Lovers.lover1) || (Lovers.lover2 != null && target == Lovers.lover2))

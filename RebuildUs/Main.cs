@@ -141,7 +141,6 @@ public class RebuildUsPlugin : BasePlugin
         MainMenuPatch.addSceneChangeCallbacks();
         _ = RoleInfo.loadReadme();
         AddToKillDistanceSetting.addKillDistance();
-        Logger.LogInfo("Loading TOR completed!");
 
         Tr.Initialize();
 

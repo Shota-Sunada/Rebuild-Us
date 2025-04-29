@@ -18,12 +18,11 @@ namespace RebuildUs.CustomGameModes
     class GameModePatches
     {
         /* 
-         Creates a button in the info pane in the lobby to cycle through the game modes of TOR.
+         Creates a button in the info pane in the lobby to cycle through the game modes of RU.
          */
         [HarmonyPatch(typeof(LobbyInfoPane), nameof(LobbyInfoPane.Update))]
         class LobbyInfoPanePatch
         {
-
             private static GameObject gameModeButton = null;
             public static void Postfix(LobbyInfoPane __instance)
             {
@@ -34,7 +33,7 @@ namespace RebuildUs.CustomGameModes
                 if (template == null || GameModeText == null) { return; }
                 gameModeButton = GameObject.Instantiate(template, template.transform.parent); //, GameModeText.transform);
                 gameModeButton.transform.localPosition = template.transform.localPosition + new Vector3(0f, 0.65f, -2f);
-                gameModeButton.name = "TOR GameModeButton";
+                gameModeButton.name = "RU GameModeButton";
 
                 var pButton = gameModeButton.GetComponent<PassiveButton>();
                 pButton.buttonText.text = GameModeText.GetComponent<TextMeshPro>().text;
@@ -45,12 +44,12 @@ namespace RebuildUs.CustomGameModes
                 gameModeButton.transform.GetChild(2).GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f);
                 pButton.OnClick.AddListener((Action)(() =>
                 {
-                    TORMapOptions.gameMode = (CustomGamemodes)((int)(TORMapOptions.gameMode + 1) % Enum.GetNames(typeof(CustomGamemodes)).Length);
+                    MapOptions.gameMode = (CustomGamemodes)((int)(MapOptions.gameMode + 1) % Enum.GetNames(typeof(CustomGamemodes)).Length);
                     __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p => { pButton.buttonText.text = Helpers.cs(Color.yellow, GameModeText.GetComponent<TextMeshPro>().text); })));
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGamemode, Hazel.SendOption.Reliable, -1);
-                    writer.Write((byte)TORMapOptions.gameMode);
+                    writer.Write((byte)MapOptions.gameMode);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.shareGamemode((byte)TORMapOptions.gameMode);
+                    RPCProcedure.shareGamemode((byte)MapOptions.gameMode);
                 }));
                 pButton.OnMouseOut = new UnityEvent();
                 pButton.OnMouseOver = new UnityEvent();

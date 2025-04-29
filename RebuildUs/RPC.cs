@@ -3,7 +3,7 @@ using Hazel;
 using static RebuildUs.RebuildUs;
 using static RebuildUs.HudManagerStartPatch;
 using static RebuildUs.GameHistory;
-using static RebuildUs.TORMapOptions;
+using static RebuildUs.MapOptions;
 using RebuildUs.Objects;
 using RebuildUs.Patches;
 using System.Collections.Generic;
@@ -82,7 +82,7 @@ namespace RebuildUs
 
         public static void shareGamemode(byte gm)
         {
-            TORMapOptions.gameMode = (CustomGamemodes)gm;
+            MapOptions.gameMode = (CustomGamemodes)gm;
             LobbyViewSettingsPatch.currentButtons?.ForEach(x => x.gameObject?.Destroy());
             LobbyViewSettingsPatch.currentButtons?.Clear();
             LobbyViewSettingsPatch.currentButtonTypes?.Clear();
@@ -854,7 +854,7 @@ namespace RebuildUs
             {
                 camera.gameObject.SetActive(false);
             }
-            TORMapOptions.camerasToAdd.Add(camera);
+            MapOptions.camerasToAdd.Add(camera);
         }
 
         public static void sealVent(int ventId)
@@ -884,7 +884,7 @@ namespace RebuildUs
                 vent.name = "FutureSealedVent_" + vent.name;
             }
 
-            TORMapOptions.ventsToSeal.Add(vent);
+            MapOptions.ventsToSeal.Add(vent);
         }
 
         public static void arsonistWin()
@@ -1041,7 +1041,7 @@ namespace RebuildUs
         {
             PlayerControl target = Helpers.playerById(playerId);
             if (target == null) return;
-            TORMapOptions.firstKillPlayer = target;
+            MapOptions.firstKillPlayer = target;
         }
 
         public static void setTiebreak()

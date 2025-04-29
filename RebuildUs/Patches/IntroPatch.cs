@@ -40,7 +40,7 @@ namespace RebuildUs.Patches
                     // PlayerControl.SetPetImage(data.DefaultOutfit.PetId, data.DefaultOutfit.ColorId, player.PetSlot);
                     player.cosmetics.nameText.text = data.PlayerName;
                     player.SetFlipX(true);
-                    TORMapOptions.playerIcons[p.PlayerId] = player;
+                    MapOptions.playerIcons[p.PlayerId] = player;
                     player.gameObject.SetActive(false);
 
                     if (PlayerControl.LocalPlayer == Arsonist.arsonist && p != Arsonist.arsonist)
@@ -74,9 +74,9 @@ namespace RebuildUs.Patches
             }
 
             // First kill
-            if (AmongUsClient.Instance.AmHost && TORMapOptions.shieldFirstKill && TORMapOptions.firstKillName != "")
+            if (AmongUsClient.Instance.AmHost && MapOptions.shieldFirstKill && MapOptions.firstKillName != "")
             {
-                PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(TORMapOptions.firstKillName));
+                PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(MapOptions.firstKillName));
                 if (target != null)
                 {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFirstKill, Hazel.SendOption.Reliable, -1);
@@ -85,7 +85,7 @@ namespace RebuildUs.Patches
                     RPCProcedure.setFirstKill(target.PlayerId);
                 }
             }
-            TORMapOptions.firstKillName = "";
+            MapOptions.firstKillName = "";
 
             EventUtility.gameStartsUpdate();
         }

@@ -133,7 +133,7 @@ namespace RebuildUs.Patches
 						continue;
 					}
 
-					string pointName = $"TOR HerePoint {player.PlayerId}";
+					string pointName = $"RU HerePoint {player.PlayerId}";
 					var doublePoint = GameObject.Find(pointName);
 					if (doublePoint != null)
 					{

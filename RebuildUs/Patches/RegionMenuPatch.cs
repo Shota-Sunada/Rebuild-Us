@@ -171,7 +171,7 @@ namespace RebuildUs.Patches
                 serverWarning.transform.position = new Vector3(5f, 1f, -200f);
                 __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>((p) =>
                 {
-                    comp.text = Helpers.cs(Color.red, "Vanilla Servers Are Currently Not Compatible With TOR");
+                    comp.text = Helpers.cs(Color.red, "Vanilla Servers Are Currently Not Compatible With RU");
                     serverWarning.transform.position = new Vector3(0f, 1f, -200f);
                 })));
                 serverWarning.SetActive(true);
