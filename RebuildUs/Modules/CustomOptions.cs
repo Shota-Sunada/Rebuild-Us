@@ -19,70 +19,153 @@ using TMPro;
 using Rewired.Utils.Platforms.Windows;
 using static Il2CppSystem.Xml.Schema.FacetsChecker.FacetsCompiler;
 using RebuildUs;
+using RebuildUs.Localization;
 
 namespace RebuildUs;
 
 public class CustomOption
 {
-    public static List<CustomOption> options = [];
-    public static int preset = 0;
-    public static ConfigEntry<string> vanillaSettings;
+    public const int ROLE_OVERVIEW_ID = 99;
+    public const StringNames KILL_RANGE_VERY_SHORT = (StringNames)49999;
 
-    public int id;
-    public string name;
-    public System.Object[] selections;
+    public static Dictionary<int, CustomOption> options = [];
+    public static ConfigEntry<string> vanillaSettings;
+    public static int preset = 0;
+
+    public string titleKey;
+    public Color? titleColor;
+    public object[] selections;
+    public OptionBehaviour optionBehaviour;
+    public ConfigEntry<int> entry;
 
     public int defaultSelection;
-    public ConfigEntry<int> entry;
     public int selection;
-    public OptionBehaviour optionBehaviour;
     public CustomOption parent;
     public bool isHeader;
     public CustomOptionType type;
-    public Action onChange = null;
-    public string heading = "";
-    public bool invertedParent;
+    public string headerKey;
+    public Color? headerColor;
+    public UnitType unitType = UnitType.None;
 
-    // Option creation
+    public virtual bool Enabled { get { return Helpers.RolesEnabled && getBool(); } }
 
-    public CustomOption(int id, CustomOptionType type, string name, System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader, Action onChange = null, string heading = "", bool invertedParent = false)
+    public CustomOption(int id, CustomOptionType type, (string key, Color? color) title, object[] selections, object defaultValue, CustomOption parent, bool isHeader, (string Key, Color? color)? header, UnitType unitType)
     {
-        this.id = id;
-        this.name = parent == null ? name : "- " + name;
+        this.type = type;
+        titleKey = title.key;
+        titleColor = title.color;
         this.selections = selections;
-        int index = Array.IndexOf(selections, defaultValue);
-        this.defaultSelection = index >= 0 ? index : 0;
+        var index = Array.IndexOf(selections, defaultValue);
+        defaultSelection = index >= 0 ? index : 0;
         this.parent = parent;
         this.isHeader = isHeader;
-        this.type = type;
-        this.onChange = onChange;
-        this.heading = heading;
-        this.invertedParent = invertedParent;
-        selection = 0;
-        if (id != 0)
+        headerKey = header?.Key ?? "";
+        headerColor = header?.color ?? null;
+        this.unitType = unitType;
+
+        this.selection = 0;
+
+        if (options.ContainsKey(id))
         {
-            entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", id.ToString(), defaultSelection);
-            selection = Mathf.Clamp(entry.Value, 0, selections.Length - 1);
+            RebuildUsPlugin.Instance.Logger.LogWarning($"The custom option id ({id}) is already exists!");
+            RebuildUsPlugin.Instance.Logger.LogWarning("The old one will be replaced by the new!");
         }
-        options.Add(this);
+
+        options[id] = this;
     }
 
-    public static CustomOption Create(int id, CustomOptionType type, string name, string[] selections, CustomOption parent = null, bool isHeader = false, Action onChange = null, string heading = "", bool invertedParent = false)
+    public static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        (string key, Color? color) title,
+        string[] selections,
+        CustomOption parent = null,
+        bool isHeader = false,
+        (string key, Color? color)? header = null,
+        UnitType unitType = UnitType.None)
     {
-        return new CustomOption(id, type, name, selections, "", parent, isHeader, onChange, heading, invertedParent);
+        return new(id, type, title, selections, "", parent, isHeader, header, unitType);
     }
 
-    public static CustomOption Create(int id, CustomOptionType type, string name, float defaultValue, float min, float max, float step, CustomOption parent = null, bool isHeader = false, Action onChange = null, string heading = "", bool invertedParent = false)
+    public static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        (string key, Color? color) title,
+        float defaultValue,
+        float min,
+        float max,
+        float interval,
+        CustomOption parent = null,
+        bool isHeader = false,
+        (string key, Color? color)? header = null,
+        UnitType unitType = UnitType.None)
     {
-        List<object> selections = [];
-        for (float s = min; s <= max; s += step)
-            selections.Add(s);
-        return new CustomOption(id, type, name, selections.ToArray(), defaultValue, parent, isHeader, onChange, heading, invertedParent);
+        var selections = new List<object>();
+        for (float i = min; i <= max; i += interval)
+        {
+            selections.Add(i);
+        }
+        return new(id, type, title, [.. selections], defaultValue, parent, isHeader, header, unitType);
     }
 
-    public static CustomOption Create(int id, CustomOptionType type, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false, Action onChange = null, string heading = "", bool invertedParent = false)
+    public static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        (string key, Color? color) title,
+        bool defaultValue,
+        CustomOption parent = null,
+        bool isHeader = false,
+        (string key, Color? color)? header = null,
+        UnitType unitType = UnitType.None)
     {
-        return new CustomOption(id, type, name, new string[] { "Off", "On" }, defaultValue ? "On" : "Off", parent, isHeader, onChange, heading, invertedParent);
+        return new(id, type, title, [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, header, unitType);
+    }
+
+    public static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        string title,
+        string[] selections,
+        CustomOption parent = null,
+        bool isHeader = false,
+        string header = "",
+        UnitType unitType = UnitType.None)
+    {
+        return new(id, type, (title, Color.white), selections, "", parent, isHeader, (header, Color.white), unitType);
+    }
+
+    public static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        string title,
+        float defaultValue,
+        float min,
+        float max,
+        float interval,
+        CustomOption parent = null,
+        bool isHeader = false,
+        string header = "",
+        UnitType unitType = UnitType.None)
+    {
+        var selections = new List<object>();
+        for (float i = min; i <= max; i += interval)
+        {
+            selections.Add(i);
+        }
+        return new(id, type, (title, Color.white), [.. selections], defaultValue, parent, isHeader, (header, Color.white), unitType);
+    }
+
+    public static CustomOption Create(
+        int id,
+        CustomOptionType type,
+        string title,
+        bool defaultValue,
+        CustomOption parent = null,
+        bool isHeader = false,
+        string header = "",
+        UnitType unitType = UnitType.None)
+    {
+        return new(id, type, (title, Color.white), [Tr.Get("OptionOff"), Tr.Get("OptionOn")], defaultValue ? Tr.Get("OptionOn") : Tr.Get("OptionOff"), parent, isHeader, (header, Color.white), unitType);
     }
 
     // Static behaviour
@@ -93,11 +176,11 @@ public class CustomOption
         CustomOption.preset = newPreset;
         vanillaSettings = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", "GameOptions", "");
         loadVanillaOptions();
-        foreach (CustomOption option in CustomOption.options)
+        foreach (var (id, option) in CustomOption.options)
         {
-            if (option.id == 0) continue;
+            if (id == 0) continue;
 
-            option.entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", option.id.ToString(), option.defaultSelection);
+            option.entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", id.ToString(), option.defaultSelection);
             option.selection = Mathf.Clamp(option.entry.Value, 0, option.selections.Length - 1);
             if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOption)
             {
@@ -143,34 +226,44 @@ public class CustomOption
         return true;
     }
 
-    public static void ShareOptionChange(uint optionId)
+    public static void ShareOptionChange(CustomOption option)
     {
-        var option = options.FirstOrDefault(x => x.id == optionId);
-        if (option == null) return;
-        var writer = AmongUsClient.Instance!.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareOptions, SendOption.Reliable, -1);
-        writer.Write((byte)1);
-        writer.WritePacked((uint)option.id);
-        writer.WritePacked(Convert.ToUInt32(option.selection));
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
+        if (option is null)
+        {
+            return;
+        }
+
+        var id = options.FirstOrDefault(x => x.Value == option).Key;
+
+        using var rpc = RPCProcedure.SendRPC(PlayerControl.LocalPlayer.NetId, CustomRPC.ShareOptions);
+        rpc.Write((byte)1);
+        rpc.Write((uint)id, true);
+        rpc.Write(Convert.ToUInt32(option.selection), true);
     }
 
     public static void ShareOptionSelections()
     {
-        if (PlayerControl.AllPlayerControls.Count <= 1 || AmongUsClient.Instance!.AmHost == false && PlayerControl.LocalPlayer == null) return;
-        var optionsList = new List<CustomOption>(CustomOption.options);
-        while (optionsList.Any())
+        if (PlayerControl.AllPlayerControls.Count <= 1 ||
+             !AmongUsClient.Instance.AmHost &&
+             PlayerControl.LocalPlayer == null)
         {
-            byte amount = (byte)Math.Min(optionsList.Count, 200); // takes less than 3 bytes per option on average
-            var writer = AmongUsClient.Instance!.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareOptions, SendOption.Reliable, -1);
-            writer.Write(amount);
+            return;
+        }
+
+        var optionsList = new Dictionary<int, CustomOption>(options);
+        while (optionsList.Count != 0)
+        {
+            // takes less than 3 bytes per option on average
+            var amount = (byte)Math.Min(optionsList.Count, 200);
+            using var rpc = RPCProcedure.SendRPC(PlayerControl.LocalPlayer.NetId, CustomRPC.ShareOptions);
+            rpc.Write(amount);
             for (int i = 0; i < amount; i++)
             {
-                var option = optionsList[0];
-                optionsList.RemoveAt(0);
-                writer.WritePacked((uint)option.id);
-                writer.WritePacked(Convert.ToUInt32(option.selection));
+                var option = optionsList.ElementAt(0);
+                rpc.Write((uint)option.Key, true);
+                rpc.Write(Convert.ToUInt32(option.Value.selection), true);
+                optionsList.Remove(option.Key);
             }
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 
@@ -200,49 +293,58 @@ public class CustomOption
     public void updateSelection(int newSelection, bool notifyUsers = true)
     {
         newSelection = Mathf.Clamp((newSelection + selections.Length) % selections.Length, 0, selections.Length - 1);
-        if (AmongUsClient.Instance?.AmClient == true && notifyUsers && selection != newSelection)
+        if (AmongUsClient.Instance.AmClient && notifyUsers && selection != newSelection)
         {
-            DestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)(this.id + 6000), selections[newSelection].ToString(), false);
+            FastDestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)6000,
+                unitType == UnitType.None
+                    ? selections[newSelection].ToString()
+                    : new StringBuilder(selections[newSelection].ToString()).Append(Tr.Get(Enum.GetName(unitType))).ToString(),
+                false
+            );
             try
             {
                 selection = newSelection;
-                if (GameStartManager.Instance != null && GameStartManager.Instance.LobbyInfoPane != null && GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane != null && GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.activeSelf)
+                if (FastDestroyableSingleton<GameStartManager>.Instance != null &&
+                    FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane != null &&
+                    FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane.LobbyViewSettingsPane != null &&
+                    FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.activeSelf)
                 {
-                    LobbyViewSettingsPaneChangeTabPatch.Postfix(GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane, GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.currentTab);
+                    LobbyViewSettingsPaneChangeTabPatch.Postfix(FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane.LobbyViewSettingsPane, FastDestroyableSingleton<GameStartManager>.Instance.LobbyInfoPane.LobbyViewSettingsPane.currentTab);
                 }
             }
             catch { }
         }
         selection = newSelection;
-        try
-        {
-            if (onChange != null) onChange();
-        }
-        catch { }
-
 
         if (optionBehaviour != null && optionBehaviour is StringOption stringOption)
         {
             stringOption.oldValue = stringOption.Value = selection;
-            stringOption.ValueText.text = selections[selection].ToString();
-            if (AmongUsClient.Instance?.AmHost == true && PlayerControl.LocalPlayer)
+            stringOption.ValueText.text = unitType == UnitType.None
+                    ? selections[selection].ToString()
+                    : new StringBuilder(selections[selection].ToString()).Append(Tr.Get(Enum.GetName(unitType))).ToString();
+            if (AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
             {
-                if (id == 0 && selection != preset)
+                if (options[0] == this && selection != preset)
                 {
-                    switchPreset(selection); // Switch presets
+                    // Switch presets
+                    switchPreset(selection);
                     ShareOptionSelections();
                 }
                 else if (entry != null)
                 {
-                    entry.Value = selection; // Save selection to config
-                    ShareOptionChange((uint)id);// Share single selection
+                    // Save selection to config
+                    entry.Value = selection;
+                    // Share single selection
+                    ShareOptionChange(this);
                 }
             }
         }
-        else if (id == 0 && AmongUsClient.Instance?.AmHost == true && PlayerControl.LocalPlayer)
-        {  // Share the preset switch for random maps, even if the menu isnt open!
+        else if (options[0] == this && AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
+        {
+            // Share the preset switch for random maps, even if the menu isn't open!
             switchPreset(selection);
-            ShareOptionSelections();// Share all selections
+            // Share all selections
+            ShareOptionSelections();
         }
 
         if (AmongUsClient.Instance?.AmHost == true)
@@ -250,12 +352,11 @@ public class CustomOption
             var currentTab = GameOptionsMenuStartPatch.currentTabs.FirstOrDefault(x => x.active).GetComponent<GameOptionsMenu>();
             if (currentTab != null)
             {
-                var optionType = options.First(x => x.optionBehaviour == currentTab.Children[0]).type;
+                var optionType = options.Values.First(x => x.optionBehaviour == currentTab.Children[0]).type;
                 GameOptionsMenuStartPatch.updateGameOptionsMenu(optionType, currentTab);
             }
 
         }
-
     }
 
     public static byte[] serializeOptions()
@@ -265,14 +366,14 @@ public class CustomOption
             using (BinaryWriter binaryWriter = new(memoryStream))
             {
                 int lastId = -1;
-                foreach (var option in CustomOption.options.OrderBy(x => x.id))
+                foreach (var option in CustomOption.options.OrderBy(x => x.Key))
                 {
-                    if (option.id == 0) continue;
-                    bool consecutive = lastId + 1 == option.id;
-                    lastId = option.id;
+                    if (option.Key == 0) continue;
+                    bool consecutive = lastId + 1 == option.Key;
+                    lastId = option.Key;
 
-                    binaryWriter.Write((byte)(option.selection + (consecutive ? 128 : 0)));
-                    if (!consecutive) binaryWriter.Write((ushort)option.id);
+                    binaryWriter.Write((byte)(option.Value.selection + (consecutive ? 128 : 0)));
+                    if (!consecutive) binaryWriter.Write((ushort)option.Key);
                 }
                 binaryWriter.Flush();
                 memoryStream.Position = 0L;
@@ -305,13 +406,13 @@ public class CustomOption
                 }
                 if (id == 0) continue;
                 lastId = id;
-                CustomOption option = options.First(option => option.id == id);
-                option.entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", option.id.ToString(), option.defaultSelection);
-                option.selection = selection;
-                if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOption)
+                var option = options.First(option => option.Key == id);
+                option.Value.entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", option.Key.ToString(), option.Value.defaultSelection);
+                option.Value.selection = selection;
+                if (option.Value.optionBehaviour != null && option.Value.optionBehaviour is StringOption stringOption)
                 {
-                    stringOption.oldValue = stringOption.Value = option.selection;
-                    stringOption.ValueText.text = option.selections[option.selection].ToString();
+                    stringOption.oldValue = stringOption.Value = option.Value.selection;
+                    stringOption.ValueText.text = option.Value.selections[option.Value.selection].ToString();
                 }
                 somethingApplied = true;
             }
@@ -507,25 +608,25 @@ class LobbyViewSettingsPatch
     public static void drawTab(LobbyViewSettingsPane __instance, CustomOptionType optionType)
     {
 
-        var relevantOptions = options.Where(x => x.type == optionType).ToList();
+        var relevantOptions = options.Values.Where(x => x.type == optionType).ToList();
 
         if ((int)optionType == 99)
         {
             // Create 4 Groups with Role settings only
             relevantOptions.Clear();
-            relevantOptions.AddRange(options.Where(x => x.type == CustomOptionType.Impostor && x.isHeader));
-            relevantOptions.AddRange(options.Where(x => x.type == CustomOptionType.Neutral && x.isHeader));
-            relevantOptions.AddRange(options.Where(x => x.type == CustomOptionType.Crewmate && x.isHeader));
-            relevantOptions.AddRange(options.Where(x => x.type == CustomOptionType.Modifier && x.isHeader));
-            foreach (var option in options)
+            relevantOptions.AddRange(options.Values.Where(x => x.type == CustomOptionType.Impostor && x.isHeader));
+            relevantOptions.AddRange(options.Values.Where(x => x.type == CustomOptionType.Neutral && x.isHeader));
+            relevantOptions.AddRange(options.Values.Where(x => x.type == CustomOptionType.Crewmate && x.isHeader));
+            relevantOptions.AddRange(options.Values.Where(x => x.type == CustomOptionType.Modifier && x.isHeader));
+            foreach (var (id, option) in options)
             {
                 if (option.parent != null && option.parent.getSelection() > 0)
                 {
-                    if (option.id == 103) //Deputy
+                    if (id == 103) //Deputy
                         relevantOptions.Insert(relevantOptions.IndexOf(CustomOptionHolder.sheriffSpawnRate) + 1, option);
-                    else if (option.id == 224) //Sidekick
+                    else if (id == 224) //Sidekick
                         relevantOptions.Insert(relevantOptions.IndexOf(CustomOptionHolder.jackalSpawnRate) + 1, option);
-                    else if (option.id == 358) //Prosecutor
+                    else if (id == 358) //Prosecutor
                         relevantOptions.Insert(relevantOptions.IndexOf(CustomOptionHolder.lawyerSpawnRate) + 1, option);
                 }
             }
@@ -557,12 +658,24 @@ class LobbyViewSettingsPatch
                 }
                 if (i % 2 != 0) singles++;
                 headers++; // for header
-                CategoryHeaderMasked categoryHeaderMasked = UnityEngine.Object.Instantiate<CategoryHeaderMasked>(__instance.categoryHeaderOrigin);
+
+                var categoryHeaderMasked = UnityEngine.Object.Instantiate(__instance.categoryHeaderOrigin);
                 categoryHeaderMasked.SetHeader(StringNames.ImpostorsCategory, 61);
-                categoryHeaderMasked.Title.text = option.heading != "" ? option.heading : option.name;
-                if ((int)optionType == 99)
-                    categoryHeaderMasked.Title.text = new Dictionary<CustomOptionType, string>() { { CustomOptionType.Impostor, "Impostor Roles" }, { CustomOptionType.Neutral, "Neutral Roles" },
-                        { CustomOptionType.Crewmate, "Crewmate Roles" }, { CustomOptionType.Modifier, "Modifiers" } }[curType];
+                categoryHeaderMasked.Title.text = option.headerKey != "" ?
+                    option.headerColor == null ? Tr.Get(option.headerKey) : Helpers.cs((Color)option.headerColor, Tr.Get(option.headerKey)) :
+                    option.titleColor == null ? Tr.Get(option.titleKey) : Helpers.cs((Color)option.titleColor, Tr.Get(option.titleKey));
+
+                if ((int)optionType is ROLE_OVERVIEW_ID)
+                {
+                    categoryHeaderMasked.Title.text = new Dictionary<CustomOptionType, string>()
+                    {
+                        { CustomOptionType.Impostor, Tr.Get("CategoryHeaderCrewmateRoles") },
+                        { CustomOptionType.Neutral, Tr.Get("CategoryHeaderNeutralRoles") },
+                        { CustomOptionType.Crewmate, Tr.Get("CategoryHeaderImpostorRoles") },
+                        { CustomOptionType.Modifier, Tr.Get("CategoryHeaderModifier")}
+                    }[curType];
+                }
+
                 categoryHeaderMasked.Title.outlineColor = Color.white;
                 categoryHeaderMasked.Title.outlineWidth = 0.2f;
                 categoryHeaderMasked.transform.SetParent(__instance.settingsContainer);
@@ -593,15 +706,24 @@ class LobbyViewSettingsPatch
             {
                 num2 = -3f;
             }
-            viewSettingsInfoPanel.transform.localPosition = new Vector3(num2, num, -2f);
-            int value = option.getSelection();
-            var settingTuple = handleSpecialOptionsView(option, option.name, option.selections[value].ToString());
+
+            viewSettingsInfoPanel.transform.localPosition = new(num2, num, -2f);
+            var value = option.getSelection();
+            var settingTuple = handleSpecialOptionsView(option, option.titleKey, option.unitType == UnitType.None
+                    ? option.selections[value].ToString()
+                    : new StringBuilder(option.selections[value].ToString()).Append(Tr.Get(Enum.GetName(option.unitType))).ToString()
+            );
             viewSettingsInfoPanel.SetInfo(StringNames.ImpostorsCategory, settingTuple.Item2, 61);
             viewSettingsInfoPanel.titleText.text = settingTuple.Item1;
-            if (option.isHeader && (int)optionType != 99 && option.heading == "" && (option.type == CustomOptionType.Neutral || option.type == CustomOptionType.Crewmate || option.type == CustomOptionType.Impostor || option.type == CustomOptionType.Modifier))
+
+            if (option.isHeader &&
+                option.headerKey == "" &&
+                (int)optionType is not ROLE_OVERVIEW_ID &&
+                (option.type is CustomOptionType.Neutral or CustomOptionType.Crewmate or CustomOptionType.Impostor or CustomOptionType.Modifier))
             {
                 viewSettingsInfoPanel.titleText.text = "Spawn Chance";
             }
+
             if ((int)optionType == 99)
             {
                 viewSettingsInfoPanel.titleText.outlineColor = Color.white;
@@ -805,18 +927,23 @@ class GameOptionsMenuStartPatch
         {
             if (option.isHeader)
             {
-                CategoryHeaderMasked categoryHeaderMasked = UnityEngine.Object.Instantiate<CategoryHeaderMasked>(menu.categoryHeaderOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
+                var categoryHeaderMasked = UnityEngine.Object.Instantiate(menu.categoryHeaderOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
                 categoryHeaderMasked.SetHeader(StringNames.ImpostorsCategory, 20);
-                categoryHeaderMasked.Title.text = option.heading != "" ? option.heading : option.name;
+                categoryHeaderMasked.Title.text = option.headerKey != "" ?
+                    option.headerColor == null ? Tr.Get(option.headerKey) : Helpers.cs((Color)option.headerColor, Tr.Get(option.headerKey)) :
+                    option.titleColor == null ? Tr.Get(option.titleKey) : Helpers.cs((Color)option.titleColor, Tr.Get(option.titleKey));
                 categoryHeaderMasked.Title.outlineColor = Color.white;
                 categoryHeaderMasked.Title.outlineWidth = 0.2f;
                 categoryHeaderMasked.transform.localScale = Vector3.one * 0.63f;
-                categoryHeaderMasked.transform.localPosition = new Vector3(-0.903f, num, -2f);
+                categoryHeaderMasked.transform.localPosition = new(-0.903f, num, -2f);
                 num -= 0.63f;
             }
-            else if (option.parent != null && (option.parent.selection == 0 && !option.invertedParent || option.parent.parent != null && option.parent.parent.selection == 0 && !option.parent.invertedParent)) continue;  // Hides options, for which the parent is disabled!
-            else if (option.parent != null && option.parent.selection != 0 && option.invertedParent) continue;
-            OptionBehaviour optionBehaviour = UnityEngine.Object.Instantiate<StringOption>(menu.stringOptionOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
+            else if (option.parent != null && (option.parent.selection == 0 || (option.parent.parent != null && option.parent.parent.selection == 0)))
+            {
+                continue;
+            }
+
+            var optionBehaviour = UnityEngine.Object.Instantiate<StringOption>(menu.stringOptionOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
             optionBehaviour.transform.localPosition = new Vector3(0.952f, num, -2f);
             optionBehaviour.SetClickMask(menu.ButtonClickMask);
 
@@ -834,17 +961,28 @@ class GameOptionsMenuStartPatch
 
             var stringOption = optionBehaviour as StringOption;
             stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => { });
-            stringOption.TitleText.text = option.name;
-            if (option.isHeader && option.heading == "" && (option.type == CustomOptionType.Neutral || option.type == CustomOptionType.Crewmate || option.type == CustomOptionType.Impostor || option.type == CustomOptionType.Modifier))
+            stringOption.TitleText.text = option.titleColor == null ? Tr.Get(option.titleKey) : Helpers.cs((Color)option.titleColor, Tr.Get(option.titleKey));
+
+            if (option.isHeader &&
+                option.headerKey == "" &&
+                (option.type is CustomOptionType.Neutral or CustomOptionType.Crewmate or CustomOptionType.Impostor or CustomOptionType.Modifier))
             {
-                stringOption.TitleText.text = "Spawn Chance";
+                stringOption.TitleText.text = Tr.Get("RoleOverviewTitle");
             }
+
             if (stringOption.TitleText.text.Length > 25)
+            {
                 stringOption.TitleText.fontSize = 2.2f;
+            }
             if (stringOption.TitleText.text.Length > 40)
+            {
                 stringOption.TitleText.fontSize = 2f;
+            }
+
             stringOption.Value = stringOption.oldValue = option.selection;
-            stringOption.ValueText.text = option.selections[option.selection].ToString();
+            stringOption.ValueText.text = option.unitType == UnitType.None
+                    ? option.selections[option.selection].ToString()
+                    : new StringBuilder(option.selections[option.selection].ToString()).Append(Tr.Get(Enum.GetName(option.unitType))).ToString();
             option.optionBehaviour = stringOption;
 
             menu.Children.Add(optionBehaviour);
@@ -924,7 +1062,7 @@ class GameOptionsMenuStartPatch
         }
         torSettingsGOM.scrollBar.transform.FindChild("SliderInner").DestroyChildren();
         torSettingsGOM.Children.Clear();
-        var relevantOptions = options.Where(x => x.type == optionType).ToList();
+        var relevantOptions = options.Values.Where(x => x.type == optionType).ToList();
         createSettings(torSettingsGOM, relevantOptions);
     }
 
@@ -960,7 +1098,7 @@ public class StringOptionEnablePatch
 {
     public static bool Prefix(StringOption __instance)
     {
-        CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
+        CustomOption option = CustomOption.options.Values.FirstOrDefault(option => option.optionBehaviour == __instance);
         if (option == null) return true;
 
         __instance.OnValueChanged = new Action<OptionBehaviour>((o) => { });
@@ -977,7 +1115,7 @@ public class StringOptionIncreasePatch
 {
     public static bool Prefix(StringOption __instance)
     {
-        CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
+        CustomOption option = CustomOption.options.Values.FirstOrDefault(option => option.optionBehaviour == __instance);
         if (option == null) return true;
         option.updateSelection(option.selection + 1);
         return false;
@@ -989,7 +1127,7 @@ public class StringOptionDecreasePatch
 {
     public static bool Prefix(StringOption __instance)
     {
-        CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
+        CustomOption option = CustomOption.options.Values.FirstOrDefault(option => option.optionBehaviour == __instance);
         if (option == null) return true;
         option.updateSelection(option.selection - 1);
         return false;
@@ -1056,8 +1194,8 @@ class GameOptionsDataPatch
     public static string buildModifierExtras(CustomOption customOption)
     {
         // find options children with quantity
-        var children = CustomOption.options.Where(o => o.parent == customOption);
-        var quantity = children.Where(o => o.name.Contains("Quantity")).ToList();
+        var children = CustomOption.options.Values.Where(o => o.parent == customOption);
+        var quantity = children.Where(o => o.titleKey.Contains("Quantity")).ToList();
         if (customOption.getSelection() == 0) return "";
         if (quantity.Count == 1) return $" ({quantity[0].getQuantity()})";
         if (customOption == CustomOptionHolder.modifierLover)
@@ -1070,42 +1208,42 @@ class GameOptionsDataPatch
     private static string buildOptionsOfType(CustomOptionType type, bool headerOnly)
     {
         StringBuilder sb = new("\n");
-        var options = CustomOption.options.Where(o => o.type == type);
+        var options = CustomOption.options.Where(o => o.Value.type == type);
         if (MapOptions.gameMode == CustomGamemodes.Classic)
         {
-            options = options.Where(x => !(x == CustomOptionHolder.crewmateRolesFill));
+            options = options.Where(x => !(x.Value == CustomOptionHolder.crewmateRolesFill));
         }
 
-        foreach (var option in options)
+        foreach (var (id, option) in options)
         {
             if (option.parent == null)
             {
-                string line = $"{option.name}: {option.selections[option.selection].ToString()}";
+                string line = $"{option.titleKey}: {option.selections[option.selection].ToString()}";
                 if (type == CustomOptionType.Modifier) line += buildModifierExtras(option);
                 sb.AppendLine(line);
             }
-            else if (option.parent.getSelection() > 0 || option.invertedParent && option.parent.getSelection() == 0)
+            else if (option.parent.getSelection() > 0)
             {
-                if (option.id == 103) //Deputy
+                if (id == 103) //Deputy
                     sb.AppendLine($"- {Helpers.cs(Deputy.color, "Deputy")}: {option.selections[option.selection].ToString()}");
-                else if (option.id == 224) //Sidekick
+                else if (id == 224) //Sidekick
                     sb.AppendLine($"- {Helpers.cs(Sidekick.color, "Sidekick")}: {option.selections[option.selection].ToString()}");
-                else if (option.id == 358) //Prosecutor
+                else if (id == 358) //Prosecutor
                     sb.AppendLine($"- {Helpers.cs(Lawyer.color, "Prosecutor")}: {option.selections[option.selection].ToString()}");
             }
         }
         if (headerOnly) return sb.ToString();
         else sb = new StringBuilder();
 
-        foreach (CustomOption option in options)
+        foreach (var (id, option) in options)
         {
             if (option.parent != null)
             {
-                bool isIrrelevant = (option.parent.getSelection() == 0 && !option.invertedParent) || (option.parent.parent != null && option.parent.parent.getSelection() == 0 && !option.parent.invertedParent);
+                bool isIrrelevant = (option.parent.getSelection() == 0) || (option.parent.parent != null && option.parent.parent.getSelection() == 0);
 
                 Color c = isIrrelevant ? Color.grey : Color.white;  // No use for now
                 if (isIrrelevant) continue;
-                sb.AppendLine(Helpers.cs(c, $"{option.name}: {option.selections[option.selection].ToString()}"));
+                sb.AppendLine(Helpers.cs(c, $"{option.titleKey}: {option.selections[option.selection].ToString()}"));
             }
             else
             {
@@ -1165,13 +1303,12 @@ class GameOptionsDataPatch
                 }
                 else
                 {
-                    sb.AppendLine($"\n{option.name}: {option.selections[option.selection].ToString()}");
+                    sb.AppendLine($"\n{option.titleKey}: {option.selections[option.selection].ToString()}");
                 }
             }
         }
         return sb.ToString();
     }
-
 
     public static int maxPage = 7;
     public static string buildAllOptions(string vanillaSettings = "", bool hideExtras = false)

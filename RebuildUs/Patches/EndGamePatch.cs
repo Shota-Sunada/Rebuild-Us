@@ -71,7 +71,7 @@ public static class OnGameEndPatch
         }
 
         // Remove Jester, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
-        List<PlayerControl> notWinners = [];
+        var notWinners = new List<PlayerControl>();
         if (Jester.jester != null) notWinners.Add(Jester.jester);
         if (Sidekick.sidekick != null) notWinners.Add(Sidekick.sidekick);
         if (Jackal.jackal != null) notWinners.Add(Jackal.jackal);
@@ -83,7 +83,7 @@ public static class OnGameEndPatch
 
         notWinners.AddRange(Jackal.formerJackals);
 
-        List<CachedPlayerData> winnersToRemove = [];
+        var winnersToRemove = new List<CachedPlayerData>();
         foreach (CachedPlayerData winner in EndGameResult.CachedWinners.GetFastEnumerator())
         {
             if (notWinners.Any(x => x.Data.PlayerName == winner.PlayerName)) winnersToRemove.Add(winner);
@@ -104,8 +104,10 @@ public static class OnGameEndPatch
         if (miniLose)
         {
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            CachedPlayerData wpd = new(Mini.mini.Data);
-            wpd.IsYou = false; // If "no one is the Mini", it will display the Mini, but also show defeat to everyone
+            var wpd = new CachedPlayerData(Mini.mini.Data)
+            {
+                IsYou = false // If "no one is the Mini", it will display the Mini, but also show defeat to everyone
+            };
             EndGameResult.CachedWinners.Add(wpd);
             AdditionalTempData.winCondition = WinCondition.MiniLose;
         }
@@ -114,7 +116,7 @@ public static class OnGameEndPatch
         else if (jesterWin)
         {
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            CachedPlayerData wpd = new(Jester.jester.Data);
+            var wpd = new CachedPlayerData(Jester.jester.Data);
             EndGameResult.CachedWinners.Add(wpd);
             AdditionalTempData.winCondition = WinCondition.JesterWin;
         }
@@ -123,7 +125,7 @@ public static class OnGameEndPatch
         else if (arsonistWin)
         {
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            CachedPlayerData wpd = new(Arsonist.arsonist.Data);
+            var wpd = new CachedPlayerData(Arsonist.arsonist.Data);
             EndGameResult.CachedWinners.Add(wpd);
             AdditionalTempData.winCondition = WinCondition.ArsonistWin;
         }
@@ -132,7 +134,7 @@ public static class OnGameEndPatch
         else if (vultureWin)
         {
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            CachedPlayerData wpd = new(Vulture.vulture.Data);
+            var wpd = new CachedPlayerData(Vulture.vulture.Data);
             EndGameResult.CachedWinners.Add(wpd);
             AdditionalTempData.winCondition = WinCondition.VultureWin;
         }
@@ -141,7 +143,7 @@ public static class OnGameEndPatch
         else if (prosecutorWin)
         {
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            CachedPlayerData wpd = new(Lawyer.lawyer.Data);
+            var wpd = new CachedPlayerData(Lawyer.lawyer.Data);
             EndGameResult.CachedWinners.Add(wpd);
             AdditionalTempData.winCondition = WinCondition.ProsecutorWin;
         }
@@ -181,19 +183,19 @@ public static class OnGameEndPatch
             // Jackal wins if nobody except jackal is alive
             AdditionalTempData.winCondition = WinCondition.JackalWin;
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            CachedPlayerData wpd = new(Jackal.jackal.Data);
+            var wpd = new CachedPlayerData(Jackal.jackal.Data);
             wpd.IsImpostor = false;
             EndGameResult.CachedWinners.Add(wpd);
             // If there is a sidekick. The sidekick also wins
             if (Sidekick.sidekick != null)
             {
-                CachedPlayerData wpdSidekick = new(Sidekick.sidekick.Data);
+                var wpdSidekick = new CachedPlayerData(Sidekick.sidekick.Data);
                 wpdSidekick.IsImpostor = false;
                 EndGameResult.CachedWinners.Add(wpdSidekick);
             }
             foreach (var player in Jackal.formerJackals)
             {
-                CachedPlayerData wpdFormerJackal = new(player.Data);
+                var wpdFormerJackal = new CachedPlayerData(player.Data);
                 wpdFormerJackal.IsImpostor = false;
                 EndGameResult.CachedWinners.Add(wpdFormerJackal);
             }
@@ -260,7 +262,7 @@ public class EndGameManagerSetUpPatch
             PoolablePlayer poolablePlayer = UnityEngine.Object.Instantiate<PoolablePlayer>(__instance.PlayerPrefab, __instance.transform);
             poolablePlayer.transform.localPosition = new Vector3(1f * (float)num2 * (float)num3 * num5, FloatRange.SpreadToEdges(-1.125f, 0f, num3, num), num6 + (float)num3 * 0.01f) * 0.9f;
             float num7 = Mathf.Lerp(1f, 0.65f, num4) * 0.9f;
-            Vector3 vector = new(num7, num7, 1f);
+            var vector = new Vector3(num7, num7, 1f);
             poolablePlayer.transform.localScale = vector;
             if (CachedPlayerData2.IsDead)
             {
@@ -498,10 +500,7 @@ class CheckEndCriteriaPatch
             }
         }
         var systemType2 = MapUtilities.Systems.ContainsKey(SystemTypes.Reactor) ? MapUtilities.Systems[SystemTypes.Reactor] : null;
-        if (systemType2 == null)
-        {
-            systemType2 = MapUtilities.Systems.ContainsKey(SystemTypes.Laboratory) ? MapUtilities.Systems[SystemTypes.Laboratory] : null;
-        }
+        systemType2 ??= MapUtilities.Systems.ContainsKey(SystemTypes.Laboratory) ? MapUtilities.Systems[SystemTypes.Laboratory] : null;
         if (systemType2 != null)
         {
             ICriticalSabotage criticalSystem = systemType2.TryCast<ICriticalSabotage>();

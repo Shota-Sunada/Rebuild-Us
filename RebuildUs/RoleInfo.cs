@@ -39,8 +39,8 @@ public class RoleInfo
     public static RoleInfo mayor = new("Mayor", Mayor.color, "Your vote counts twice", "Your vote counts twice", RoleId.Mayor);
     public static RoleInfo portalmaker = new("Portalmaker", Portalmaker.color, "You can create portals", "You can create portals", RoleId.Portalmaker);
     public static RoleInfo engineer = new("Engineer", Engineer.color, "Maintain important systems on the ship", "Repair the ship", RoleId.Engineer);
-    public static RoleInfo sheriff = new("Sheriff", Sheriff.color, "Shoot the <color=#FF1919FF>Impostors</color>", "Shoot the Impostors", RoleId.Sheriff);
-    public static RoleInfo deputy = new("Deputy", Sheriff.color, "Handcuff the <color=#FF1919FF>Impostors</color>", "Handcuff the Impostors", RoleId.Deputy);
+    public static RoleInfo sheriff = new("Sheriff", RebuildPalette.SheriffYellow, "Shoot the <color=#FF1919FF>Impostors</color>", "Shoot the Impostors", RoleId.Sheriff);
+    public static RoleInfo deputy = new("Deputy", RebuildPalette.SheriffYellow, "Handcuff the <color=#FF1919FF>Impostors</color>", "Handcuff the Impostors", RoleId.Deputy);
     public static RoleInfo lighter = new("Lighter", Lighter.color, "Your light never goes out", "Your light never goes out", RoleId.Lighter);
     public static RoleInfo godfather = new("Godfather", Godfather.color, "Kill all Crewmates", "Kill all Crewmates", RoleId.Godfather);
     public static RoleInfo mafioso = new("Mafioso", Mafioso.color, "Work with the <color=#FF1919FF>Mafia</color> to kill the Crewmates", "Kill all Crewmates", RoleId.Mafioso);

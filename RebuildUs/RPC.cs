@@ -21,6 +21,16 @@ namespace RebuildUs;
 
 public static class RPCProcedure
 {
+    public static RPCSender SendRPC(uint netId, CustomRPC callId, int targetId = -1)
+    {
+        return new RPCSender(netId, callId, targetId);
+    }
+
+    public static RPCSender SendRPC(CustomRPC callId, int targetId = -1)
+    {
+        return new RPCSender(PlayerControl.LocalPlayer.NetId, callId, targetId);
+    }
+
     // Main Controls
     public static void resetVariables()
     {
@@ -32,7 +42,7 @@ public static class RPCProcedure
         Bloodytrail.resetSprites();
         Trap.clearTraps();
         clearAndReloadMapOptions();
-        clearAndReloadRoles();
+        ClearAndReloadRoles();
         clearGameHistory();
         setCustomButtonCooldowns();
         CustomButton.ReloadHotkeys();
@@ -53,7 +63,7 @@ public static class RPCProcedure
             {
                 uint optionId = reader.ReadPackedUInt32();
                 uint selection = reader.ReadPackedUInt32();
-                CustomOption option = CustomOption.options.First(option => option.id == (int)optionId);
+                var option = CustomOption.options.First(option => option.Key == (int)optionId).Value;
                 option.updateSelection((int)selection, i == numberOfOptions - 1);
             }
         }

@@ -1,11 +1,16 @@
 using HarmonyLib;
+using RebuildUs.Objects;
 using UnityEngine;
+using TMPro;
 
 namespace RebuildUs.Roles.Crewmate;
 
 [HarmonyPatch]
 public class Sheriff : RoleBase<Sheriff>
 {
+    private static CustomButton sheriffKillButton;
+    public static TMP_Text sheriffNumShotsText;
+
     public static Color Color = RebuildPalette.SheriffYellow;
 
     public Sheriff()
