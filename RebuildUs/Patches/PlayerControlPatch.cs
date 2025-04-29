@@ -75,13 +75,13 @@ public static class PlayerControlFixedUpdatePatch
         {
             if (target == null || target.cosmetics?.currentBodySprite?.BodySprite == null) continue;
 
-            bool isMorphedMorphling = target == Morphling.morphling && Morphling.morphTarget != null && Morphling.morphTimer > 0f;
+            bool isMorphedMorphling = target == Morphing.morphing && Morphing.morphTarget != null && Morphing.morphTimer > 0f;
             bool hasVisibleShield = false;
             Color color = Medic.shieldedColor;
             if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && Medic.shieldVisible(target))
                 hasVisibleShield = true;
 
-            if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && MapOptions.firstKillPlayer != null && MapOptions.shieldFirstKill && ((target == MapOptions.firstKillPlayer && !isMorphedMorphling) || (isMorphedMorphling && Morphling.morphTarget == MapOptions.firstKillPlayer)))
+            if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && MapOptions.firstKillPlayer != null && MapOptions.shieldFirstKill && ((target == MapOptions.firstKillPlayer && !isMorphedMorphling) || (isMorphedMorphling && Morphing.morphTarget == MapOptions.firstKillPlayer)))
             {
                 hasVisibleShield = true;
                 color = Color.blue;
@@ -186,9 +186,9 @@ public static class PlayerControlFixedUpdatePatch
 
     static void morphlingSetTarget()
     {
-        if (Morphling.morphling == null || Morphling.morphling != PlayerControl.LocalPlayer) return;
-        Morphling.currentTarget = setTarget();
-        setPlayerOutline(Morphling.currentTarget, Morphling.color);
+        if (Morphing.morphing == null || Morphing.morphing != PlayerControl.LocalPlayer) return;
+        Morphing.currentTarget = setTarget();
+        setPlayerOutline(Morphing.currentTarget, Morphing.color);
     }
 
     static void sheriffSetTarget()
@@ -553,7 +553,7 @@ public static class PlayerControlFixedUpdatePatch
         collider.offset = Mini.defaultColliderOffset * Vector2.down;
 
         // Set adapted player size to Mini and Morphling
-        if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0) return;
+        if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == Morphing.morphing && Morphing.morphTimer > 0) return;
 
         float growingProgress = Mini.growingProgress();
         float scale = growingProgress * 0.35f + 0.35f;
@@ -564,7 +564,7 @@ public static class PlayerControlFixedUpdatePatch
             p.transform.localScale = new Vector3(scale, scale, 1f);
             collider.radius = correctedColliderRadius;
         }
-        if (Morphling.morphling != null && p == Morphling.morphling && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f)
+        if (Morphing.morphing != null && p == Morphing.morphing && Morphing.morphTarget == Mini.mini && Morphing.morphTimer > 0f)
         {
             p.transform.localScale = new Vector3(scale, scale, 1f);
             collider.radius = correctedColliderRadius;
@@ -893,9 +893,9 @@ public static class PlayerControlFixedUpdatePatch
         if (!mushroomSaboWasActive) mushroomSaboWasActive = mushRoomSaboIsActive;
 
         float oldCamouflageTimer = Camouflager.camouflageTimer;
-        float oldMorphTimer = Morphling.morphTimer;
+        float oldMorphTimer = Morphing.morphTimer;
         Camouflager.camouflageTimer = Mathf.Max(0f, Camouflager.camouflageTimer - Time.fixedDeltaTime);
-        Morphling.morphTimer = Mathf.Max(0f, Morphling.morphTimer - Time.fixedDeltaTime);
+        Morphing.morphTimer = Mathf.Max(0f, Morphing.morphTimer - Time.fixedDeltaTime);
 
         if (mushRoomSaboIsActive) return;
 
@@ -903,20 +903,20 @@ public static class PlayerControlFixedUpdatePatch
         if (oldCamouflageTimer > 0f && Camouflager.camouflageTimer <= 0f)
         {
             Camouflager.resetCamouflage();
-            if (Morphling.morphTimer > 0f && Morphling.morphling != null && Morphling.morphTarget != null)
+            if (Morphing.morphTimer > 0f && Morphing.morphing != null && Morphing.morphTarget != null)
             {
-                PlayerControl target = Morphling.morphTarget;
-                Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+                PlayerControl target = Morphing.morphTarget;
+                Morphing.morphing.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
             }
         }
 
         // If the MushRoomSabotage ends while Morph is still active set the Morphlings look to the target's look
         if (mushroomSaboWasActive)
         {
-            if (Morphling.morphTimer > 0f && Morphling.morphling != null && Morphling.morphTarget != null)
+            if (Morphing.morphTimer > 0f && Morphing.morphing != null && Morphing.morphTarget != null)
             {
-                PlayerControl target = Morphling.morphTarget;
-                Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+                PlayerControl target = Morphing.morphTarget;
+                Morphing.morphing.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
             }
             if (Camouflager.camouflageTimer > 0)
             {
@@ -926,8 +926,8 @@ public static class PlayerControlFixedUpdatePatch
         }
 
         // Morphling reset (only if camouflage is inactive)
-        if (Camouflager.camouflageTimer <= 0f && oldMorphTimer > 0f && Morphling.morphTimer <= 0f && Morphling.morphling != null)
-            Morphling.resetMorph();
+        if (Camouflager.camouflageTimer <= 0f && oldMorphTimer > 0f && Morphing.morphTimer <= 0f && Morphing.morphing != null)
+            Morphing.resetMorph();
         mushroomSaboWasActive = false;
     }
 
@@ -1212,8 +1212,8 @@ class PlayerPhysicsWalkPlayerToPatch
     private static Vector2 offset = Vector2.zero;
     public static void Prefix(PlayerPhysics __instance)
     {
-        bool correctOffset = Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && (__instance.myPlayer == Mini.mini || (Morphling.morphling != null && __instance.myPlayer == Morphling.morphling && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f));
-        correctOffset = correctOffset && !(Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f);
+        bool correctOffset = Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && (__instance.myPlayer == Mini.mini || (Morphing.morphing != null && __instance.myPlayer == Morphing.morphing && Morphing.morphTarget == Mini.mini && Morphing.morphTimer > 0f));
+        correctOffset = correctOffset && !(Mini.mini == Morphing.morphing && Morphing.morphTimer > 0f);
         if (correctOffset)
         {
             float currentScaling = (Mini.growingProgress() + 1) * 0.5f;
@@ -1489,7 +1489,7 @@ class KillAnimationSetMovementPatch
     public static void Prefix(PlayerControl source, bool canMove)
     {
         Color color = source.cosmetics.currentBodySprite.BodySprite.material.GetColor("_BodyColor");
-        if (Morphling.morphling != null && source.Data.PlayerId == Morphling.morphling.PlayerId)
+        if (Morphing.morphing != null && source.Data.PlayerId == Morphing.morphing.PlayerId)
         {
             var index = Palette.PlayerColors.IndexOf(color);
             if (index != -1) colorId = index;

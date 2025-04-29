@@ -53,7 +53,7 @@ public class Portal
         bool flip = playerControl.cosmetics.currentBodySprite.BodySprite.flipX; // use the original player control here, not the morhpTarget.
         firstPortal.animationFgRenderer.flipX = flip;
         secondPortal.animationFgRenderer.flipX = flip;
-        if (Morphling.morphling != null && Morphling.morphTimer > 0) playerControl = Morphling.morphTarget;  // Will output info of morph-target instead
+        if (Morphing.morphing != null && Morphing.morphTimer > 0) playerControl = Morphing.morphTarget;  // Will output info of morph-target instead
         string playerNameDisplay = Portalmaker.logOnlyHasColors ? "A player (" + (Helpers.isLighterColor(playerControl) ? "L" : "D") + ")" : playerControl.Data.PlayerName;
 
         int colorId = playerControl.Data.DefaultOutfit.ColorId;

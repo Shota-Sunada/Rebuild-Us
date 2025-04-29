@@ -34,7 +34,7 @@
     "HidePlayerNames": "Hide Player Names",
     "AllowParallelMedBayScans": "Allow Parallel Med-Bay Scans",
     "UnitPercent": "%",
-    "UnitPlayers": "P",
+    "UnitPlayers": "",
     "UnitSeconds": "s",
     "UnitTimes": "x",
     "UnitMinutes": "m",

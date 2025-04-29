@@ -100,9 +100,9 @@ public class FootprintHolder : MonoBehaviour
             {
                 color = Palette.PlayerColors[6];
             }
-            else if (activeFootprint.Owner == Morphling.morphling && Morphling.morphTimer > 0 && Morphling.morphTarget && Morphling.morphTarget.Data != null)
+            else if (activeFootprint.Owner == Morphing.morphing && Morphing.morphTimer > 0 && Morphing.morphTarget && Morphing.morphTarget.Data != null)
             {
-                color = Palette.PlayerColors[Morphling.morphTarget.Data.DefaultOutfit.ColorId];
+                color = Palette.PlayerColors[Morphing.morphTarget.Data.DefaultOutfit.ColorId];
             }
             else
             {

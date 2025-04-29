@@ -42,10 +42,9 @@ public static class RPCProcedure
         Bloodytrail.resetSprites();
         Trap.clearTraps();
         clearAndReloadMapOptions();
-        ClearAndReloadRoles();
+        clearAndReloadRoles();
         clearGameHistory();
         setCustomButtonCooldowns();
-        CustomButton.ReloadHotkeys();
         reloadPluginOptions();
         Helpers.toggleZoom(reset: true);
         GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 0;
@@ -64,7 +63,7 @@ public static class RPCProcedure
                 uint optionId = reader.ReadPackedUInt32();
                 uint selection = reader.ReadPackedUInt32();
                 var option = CustomOption.options.First(option => option.Key == (int)optionId).Value;
-                option.updateSelection((int)selection, i == numberOfOptions - 1);
+                option.updateSelection((int)optionId, (int)selection, i == numberOfOptions - 1);
             }
         }
         catch (Exception e)
@@ -185,7 +184,7 @@ public static class RPCProcedure
                         Seer.seer = player;
                         break;
                     case RoleId.Morphling:
-                        Morphling.morphling = player;
+                        Morphing.morphing = player;
                         break;
                     case RoleId.Camouflager:
                         Camouflager.camouflager = player;
@@ -528,15 +527,15 @@ public static class RPCProcedure
         }
     }
 
-    public static void morphlingMorph(byte playerId)
+    public static void morphingMorph(byte playerId)
     {
         PlayerControl target = Helpers.playerById(playerId);
-        if (Morphling.morphling == null || target == null) return;
+        if (Morphing.morphing == null || target == null) return;
 
-        Morphling.morphTimer = Morphling.duration;
-        Morphling.morphTarget = target;
+        Morphing.morphTimer = Morphing.duration;
+        Morphing.morphTarget = target;
         if (Camouflager.camouflageTimer <= 0f)
-            Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+            Morphing.morphing.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
     }
 
     public static void camouflagerCamouflage()
@@ -671,7 +670,7 @@ public static class RPCProcedure
         if (player == Trapper.trapper) Trapper.clearAndReload();
 
         // Impostor roles
-        if (player == Morphling.morphling) Morphling.clearAndReload();
+        if (player == Morphing.morphing) Morphing.clearAndReload();
         if (player == Camouflager.camouflager) Camouflager.clearAndReload();
         if (player == Godfather.godfather) Godfather.clearAndReload();
         if (player == Mafioso.mafioso) Mafioso.clearAndReload();
@@ -1079,7 +1078,7 @@ public static class RPCProcedure
         if (target == Godfather.godfather) Godfather.godfather = thief;
         if (target == Mafioso.mafioso) Mafioso.mafioso = thief;
         if (target == Janitor.janitor) Janitor.janitor = thief;
-        if (target == Morphling.morphling) Morphling.morphling = thief;
+        if (target == Morphing.morphing) Morphing.morphing = thief;
         if (target == Camouflager.camouflager) Camouflager.camouflager = thief;
         if (target == Vampire.vampire) Vampire.vampire = thief;
         if (target == Eraser.eraser) Eraser.eraser = thief;
@@ -1371,8 +1370,8 @@ class RPCHandlerPatch
             case (byte)CustomRPC.MayorSetVoteTwice:
                 Mayor.voteTwice = reader.ReadBoolean();
                 break;
-            case (byte)CustomRPC.MorphlingMorph:
-                RPCProcedure.morphlingMorph(reader.ReadByte());
+            case (byte)CustomRPC.MorphingMorph:
+                RPCProcedure.morphingMorph(reader.ReadByte());
                 break;
             case (byte)CustomRPC.CamouflagerCamouflage:
                 RPCProcedure.camouflagerCamouflage();

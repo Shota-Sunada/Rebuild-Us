@@ -20,11 +20,13 @@
         "Mathf",
         "Minigame",
         "Poolable",
+        "portalmaker",
         "sabo",
         "shota",
         "Shudo",
         "sunada",
         "targetable",
-        "untargetable"
+        "untargetable",
+        "yoyo"
     ]
 }

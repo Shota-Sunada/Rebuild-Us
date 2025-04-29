@@ -37,7 +37,7 @@ public static class RebuildUs
         Swapper.clearAndReload();
         Lovers.clearAndReload();
         Seer.clearAndReload();
-        Morphling.clearAndReload();
+        Morphing.clearAndReload();
         Camouflager.clearAndReload();
         Hacker.clearAndReload();
         Tracker.clearAndReload();
@@ -274,6 +274,9 @@ public static class RebuildUs
 
     public static class Sheriff
     {
+        public static PlayerControl sheriff;
+        public static Color color = RebuildPalette.SheriffYellow;
+
         public static float cooldown = 30f;
         public static bool canKillNeutrals = false;
         public static bool spyCanDieToSheriff = false;
@@ -412,7 +415,7 @@ public static class RebuildUs
         {
             detective = null;
             anonymousFootprints = CustomOptionHolder.detectiveAnonymousFootprints.getBool();
-            footprintIntervall = CustomOptionHolder.detectiveFootprintIntervall.getFloat();
+            footprintIntervall = CustomOptionHolder.detectiveFootprintInterval.getFloat();
             footprintDuration = CustomOptionHolder.detectiveFootprintDuration.getFloat();
             reportNameDuration = CustomOptionHolder.detectiveReportNameDuration.getFloat();
             reportColorDuration = CustomOptionHolder.detectiveReportColorDuration.getFloat();
@@ -484,8 +487,8 @@ public static class Medic
     {
         bool hasVisibleShield = false;
 
-        bool isMorphedMorphling = target == Morphling.morphling && Morphling.morphTarget != null && Morphling.morphTimer > 0f;
-        if (Medic.shielded != null && ((target == Medic.shielded && !isMorphedMorphling) || (isMorphedMorphling && Morphling.morphTarget == Medic.shielded)))
+        bool isMorphedMorphling = target == Morphing.morphing && Morphing.morphTarget != null && Morphing.morphTimer > 0f;
+        if (Medic.shielded != null && ((target == Medic.shielded && !isMorphedMorphling) || (isMorphedMorphling && Morphing.morphTarget == Medic.shielded)))
         {
             hasVisibleShield = Medic.showShielded == 0 || Helpers.shouldShowGhostInfo() // Everyone or Ghost info
                 || (Medic.showShielded == 1 && (PlayerControl.LocalPlayer == Medic.shielded || PlayerControl.LocalPlayer == Medic.medic)) // Shielded + Medic
@@ -638,9 +641,9 @@ public static class Seer
     }
 }
 
-public static class Morphling
+public static class Morphing
 {
-    public static PlayerControl morphling;
+    public static PlayerControl morphing;
     public static Color color = Palette.ImpostorRed;
     private static Sprite sampleSprite;
     private static Sprite morphSprite;
@@ -657,20 +660,20 @@ public static class Morphling
     {
         morphTarget = null;
         morphTimer = 0f;
-        if (morphling == null) return;
-        morphling.setDefaultLook();
+        if (morphing == null) return;
+        morphing.setDefaultLook();
     }
 
     public static void clearAndReload()
     {
         resetMorph();
-        morphling = null;
+        morphing = null;
         currentTarget = null;
         sampledTarget = null;
         morphTarget = null;
         morphTimer = 0f;
-        cooldown = CustomOptionHolder.morphlingCooldown.getFloat();
-        duration = CustomOptionHolder.morphlingDuration.getFloat();
+        cooldown = CustomOptionHolder.morphingCooldown.getFloat();
+        duration = CustomOptionHolder.morphingDuration.getFloat();
     }
 
     public static Sprite getSampleSprite()
@@ -790,7 +793,7 @@ public static class Hacker
         hackerTimer = 0f;
         adminSprite = null;
         cooldown = CustomOptionHolder.hackerCooldown.getFloat();
-        duration = CustomOptionHolder.hackerHackeringDuration.getFloat();
+        duration = CustomOptionHolder.hackerHackingDuration.getFloat();
         onlyColorType = CustomOptionHolder.hackerOnlyColorType.getBool();
         toolsNumber = CustomOptionHolder.hackerToolsNumber.getFloat();
         rechargeTasksNumber = Mathf.RoundToInt(CustomOptionHolder.hackerRechargeTasksNumber.getFloat());
@@ -855,7 +858,7 @@ public static class Tracker
         tracker = null;
         resetTracked();
         timeUntilUpdate = 0f;
-        updateIntervall = CustomOptionHolder.trackerUpdateIntervall.getFloat();
+        updateIntervall = CustomOptionHolder.trackerUpdateInterval.getFloat();
         resetTargetAfterMeeting = CustomOptionHolder.trackerResetTargetAfterMeeting.getBool();
         if (localArrows != null)
         {
@@ -1011,7 +1014,7 @@ public static class Jackal
         jackalPromotedFromSidekickCanCreateSidekick = CustomOptionHolder.jackalPromotedFromSidekickCanCreateSidekick.getBool();
         canCreateSidekickFromImpostor = CustomOptionHolder.jackalCanCreateSidekickFromImpostor.getBool();
         formerJackals.Clear();
-        hasImpostorVision = CustomOptionHolder.jackalAndSidekickHaveImpostorVision.getBool();
+        hasImpostorVision = CustomOptionHolder.teamJackalHaveImpostorVision.getBool();
         wasTeamRed = wasImpostor = wasSpy = false;
         canSabotageLights = CustomOptionHolder.jackalCanSabotageLights.getBool();
     }
@@ -1044,7 +1047,7 @@ public static class Sidekick
         canUseVents = CustomOptionHolder.sidekickCanUseVents.getBool();
         canKill = CustomOptionHolder.sidekickCanKill.getBool();
         promotesToJackal = CustomOptionHolder.sidekickPromotesToJackal.getBool();
-        hasImpostorVision = CustomOptionHolder.jackalAndSidekickHaveImpostorVision.getBool();
+        hasImpostorVision = CustomOptionHolder.teamJackalHaveImpostorVision.getBool();
         wasTeamRed = wasImpostor = wasSpy = false;
         canSabotageLights = CustomOptionHolder.sidekickCanSabotageLights.getBool();
     }
@@ -1210,7 +1213,7 @@ public static class Warlock
     public static void resetCurse()
     {
         HudManagerStartPatch.warlockCurseButton.Timer = HudManagerStartPatch.warlockCurseButton.MaxTimer;
-        HudManagerStartPatch.warlockCurseButton.Sprite = Warlock.getCurseButtonSprite();
+        HudManagerStartPatch.warlockCurseButton.sprite = Warlock.getCurseButtonSprite();
         HudManagerStartPatch.warlockCurseButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
         currentTarget = null;
         curseVictim = null;
@@ -1471,7 +1474,7 @@ public static class BountyHunter
         bountyKillCooldown = CustomOptionHolder.bountyHunterReducedCooldown.getFloat();
         punishmentTime = CustomOptionHolder.bountyHunterPunishmentTime.getFloat();
         showArrow = CustomOptionHolder.bountyHunterShowArrow.getBool();
-        arrowUpdateIntervall = CustomOptionHolder.bountyHunterArrowUpdateIntervall.getFloat();
+        arrowUpdateIntervall = CustomOptionHolder.bountyHunterArrowUpdateInterval.getFloat();
     }
 }
 

@@ -818,10 +818,10 @@ class SurveillanceMinigamePatch
                 {
                     pc.setLook("", 6, "", "", "", "", false);
                 }
-                else if (pc == Morphling.morphling && Morphling.morphTimer > 0)
+                else if (pc == Morphing.morphing && Morphing.morphTimer > 0)
                 {
-                    PlayerControl target = Morphling.morphTarget;
-                    Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, false);
+                    PlayerControl target = Morphing.morphTarget;
+                    Morphing.morphing.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, false);
                 }
                 else if (pc == Ninja.ninja && Ninja.invisibleTimer > 0f)
                 {

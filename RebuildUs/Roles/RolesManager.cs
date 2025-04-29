@@ -170,7 +170,7 @@ public static class RoleHelpers
             case RoleId.Seer:
                 return Seer.seer == player;
             case RoleId.Morphling:
-                return Morphling.morphling == player;
+                return Morphing.morphing == player;
             case RoleId.Camouflager:
                 return Camouflager.camouflager == player;
             case RoleId.Hacker:
@@ -275,7 +275,7 @@ public static class RoleHelpers
                 Seer.seer = player;
                 break;
             case RoleId.Morphling:
-                Morphling.morphling = player;
+                Morphing.morphing = player;
                 break;
             case RoleId.Camouflager:
                 Camouflager.camouflager = player;
@@ -394,7 +394,7 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Medium)) Medium.clearAndReload();
 
         // Impostor roles
-        if (player.isRole(RoleId.Morphling)) Morphling.clearAndReload();
+        if (player.isRole(RoleId.Morphling)) Morphing.clearAndReload();
         if (player.isRole(RoleId.Camouflager)) Camouflager.clearAndReload();
         if (player.isRole(RoleId.Godfather)) Godfather.clearAndReload();
         if (player.isRole(RoleId.Mafioso)) Mafioso.clearAndReload();
@@ -456,7 +456,7 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Godfather)) Godfather.godfather = target;
         if (player.isRole(RoleId.Mafioso)) Mafioso.mafioso = target;
         if (player.isRole(RoleId.Janitor)) Janitor.janitor = target;
-        if (player.isRole(RoleId.Morphling)) Morphling.morphling = target;
+        if (player.isRole(RoleId.Morphling)) Morphing.morphing = target;
         if (player.isRole(RoleId.Camouflager)) Camouflager.camouflager = target;
         if (player.isRole(RoleId.Vampire)) Vampire.vampire = target;
         if (player.isRole(RoleId.Eraser)) Eraser.eraser = target;

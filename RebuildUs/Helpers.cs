@@ -519,7 +519,7 @@ public static class Helpers
         return false;
     }
 
-    public static MurderAttemptResult checkMuderAttempt(PlayerControl killer, PlayerControl target, bool blockRewind = false, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false, bool ignoreMedic = false)
+    public static MurderAttemptResult checkMurderAttempt(PlayerControl killer, PlayerControl target, bool blockRewind = false, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false, bool ignoreMedic = false)
     {
         var targetRole = RoleInfo.getRoleInfoForPlayer(target, false).FirstOrDefault();
         // Modified vanilla checks
@@ -608,7 +608,7 @@ public static class Helpers
     {
         // The local player checks for the validity of the kill and performs it afterwards (different to vanilla, where the host performs all the checks)
         // The kill attempt will be shared using a custom RPC, hence combining modded and unmodded versions is impossible
-        MurderAttemptResult murder = checkMuderAttempt(killer, target, isMeetingStart, ignoreBlank, ignoreIfKillerIsDead);
+        MurderAttemptResult murder = checkMurderAttempt(killer, target, isMeetingStart, ignoreBlank, ignoreIfKillerIsDead);
 
         if (murder == MurderAttemptResult.PerformKill)
         {

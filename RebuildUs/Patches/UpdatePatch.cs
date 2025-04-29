@@ -21,8 +21,8 @@ class HudManagerUpdatePatch
         var localPlayer = PlayerControl.LocalPlayer;
         var myData = PlayerControl.LocalPlayer.Data;
         var amImpostor = myData.Role.IsImpostor;
-        var morphTimerNotUp = Morphling.morphTimer > 0f;
-        var morphTargetNotNull = Morphling.morphTarget != null;
+        var morphTimerNotUp = Morphing.morphTimer > 0f;
+        var morphTargetNotNull = Morphing.morphTarget != null;
 
         var dict = TagColorDict;
         dict.Clear();
@@ -35,7 +35,7 @@ class HudManagerUpdatePatch
             if (player)
             {
                 var playerName = text;
-                if (morphTimerNotUp && morphTargetNotNull && Morphling.morphling == player) playerName = Morphling.morphTarget.Data.PlayerName;
+                if (morphTimerNotUp && morphTargetNotNull && Morphing.morphing == player) playerName = Morphing.morphTarget.Data.PlayerName;
                 var nameText = player.cosmetics.nameText;
 
                 nameText.text = Helpers.hidePlayerName(localPlayer, player) ? "" : playerName;
@@ -289,7 +289,7 @@ class HudManagerUpdatePatch
 
     public static void miniUpdate()
     {
-        if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.isInvisble || SurveillanceMinigamePatch.nightVisionIsActive) return;
+        if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == Morphing.morphing && Morphing.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.isInvisble || SurveillanceMinigamePatch.nightVisionIsActive) return;
 
         float growingProgress = Mini.growingProgress();
         float scale = growingProgress * 0.35f + 0.35f;
@@ -307,8 +307,8 @@ class HudManagerUpdatePatch
                     player.NameText.text += suffix;
         }
 
-        if (Morphling.morphling != null && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f)
-            Morphling.morphling.cosmetics.nameText.text += suffix;
+        if (Morphing.morphing != null && Morphing.morphTarget == Mini.mini && Morphing.morphTimer > 0f)
+            Morphing.morphing.cosmetics.nameText.text += suffix;
     }
 
     static void updateImpostorKillButton(HudManager __instance)

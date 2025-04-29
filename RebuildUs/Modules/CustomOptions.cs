@@ -289,13 +289,12 @@ public class CustomOption
         return selection + 1;
     }
 
-
-    public void updateSelection(int newSelection, bool notifyUsers = true)
+    public void updateSelection(int id, int newSelection, bool notifyUsers = true)
     {
         newSelection = Mathf.Clamp((newSelection + selections.Length) % selections.Length, 0, selections.Length - 1);
         if (AmongUsClient.Instance.AmClient && notifyUsers && selection != newSelection)
         {
-            FastDestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)6000,
+            FastDestroyableSingleton<HudManager>.Instance.Notifier.AddSettingsChangeMessage((StringNames)(6000 + id),
                 unitType == UnitType.None
                     ? selections[newSelection].ToString()
                     : new StringBuilder(selections[newSelection].ToString()).Append(Tr.Get(Enum.GetName(unitType))).ToString(),
@@ -324,7 +323,7 @@ public class CustomOption
                     : new StringBuilder(selections[selection].ToString()).Append(Tr.Get(Enum.GetName(unitType))).ToString();
             if (AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
             {
-                if (options[0] == this && selection != preset)
+                if (options[CustomOptionHolder.PRESET_OPTION_ID] == this && selection != preset)
                 {
                     // Switch presets
                     switchPreset(selection);
@@ -339,7 +338,7 @@ public class CustomOption
                 }
             }
         }
-        else if (options[0] == this && AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
+        else if (options[CustomOptionHolder.PRESET_OPTION_ID] == this && AmongUsClient.Instance.AmHost && PlayerControl.LocalPlayer)
         {
             // Share the preset switch for random maps, even if the menu isn't open!
             switchPreset(selection);
@@ -368,7 +367,7 @@ public class CustomOption
                 int lastId = -1;
                 foreach (var option in CustomOption.options.OrderBy(x => x.Key))
                 {
-                    if (option.Key == 0) continue;
+                    if (option.Key == CustomOptionHolder.PRESET_OPTION_ID) continue;
                     bool consecutive = lastId + 1 == option.Key;
                     lastId = option.Key;
 
@@ -404,7 +403,7 @@ public class CustomOption
                 {
                     id = reader.ReadUInt16();
                 }
-                if (id == 0) continue;
+                if (id == CustomOptionHolder.PRESET_OPTION_ID) continue;
                 lastId = id;
                 var option = options.First(option => option.Key == id);
                 option.Value.entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", option.Key.ToString(), option.Value.defaultSelection);
@@ -434,7 +433,7 @@ public class CustomOption
     public static int pasteFromClipboard()
     {
         string allSettings = GUIUtility.systemCopyBuffer;
-        int torOptionsFine = 0;
+        int ruOptionsFine = 0;
         bool vanillaOptionsFine = false;
         try
         {
@@ -442,7 +441,7 @@ public class CustomOption
             Version versionInfo = Version.Parse(settingsSplit[0]);
             string torSettings = settingsSplit[1];
             string vanillaSettingsSub = settingsSplit[2];
-            torOptionsFine = deserializeOptions(Convert.FromBase64String(torSettings));
+            ruOptionsFine = deserializeOptions(Convert.FromBase64String(torSettings));
             ShareOptionSelections();
             if (RebuildUsPlugin.Instance.Version > versionInfo && versionInfo < Version.Parse("4.6.0"))
             {
@@ -461,7 +460,7 @@ public class CustomOption
             string errorStr = allSettings.Length > 2 ? allSettings.Substring(0, 3) : "(empty clipboard) ";
             FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"Host Info: You tried to paste invalid settings: \"{errorStr}...\"");
         }
-        return Convert.ToInt32(vanillaOptionsFine) + torOptionsFine;
+        return Convert.ToInt32(vanillaOptionsFine) + ruOptionsFine;
     }
 }
 
@@ -1115,9 +1114,9 @@ public class StringOptionIncreasePatch
 {
     public static bool Prefix(StringOption __instance)
     {
-        CustomOption option = CustomOption.options.Values.FirstOrDefault(option => option.optionBehaviour == __instance);
-        if (option == null) return true;
-        option.updateSelection(option.selection + 1);
+        var option = options.FirstOrDefault(option => option.Value.optionBehaviour == __instance);
+        if (option.Value == null) return true;
+        option.Value.updateSelection(option.Key, option.Value.selection + 1);
         return false;
     }
 }
@@ -1127,9 +1126,9 @@ public class StringOptionDecreasePatch
 {
     public static bool Prefix(StringOption __instance)
     {
-        CustomOption option = CustomOption.options.Values.FirstOrDefault(option => option.optionBehaviour == __instance);
-        if (option == null) return true;
-        option.updateSelection(option.selection - 1);
+        var option = options.FirstOrDefault(option => option.Value.optionBehaviour == __instance);
+        if (option.Value == null) return true;
+        option.Value.updateSelection(option.Key, option.Value.selection + 1);
         return false;
     }
 }
@@ -1249,7 +1248,7 @@ class GameOptionsDataPatch
             {
                 if (option == CustomOptionHolder.crewmateRolesCountMin)
                 {
-                    var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Crewmate Roles");
+                    var optionName = Helpers.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Crewmate Roles");
                     var min = CustomOptionHolder.crewmateRolesCountMin.getSelection();
                     var max = CustomOptionHolder.crewmateRolesCountMax.getSelection();
                     string optionValue = "";
@@ -1271,7 +1270,7 @@ class GameOptionsDataPatch
                 }
                 else if (option == CustomOptionHolder.neutralRolesCountMin)
                 {
-                    var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Neutral Roles");
+                    var optionName = Helpers.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Neutral Roles");
                     var min = CustomOptionHolder.neutralRolesCountMin.getSelection();
                     var max = CustomOptionHolder.neutralRolesCountMax.getSelection();
                     if (min > max) min = max;
@@ -1280,7 +1279,7 @@ class GameOptionsDataPatch
                 }
                 else if (option == CustomOptionHolder.impostorRolesCountMin)
                 {
-                    var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Impostor Roles");
+                    var optionName = Helpers.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Impostor Roles");
                     var min = CustomOptionHolder.impostorRolesCountMin.getSelection();
                     var max = CustomOptionHolder.impostorRolesCountMax.getSelection();
                     if (max > GameOptionsManager.Instance.currentGameOptions.NumImpostors) max = GameOptionsManager.Instance.currentGameOptions.NumImpostors;
@@ -1290,7 +1289,7 @@ class GameOptionsDataPatch
                 }
                 else if (option == CustomOptionHolder.modifiersCountMin)
                 {
-                    var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Modifiers");
+                    var optionName = Helpers.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Modifiers");
                     var min = CustomOptionHolder.modifiersCountMin.getSelection();
                     var max = CustomOptionHolder.modifiersCountMax.getSelection();
                     if (min > max) min = max;

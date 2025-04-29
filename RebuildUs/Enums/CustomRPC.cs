@@ -32,7 +32,7 @@ public enum CustomRPC
     TimeMasterRewindTime,
     ShifterShift,
     SwapperSwap,
-    MorphlingMorph,
+    MorphingMorph,
     CamouflagerCamouflage,
     TrackerUsedTracker,
     VampireSetBitten,
