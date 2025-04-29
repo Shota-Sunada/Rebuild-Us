@@ -342,7 +342,7 @@ namespace RebuildUs.Patches
                 // Ghost info
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write((byte)RPCProcedure.GhostInfoTypes.HandcuffOver);
+                writer.Write((byte)GhostInfoTypes.HandcuffOver);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
@@ -797,7 +797,7 @@ namespace RebuildUs.Patches
                 // Ghost Info
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write((byte)RPCProcedure.GhostInfoTypes.BountyTarget);
+                writer.Write((byte)GhostInfoTypes.BountyTarget);
                 writer.Write(BountyHunter.bounty.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -1361,7 +1361,7 @@ namespace RebuildUs.Patches
                             // Ghost Info
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                             writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            writer.Write((byte)RPCProcedure.GhostInfoTypes.DetectiveOrMedicInfo);
+                            writer.Write((byte)GhostInfoTypes.DetectiveOrMedicInfo);
                             writer.Write(msg);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }
@@ -1393,7 +1393,7 @@ namespace RebuildUs.Patches
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {
             // Collect dead player info
-            DeadPlayer deadPlayer = new DeadPlayer(target, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Kill, __instance);
+            DeadPlayer deadPlayer = new DeadPlayer(target, DateTime.UtcNow, CustomDeathReason.Kill, __instance);
             GameHistory.deadPlayers.Add(deadPlayer);
 
             // Reset killer to crewmate if resetToCrewmate
@@ -1414,7 +1414,7 @@ namespace RebuildUs.Patches
                 if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie)
                 {
                     otherLover.MurderPlayer(otherLover);
-                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                    GameHistory.overrideDeathReasonAndKiller(otherLover, CustomDeathReason.LoverSuicide);
                 }
             }
 
@@ -1611,7 +1611,7 @@ namespace RebuildUs.Patches
         public static void Postfix(PlayerControl __instance)
         {
             // Collect dead player info
-            DeadPlayer deadPlayer = new DeadPlayer(__instance, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Exile, null);
+            DeadPlayer deadPlayer = new DeadPlayer(__instance, DateTime.UtcNow, CustomDeathReason.Exile, null);
             GameHistory.deadPlayers.Add(deadPlayer);
 
 
@@ -1626,7 +1626,7 @@ namespace RebuildUs.Patches
                 if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie)
                 {
                     otherLover.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                    GameHistory.overrideDeathReasonAndKiller(otherLover, CustomDeathReason.LoverSuicide);
                 }
 
             }
@@ -1656,12 +1656,12 @@ namespace RebuildUs.Patches
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                    writer.Write((byte)GhostInfoTypes.DeathReasonAndKiller);
                     writer.Write(lawyer.PlayerId);
-                    writer.Write((byte)DeadPlayer.CustomDeathReason.LawyerSuicide);
+                    writer.Write((byte)CustomDeathReason.LawyerSuicide);
                     writer.Write(lawyer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    GameHistory.overrideDeathReasonAndKiller(lawyer, DeadPlayer.CustomDeathReason.LawyerSuicide, lawyer);  // TODO: only executed on host?!
+                    GameHistory.overrideDeathReasonAndKiller(lawyer, CustomDeathReason.LawyerSuicide, lawyer);  // TODO: only executed on host?!
                 }
             }
         }

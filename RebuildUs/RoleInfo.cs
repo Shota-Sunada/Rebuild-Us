@@ -316,37 +316,37 @@ namespace RebuildUs
                         {
                             switch (deadPlayer.deathReason)
                             {
-                                case DeadPlayer.CustomDeathReason.Disconnect:
+                                case CustomDeathReason.Disconnect:
                                     deathReasonString = " - disconnected";
                                     break;
-                                case DeadPlayer.CustomDeathReason.Exile:
+                                case CustomDeathReason.Exile:
                                     deathReasonString = " - voted out";
                                     break;
-                                case DeadPlayer.CustomDeathReason.Kill:
+                                case CustomDeathReason.Kill:
                                     deathReasonString = $" - killed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
                                     break;
-                                case DeadPlayer.CustomDeathReason.Guess:
+                                case CustomDeathReason.Guess:
                                     if (deadPlayer.killerIfExisting.Data.PlayerName == p.Data.PlayerName)
                                         deathReasonString = $" - failed guess";
                                     else
                                         deathReasonString = $" - guessed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
                                     break;
-                                case DeadPlayer.CustomDeathReason.Shift:
+                                case CustomDeathReason.Shift:
                                     deathReasonString = $" - {Helpers.cs(Color.yellow, "shifted")} {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
                                     break;
-                                case DeadPlayer.CustomDeathReason.WitchExile:
+                                case CustomDeathReason.WitchExile:
                                     deathReasonString = $" - {Helpers.cs(Witch.color, "witched")} by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
                                     break;
-                                case DeadPlayer.CustomDeathReason.LoverSuicide:
+                                case CustomDeathReason.LoverSuicide:
                                     deathReasonString = $" - {Helpers.cs(Lovers.color, "lover died")}";
                                     break;
-                                case DeadPlayer.CustomDeathReason.LawyerSuicide:
+                                case CustomDeathReason.LawyerSuicide:
                                     deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";
                                     break;
-                                case DeadPlayer.CustomDeathReason.Bomb:
+                                case CustomDeathReason.Bomb:
                                     deathReasonString = $" - bombed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
                                     break;
-                                case DeadPlayer.CustomDeathReason.Arson:
+                                case CustomDeathReason.Arson:
                                     deathReasonString = $" - burnt by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
                                     break;
                             }

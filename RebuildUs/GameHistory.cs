@@ -7,19 +7,6 @@ namespace RebuildUs
 {
     public class DeadPlayer
     {
-        public enum CustomDeathReason
-        {
-            Exile,
-            Kill,
-            Disconnect,
-            Guess,
-            Shift,
-            LawyerSuicide,
-            LoverSuicide, // not necessary
-            WitchExile,
-            Bomb,
-            Arson,
-        };
 
         public PlayerControl player;
         public DateTime timeOfDeath;
@@ -49,7 +36,7 @@ namespace RebuildUs
             deadPlayers = new List<DeadPlayer>();
         }
 
-        public static void overrideDeathReasonAndKiller(PlayerControl player, DeadPlayer.CustomDeathReason deathReason, PlayerControl killer = null)
+        public static void overrideDeathReasonAndKiller(PlayerControl player, CustomDeathReason deathReason, PlayerControl killer = null)
         {
             var target = deadPlayers.FirstOrDefault(x => x.player.PlayerId == player.PlayerId);
             if (target != null)

@@ -24,19 +24,6 @@ namespace RebuildUs
 {
     public class CustomOption
     {
-        public enum CustomOptionType
-        {
-            General,
-            Impostor,
-            Neutral,
-            Crewmate,
-            Modifier,
-            Guesser,
-            HideNSeekMain,
-            HideNSeekRoles,
-            PropHunt,
-        }
-
         public static List<CustomOption> options = new List<CustomOption>();
         public static int preset = 0;
         public static ConfigEntry<string> vanillaSettings;
@@ -520,7 +507,7 @@ namespace RebuildUs
         public static void drawTab(LobbyViewSettingsPane __instance, CustomOptionType optionType)
         {
 
-            var relevantOptions = options.Where(x => x.type == optionType || x.type == CustomOption.CustomOptionType.Guesser && optionType == CustomOptionType.General).ToList();
+            var relevantOptions = options.Where(x => x.type == optionType || x.type == CustomOptionType.Guesser && optionType == CustomOptionType.General).ToList();
 
             if ((int)optionType == 99)
             {
@@ -1113,10 +1100,10 @@ namespace RebuildUs
     {
         private static string buildRoleOptions()
         {
-            var impRoles = buildOptionsOfType(CustomOption.CustomOptionType.Impostor, true) + "\n";
-            var neutralRoles = buildOptionsOfType(CustomOption.CustomOptionType.Neutral, true) + "\n";
-            var crewRoles = buildOptionsOfType(CustomOption.CustomOptionType.Crewmate, true) + "\n";
-            var modifiers = buildOptionsOfType(CustomOption.CustomOptionType.Modifier, true);
+            var impRoles = buildOptionsOfType(CustomOptionType.Impostor, true) + "\n";
+            var neutralRoles = buildOptionsOfType(CustomOptionType.Neutral, true) + "\n";
+            var crewRoles = buildOptionsOfType(CustomOptionType.Crewmate, true) + "\n";
+            var modifiers = buildOptionsOfType(CustomOptionType.Modifier, true);
             return impRoles + neutralRoles + crewRoles + modifiers;
         }
         public static string buildModifierExtras(CustomOption customOption)
@@ -1133,30 +1120,30 @@ namespace RebuildUs
             return "";
         }
 
-        private static string buildOptionsOfType(CustomOption.CustomOptionType type, bool headerOnly)
+        private static string buildOptionsOfType(CustomOptionType type, bool headerOnly)
         {
             StringBuilder sb = new StringBuilder("\n");
             var options = CustomOption.options.Where(o => o.type == type);
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser)
             {
-                if (type == CustomOption.CustomOptionType.General)
-                    options = CustomOption.options.Where(o => o.type == type || o.type == CustomOption.CustomOptionType.Guesser);
+                if (type == CustomOptionType.General)
+                    options = CustomOption.options.Where(o => o.type == type || o.type == CustomOptionType.Guesser);
                 List<int> remove = new List<int> { 308, 310, 311, 312, 313, 314, 315, 316, 317, 318 };
                 options = options.Where(x => !remove.Contains(x.id));
             }
             else if (TORMapOptions.gameMode == CustomGamemodes.Classic)
-                options = options.Where(x => !(x.type == CustomOption.CustomOptionType.Guesser || x == CustomOptionHolder.crewmateRolesFill));
+                options = options.Where(x => !(x.type == CustomOptionType.Guesser || x == CustomOptionHolder.crewmateRolesFill));
             else if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
-                options = options.Where(x => (x.type == CustomOption.CustomOptionType.HideNSeekMain || x.type == CustomOption.CustomOptionType.HideNSeekRoles));
+                options = options.Where(x => (x.type == CustomOptionType.HideNSeekMain || x.type == CustomOptionType.HideNSeekRoles));
             else if (TORMapOptions.gameMode == CustomGamemodes.PropHunt)
-                options = options.Where(x => (x.type == CustomOption.CustomOptionType.PropHunt));
+                options = options.Where(x => (x.type == CustomOptionType.PropHunt));
 
             foreach (var option in options)
             {
                 if (option.parent == null)
                 {
                     string line = $"{option.name}: {option.selections[option.selection].ToString()}";
-                    if (type == CustomOption.CustomOptionType.Modifier) line += buildModifierExtras(option);
+                    if (type == CustomOptionType.Modifier) line += buildModifierExtras(option);
                     sb.AppendLine(line);
                 }
                 else if (option.parent.getSelection() > 0 || option.invertedParent && option.parent.getSelection() == 0)
@@ -1265,10 +1252,10 @@ namespace RebuildUs
                 switch (counter)
                 {
                     case 0:
-                        hudString += "Page 1: Hide N Seek Settings \n\n" + buildOptionsOfType(CustomOption.CustomOptionType.HideNSeekMain, false);
+                        hudString += "Page 1: Hide N Seek Settings \n\n" + buildOptionsOfType(CustomOptionType.HideNSeekMain, false);
                         break;
                     case 1:
-                        hudString += "Page 2: Hide N Seek Role Settings \n\n" + buildOptionsOfType(CustomOption.CustomOptionType.HideNSeekRoles, false);
+                        hudString += "Page 2: Hide N Seek Role Settings \n\n" + buildOptionsOfType(CustomOptionType.HideNSeekRoles, false);
                         break;
                 }
             }
@@ -1278,7 +1265,7 @@ namespace RebuildUs
                 switch (counter)
                 {
                     case 0:
-                        hudString += "Page 1: Prop Hunt Settings \n\n" + buildOptionsOfType(CustomOption.CustomOptionType.PropHunt, false);
+                        hudString += "Page 1: Prop Hunt Settings \n\n" + buildOptionsOfType(CustomOptionType.PropHunt, false);
                         break;
                 }
             }
@@ -1291,22 +1278,22 @@ namespace RebuildUs
                         hudString += (!hideExtras ? "" : "Page 1: Vanilla Settings \n\n") + vanillaSettings;
                         break;
                     case 1:
-                        hudString += "Page 2: The Other Roles Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.General, false);
+                        hudString += "Page 2: The Other Roles Settings \n" + buildOptionsOfType(CustomOptionType.General, false);
                         break;
                     case 2:
                         hudString += "Page 3: Role and Modifier Rates \n" + buildRoleOptions();
                         break;
                     case 3:
-                        hudString += "Page 4: Impostor Role Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.Impostor, false);
+                        hudString += "Page 4: Impostor Role Settings \n" + buildOptionsOfType(CustomOptionType.Impostor, false);
                         break;
                     case 4:
-                        hudString += "Page 5: Neutral Role Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.Neutral, false);
+                        hudString += "Page 5: Neutral Role Settings \n" + buildOptionsOfType(CustomOptionType.Neutral, false);
                         break;
                     case 5:
-                        hudString += "Page 6: Crewmate Role Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.Crewmate, false);
+                        hudString += "Page 6: Crewmate Role Settings \n" + buildOptionsOfType(CustomOptionType.Crewmate, false);
                         break;
                     case 6:
-                        hudString += "Page 7: Modifier Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.Modifier, false);
+                        hudString += "Page 7: Modifier Settings \n" + buildOptionsOfType(CustomOptionType.Modifier, false);
                         break;
                 }
             }

@@ -350,7 +350,7 @@ namespace RebuildUs
                 {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write((byte)RPCProcedure.GhostInfoTypes.HandcuffNoticed);
+                    writer.Write((byte)GhostInfoTypes.HandcuffNoticed);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
@@ -1537,20 +1537,6 @@ namespace RebuildUs
 
         private static Sprite soulSprite;
 
-        enum SpecialMediumInfo
-        {
-            SheriffSuicide,
-            ThiefSuicide,
-            ActiveLoverDies,
-            PassiveLoverSuicide,
-            LawyerKilledByClient,
-            JackalKillsSidekick,
-            ImpostorTeamkill,
-            SubmergedO2,
-            WarlockSuicide,
-            BodyCleaned,
-        }
-
         public static Sprite getSoulSprite()
         {
             if (soulSprite) return soulSprite;
@@ -1581,7 +1567,7 @@ namespace RebuildUs
             chanceAdditionalInfo = CustomOptionHolder.mediumChanceAdditionalInfo.getSelection() / 10f;
         }
 
-        public static string getInfo(PlayerControl target, PlayerControl killer, DeadPlayer.CustomDeathReason deathReason)
+        public static string getInfo(PlayerControl target, PlayerControl killer, CustomDeathReason deathReason)
         {
             string msg = "";
 
@@ -1590,10 +1576,10 @@ namespace RebuildUs
             // suicides:
             if (killer == target)
             {
-                if ((target == Sheriff.sheriff || target == Sheriff.formerSheriff) && deathReason != DeadPlayer.CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.SheriffSuicide);
+                if ((target == Sheriff.sheriff || target == Sheriff.formerSheriff) && deathReason != CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.SheriffSuicide);
                 if (target == Lovers.lover1 || target == Lovers.lover2) infos.Add(SpecialMediumInfo.PassiveLoverSuicide);
-                if (target == Thief.thief && deathReason != DeadPlayer.CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.ThiefSuicide);
-                if (target == Warlock.warlock && deathReason != DeadPlayer.CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.WarlockSuicide);
+                if (target == Thief.thief && deathReason != CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.ThiefSuicide);
+                if (target == Warlock.warlock && deathReason != CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.WarlockSuicide);
             }
             else
             {

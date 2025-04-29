@@ -100,12 +100,12 @@ namespace RebuildUs.Objects
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                    writer.Write((byte)GhostInfoTypes.DeathReasonAndKiller);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write((byte)DeadPlayer.CustomDeathReason.Bomb);
+                    writer.Write((byte)CustomDeathReason.Bomb);
                     writer.Write(Bomber.bomber.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    GameHistory.overrideDeathReasonAndKiller(PlayerControl.LocalPlayer, DeadPlayer.CustomDeathReason.Bomb, killer: Bomber.bomber);
+                    GameHistory.overrideDeathReasonAndKiller(PlayerControl.LocalPlayer, CustomDeathReason.Bomb, killer: Bomber.bomber);
                 }
             }
             Bomber.clearBomb();

@@ -879,7 +879,7 @@ namespace RebuildUs
                                         lastTimer = timer;
                                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                                        writer.Write((byte)RPCProcedure.GhostInfoTypes.VampireTimer);
+                                        writer.Write((byte)GhostInfoTypes.VampireTimer);
                                         writer.Write(timer);
                                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                                     }
@@ -1321,7 +1321,7 @@ namespace RebuildUs
                         // Ghost Info
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write((byte)RPCProcedure.GhostInfoTypes.WarlockTarget);
+                        writer.Write((byte)GhostInfoTypes.WarlockTarget);
                         writer.Write(Warlock.curseVictim.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -1353,7 +1353,7 @@ namespace RebuildUs
 
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write((byte)RPCProcedure.GhostInfoTypes.WarlockTarget);
+                        writer.Write((byte)GhostInfoTypes.WarlockTarget);
                         writer.Write(Byte.MaxValue); // This will set it to null!
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -1566,7 +1566,7 @@ namespace RebuildUs
                     // Ghost Info
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write((byte)RPCProcedure.GhostInfoTypes.ArsonistDouse);
+                    writer.Write((byte)GhostInfoTypes.ArsonistDouse);
                     writer.Write(Arsonist.douseTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -1656,7 +1656,7 @@ namespace RebuildUs
                     // Ghost Info
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                     writer.Write(Medium.target.player.PlayerId);
-                    writer.Write((byte)RPCProcedure.GhostInfoTypes.MediumInfo);
+                    writer.Write((byte)GhostInfoTypes.MediumInfo);
                     writer.Write(msg);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -1878,7 +1878,7 @@ namespace RebuildUs
                         // Ghost Info
                         writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write((byte)RPCProcedure.GhostInfoTypes.NinjaMarked);
+                        writer.Write((byte)GhostInfoTypes.NinjaMarked);
                         writer.Write(Ninja.ninjaMarked.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }

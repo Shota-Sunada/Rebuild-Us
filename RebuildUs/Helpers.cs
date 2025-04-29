@@ -17,22 +17,6 @@ using RebuildUs.Patches;
 
 namespace RebuildUs
 {
-
-    public enum MurderAttemptResult
-    {
-        PerformKill,
-        SuppressKill,
-        BlankKill,
-        DelayVampireKill
-    }
-
-    public enum CustomGamemodes
-    {
-        Classic,
-        Guesser,
-        HideNSeek,
-        PropHunt
-    }
     public static class Helpers
     {
         public static string previousEndGameSummary = "";

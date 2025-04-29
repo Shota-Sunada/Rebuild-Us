@@ -87,13 +87,13 @@ namespace RebuildUs.Patches
 
                         MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
                         writer3.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer3.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                        writer3.Write((byte)GhostInfoTypes.DeathReasonAndKiller);
                         writer3.Write(target.PlayerId);
-                        writer3.Write((byte)DeadPlayer.CustomDeathReason.WitchExile);
+                        writer3.Write((byte)CustomDeathReason.WitchExile);
                         writer3.Write(Witch.witch.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer3);
 
-                        GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.WitchExile, killer: Witch.witch);
+                        GameHistory.overrideDeathReasonAndKiller(target, CustomDeathReason.WitchExile, killer: Witch.witch);
                     }
                 }
             }

@@ -13,32 +13,6 @@ using LibCpp2IL.Elf;
 
 namespace RebuildUs.Patches
 {
-    enum CustomGameOverReason
-    {
-        LoversWin = 10,
-        TeamJackalWin = 11,
-        MiniLose = 12,
-        JesterWin = 13,
-        ArsonistWin = 14,
-        VultureWin = 15,
-        ProsecutorWin = 16
-    }
-
-    enum WinCondition
-    {
-        Default,
-        LoversTeamWin,
-        LoversSoloWin,
-        JesterWin,
-        JackalWin,
-        MiniLose,
-        ArsonistWin,
-        VultureWin,
-        AdditionalLawyerBonusWin,
-        AdditionalAlivePursuerWin,
-        ProsecutorWin
-    }
-
     static class AdditionalTempData
     {
         // Should be implemented using a proper GameOverReason in the future

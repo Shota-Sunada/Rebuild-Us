@@ -754,12 +754,5 @@ namespace RebuildUs.Patches
             public int maxImpostorRoles { get; set; }
         }
 
-        private enum RoleType
-        {
-            Crewmate = 0,
-            Neutral = 1,
-            Impostor = 2
-        }
-
     }
 }

@@ -19,166 +19,9 @@ using Assets.CoreScripts;
 using RebuildUs.Modules;
 namespace RebuildUs
 {
-    public enum RoleId
-    {
-        Jester,
-        Mayor,
-        Portalmaker,
-        Engineer,
-        Sheriff,
-        Deputy,
-        Lighter,
-        Godfather,
-        Mafioso,
-        Janitor,
-        Detective,
-        TimeMaster,
-        Medic,
-        Swapper,
-        Seer,
-        Morphling,
-        Camouflager,
-        Hacker,
-        Tracker,
-        Vampire,
-        Snitch,
-        Jackal,
-        Sidekick,
-        Eraser,
-        Spy,
-        Trickster,
-        Cleaner,
-        Warlock,
-        SecurityGuard,
-        Arsonist,
-        EvilGuesser,
-        NiceGuesser,
-        BountyHunter,
-        Vulture,
-        Medium,
-        Trapper,
-        Lawyer,
-        Prosecutor,
-        Pursuer,
-        Witch,
-        Ninja,
-        Thief,
-        Bomber,
-        Yoyo,
-        Crewmate,
-        Impostor,
-        // Modifier ---
-        Lover,
-        Bait,
-        Bloody,
-        AntiTeleport,
-        Tiebreaker,
-        Sunglasses,
-        Mini,
-        Vip,
-        Invert,
-        Chameleon,
-        Armored,
-        Shifter
-    }
-
-    enum CustomRPC
-    {
-        // Main Controls
-
-        ResetVaribles = 100,
-        ShareOptions,
-        ForceEnd,
-        WorkaroundSetRoles,
-        SetRole,
-        SetModifier,
-        VersionHandshake,
-        UseUncheckedVent,
-        UncheckedMurderPlayer,
-        UncheckedCmdReportDeadBody,
-        UncheckedExilePlayer,
-        DynamicMapOption,
-        SetGameStarting,
-        ShareGamemode,
-        StopStart,
-
-        // Role functionality
-
-        EngineerFixLights = 120,
-        EngineerFixSubmergedOxygen,
-        EngineerUsedRepair,
-        CleanBody,
-        MedicSetShielded,
-        ShieldedMurderAttempt,
-        TimeMasterShield,
-        TimeMasterRewindTime,
-        ShifterShift,
-        SwapperSwap,
-        MorphlingMorph,
-        CamouflagerCamouflage,
-        TrackerUsedTracker,
-        VampireSetBitten,
-        PlaceGarlic,
-        DeputyUsedHandcuffs,
-        DeputyPromotes,
-        JackalCreatesSidekick,
-        SidekickPromotes,
-        ErasePlayerRoles,
-        SetFutureErased,
-        SetFutureShifted,
-        SetFutureShielded,
-        SetFutureSpelled,
-        PlaceNinjaTrace,
-        PlacePortal,
-        UsePortal,
-        PlaceJackInTheBox,
-        LightsOut,
-        PlaceCamera,
-        SealVent,
-        ArsonistWin,
-        GuesserShoot,
-        LawyerSetTarget,
-        LawyerPromotesToPursuer,
-        SetBlanked,
-        Bloody,
-        SetFirstKill,
-        Invert,
-        SetTiebreak,
-        SetInvisible,
-        ThiefStealsRole,
-        SetTrap,
-        TriggerTrap,
-        MayorSetVoteTwice,
-        PlaceBomb,
-        DefuseBomb,
-        ShareRoom,
-        YoyoMarkLocation,
-        YoyoBlink,
-        BreakArmor,
-
-        // Gamemode
-        SetGuesserGm,
-        HuntedShield,
-        HuntedRewindTime,
-        SetProp,
-        SetRevealed,
-        PropHuntStartTimer,
-        PropHuntSetInvis,
-        PropHuntSetSpeedboost,
-        DraftModePickOrder,
-        DraftModePick,
-
-        // Other functionality
-        ShareTimer,
-        ShareGhostInfo,
-        EventKick,
-    }
-
     public static class RPCProcedure
     {
-
         // Main Controls
-
         public static void resetVariables()
         {
             Garlic.clearGarlics();
@@ -649,7 +492,7 @@ namespace RebuildUs
             if ((player.Data.Role.IsImpostor || Helpers.isNeutral(player)) && !oldShifter.Data.IsDead)
             {
                 oldShifter.Exiled();
-                GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
+                GameHistory.overrideDeathReasonAndKiller(oldShifter, CustomDeathReason.Shift, player);
                 if (oldShifter == Lawyer.target && AmongUsClient.Instance.AmHost && Lawyer.lawyer != null)
                 {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
@@ -1054,7 +897,7 @@ namespace RebuildUs
                 if (p != Arsonist.arsonist && !p.Data.IsDead)
                 {
                     p.Exiled();
-                    overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Arson, Arsonist.arsonist);
+                    overrideDeathReasonAndKiller(p, CustomDeathReason.Arson, Arsonist.arsonist);
                 }
             }
         }
@@ -1109,11 +952,11 @@ namespace RebuildUs
                 }
                 Lawyer.lawyer.Exiled();
                 lawyerDiedAdditionally = true;
-                GameHistory.overrideDeathReasonAndKiller(Lawyer.lawyer, DeadPlayer.CustomDeathReason.LawyerSuicide, guesser);
+                GameHistory.overrideDeathReasonAndKiller(Lawyer.lawyer, CustomDeathReason.LawyerSuicide, guesser);
             }
 
             dyingTarget.Exiled();
-            GameHistory.overrideDeathReasonAndKiller(dyingTarget, DeadPlayer.CustomDeathReason.Guess, guesser);
+            GameHistory.overrideDeathReasonAndKiller(dyingTarget, CustomDeathReason.Guess, guesser);
             byte partnerId = dyingLoverPartner != null ? dyingLoverPartner.PlayerId : dyingTargetId;
 
             HandleGuesser.remainingShots(killerId, true);
@@ -1379,21 +1222,6 @@ namespace RebuildUs
             PropHunt.speedboostActive.Add(playerId, PropHunt.speedboostDuration);
         }
 
-        public enum GhostInfoTypes
-        {
-            HandcuffNoticed,
-            HandcuffOver,
-            ArsonistDouse,
-            BountyTarget,
-            NinjaMarked,
-            WarlockTarget,
-            MediumInfo,
-            BlankUsed,
-            DetectiveOrMedicInfo,
-            VampireTimer,
-            DeathReasonAndKiller,
-        }
-
         public static void receiveGhostInfo(byte senderId, MessageReader reader)
         {
             PlayerControl sender = Helpers.playerById(senderId);
@@ -1436,7 +1264,7 @@ namespace RebuildUs
                     HudManagerStartPatch.vampireKillButton.Timer = (float)reader.ReadByte();
                     break;
                 case GhostInfoTypes.DeathReasonAndKiller:
-                    GameHistory.overrideDeathReasonAndKiller(Helpers.playerById(reader.ReadByte()), (DeadPlayer.CustomDeathReason)reader.ReadByte(), Helpers.playerById(reader.ReadByte()));
+                    GameHistory.overrideDeathReasonAndKiller(Helpers.playerById(reader.ReadByte()), (CustomDeathReason)reader.ReadByte(), Helpers.playerById(reader.ReadByte()));
                     break;
             }
         }

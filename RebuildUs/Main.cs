@@ -4,6 +4,8 @@ global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;
 global using Il2CppInterop.Runtime.Injection;
 
+global using RebuildUs.Enums;
+
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
