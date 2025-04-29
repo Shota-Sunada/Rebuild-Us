@@ -274,9 +274,6 @@ public static class RebuildUs
 
     public static class Sheriff
     {
-        public static PlayerControl sheriff;
-        public static Color color = new Color32(248, 205, 70, byte.MaxValue);
-
         public static float cooldown = 30f;
         public static bool canKillNeutrals = false;
         public static bool spyCanDieToSheriff = false;
