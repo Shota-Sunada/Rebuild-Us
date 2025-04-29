@@ -5,8 +5,6 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using RebuildUs.Localization;
-using RebuildUs.Modules;
-using RebuildUs.Roles;
 
 namespace RebuildUs;
 
@@ -46,10 +44,6 @@ public class Plugin : BasePlugin
         Harmony.PatchAll();
 
         Tr.Initialize();
-
-        CustomOptionHolders.Initialize();
-
-        SubmergedCompatibility.Initialize();
 
         Logger.LogMessage("\"Rebuild Us\" was completely loaded! Enjoy the modifications!");
     }
