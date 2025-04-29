@@ -17,8 +17,6 @@ public static class Helpers
         return true;
     }
 
-    public static bool RefundVotes { get { return CustomOptionHolders.RefundVotesOnDeath.GetBool(); } }
-
     public static Dictionary<string, Sprite> CachedSprites = [];
 
     public static Sprite LoadSpriteFromResources(string path, float pixelsPerUnit, bool cache = true)

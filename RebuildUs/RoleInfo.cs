@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text;
 using HarmonyLib;
 using RebuildUs.Localization;
-using RebuildUs.Modules;
-using RebuildUs.Roles;
 using UnityEngine;
 
 namespace RebuildUs;
