@@ -35,7 +35,7 @@ public static class Tr
 
         if (!Translations.TryGetValue(key, out var langDic))
         {
-            Plugin.Instance.Logger.LogWarning($"There are no translation data. key: {key}");
+            RebuildUsPlugin.Instance.Logger.LogWarning($"There are no translation data. key: {key}");
             return key;
         }
 
