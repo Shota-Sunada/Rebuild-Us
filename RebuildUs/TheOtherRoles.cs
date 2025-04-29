@@ -346,10 +346,9 @@ public static class RebuildUs
 
             if (active && playerId == PlayerControl.LocalPlayer.PlayerId)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write((byte)GhostInfoTypes.HandcuffNoticed);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
             if (active)

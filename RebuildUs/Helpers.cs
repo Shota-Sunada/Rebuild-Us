@@ -157,11 +157,10 @@ public static class Helpers
     public static void handleVampireBiteOnBodyReport()
     {
         // Murder the bitten player and reset bitten (regardless whether the kill was successful or not)
-        Helpers.checkMurderAttemptAndKill(Vampire.vampire, Vampire.bitten, true, false);
-        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
+        checkMurderAttemptAndKill(Vampire.vampire, Vampire.bitten, true, false);
+        using var writer = RPCProcedure.SendRPC(CustomRPC.VampireSetBitten);
         writer.Write(byte.MaxValue);
         writer.Write(byte.MaxValue);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
         RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
     }
 
@@ -506,8 +505,7 @@ public static class Helpers
         {
             if (breakShield)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BreakArmor, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.BreakArmor);
                 RPCProcedure.breakArmor();
             }
             if (showShield)
@@ -534,10 +532,9 @@ public static class Helpers
         // Handle blank shot
         if (!ignoreBlank && Pursuer.blankedList.Any(x => x.PlayerId == killer.PlayerId))
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBlanked, Hazel.SendOption.Reliable, -1);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.SetBlanked);
             writer.Write(killer.PlayerId);
             writer.Write((byte)0);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.setBlanked(killer.PlayerId, 0);
 
             return MurderAttemptResult.BlankKill;
@@ -546,8 +543,7 @@ public static class Helpers
         // Block impostor shielded kill
         if (!ignoreMedic && Medic.shielded != null && Medic.shielded == target)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.ShieldedMurderAttempt);
             RPCProcedure.shieldedMurderAttempt();
             return MurderAttemptResult.SuppressKill;
         }
@@ -563,8 +559,7 @@ public static class Helpers
         {
             if (!blockRewind)
             { // Only rewind the attempt was not called because a meeting startet
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.TimeMasterRewindTime, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.TimeMasterRewindTime);
                 RPCProcedure.timeMasterRewindTime();
             }
             return MurderAttemptResult.SuppressKill;
@@ -596,11 +591,10 @@ public static class Helpers
 
     public static void MurderPlayer(PlayerControl killer, PlayerControl target, bool showAnimation)
     {
-        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
+        using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedMurderPlayer);
         writer.Write(killer.PlayerId);
         writer.Write(target.PlayerId);
         writer.Write(showAnimation ? Byte.MaxValue : 0);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
         RPCProcedure.uncheckedMurderPlayer(killer.PlayerId, target.PlayerId, showAnimation ? Byte.MaxValue : (byte)0);
     }
 
@@ -620,10 +614,9 @@ public static class Helpers
             {
                 if (!TransportationToolPatches.isUsingTransportation(target) && Vampire.bitten != null)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.VampireSetBitten);
                     writer.Write(byte.MaxValue);
                     writer.Write(byte.MaxValue);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
                     MurderPlayer(killer, target, showAnimation);
                 }

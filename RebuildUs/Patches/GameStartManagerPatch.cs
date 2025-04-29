@@ -136,9 +136,9 @@ public class GameStartManagerPatch
                 // Make starting info available to clients:
                 if (startingTimer <= 0 && __instance.startState == GameStartManager.StartingStates.Countdown)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGameStarting, Hazel.SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.SetGameStarting);
                     RPCProcedure.setGameStarting();
+
                     // Activate Stop-Button
                     copiedStartButton = GameObject.Instantiate(__instance.StartButton.gameObject, __instance.StartButton.gameObject.transform.parent);
                     copiedStartButton.transform.localPosition = __instance.StartButton.transform.localPosition;
@@ -152,9 +152,10 @@ public class GameStartManagerPatch
                     void StopStartFunc()
                     {
                         __instance.ResetStartState();
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.StopStart, Hazel.SendOption.Reliable, -1);
+
+                        using var writer = RPCProcedure.SendRPC(CustomRPC.StopStart);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+
                         copiedStartButton.Destroy();
                         startingTimer = 0;
                         SoundManager.Instance.StopSound(GameStartManager.Instance.gameStartSound);
@@ -223,9 +224,9 @@ public class GameStartManagerPatch
 
                     void StopStartFunc()
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.StopStart, Hazel.SendOption.Reliable, -1);
+                        using var writer = RPCProcedure.SendRPC(CustomRPC.StopStart);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+
                         copiedStartButton.Destroy();
                         __instance.GameStartText.text = String.Empty;
                         startingTimer = 0;
@@ -257,10 +258,10 @@ public class GameStartManagerPatch
 
             if (AmongUsClient.Instance.AmHost && sendGamemode && PlayerControl.LocalPlayer != null)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGamemode, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGamemode);
                 writer.Write((byte)MapOptions.gameMode);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.shareGamemode((byte)MapOptions.gameMode);
+
                 sendGamemode = false;
             }
         }
@@ -351,9 +352,8 @@ public class GameStartManagerPatch
                     }
                     if (chosenMapId >= 3) chosenMapId++;  // Skip dlekS
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DynamicMapOption, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.DynamicMapOption);
                     writer.Write(chosenMapId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.dynamicMapOption(chosenMapId);
                 }
             }

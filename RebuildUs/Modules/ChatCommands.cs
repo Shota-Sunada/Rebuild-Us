@@ -56,9 +56,9 @@ public static class ChatCommands
 
                     if (AmongUsClient.Instance.AmHost)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGamemode, Hazel.SendOption.Reliable, -1);
+                        using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGamemode);
                         writer.Write((byte)MapOptions.gameMode);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+
                         RPCProcedure.shareGamemode((byte)gameMode);
                         RPCProcedure.shareGamemode((byte)MapOptions.gameMode);
                     }

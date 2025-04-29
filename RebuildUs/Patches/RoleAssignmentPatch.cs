@@ -52,9 +52,9 @@ class RoleManagerSelectRolesPatch
     private static List<Tuple<byte, byte>> playerRoleMap = [];
     public static void Postfix()
     {
-        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ResetVaribles, Hazel.SendOption.Reliable, -1);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
+        using var writer = RPCProcedure.SendRPC(CustomRPC.ResetVaribles);
         RPCProcedure.resetVariables();
+
         if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return; // Don't assign Roles in Hide N Seek
         assignRoles();
     }
@@ -436,16 +436,15 @@ class RoleManagerSelectRolesPatch
 
             if (possibleTargets.Count == 0)
             {
-                MessageWriter w = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(w);
+                using var w = RPCProcedure.SendRPC(CustomRPC.LawyerPromotesToPursuer);
                 RPCProcedure.lawyerPromotesToPursuer();
             }
             else
             {
                 var target = possibleTargets[RebuildUs.rnd.Next(0, possibleTargets.Count)];
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerSetTarget, Hazel.SendOption.Reliable, -1);
+
+                using var writer = RPCProcedure.SendRPC(CustomRPC.LawyerSetTarget);
                 writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.lawyerSetTarget(target.PlayerId);
             }
         }
@@ -534,11 +533,11 @@ class RoleManagerSelectRolesPatch
 
         playerRoleMap.Add(new Tuple<byte, byte>(playerId, roleId));
 
-        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, Hazel.SendOption.Reliable, -1);
+        using var writer = RPCProcedure.SendRPC(CustomRPC.SetRole);
         writer.Write(roleId);
         writer.Write(playerId);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
         RPCProcedure.setRole(roleId, playerId);
+        
         return playerId;
     }
 
@@ -549,12 +548,12 @@ class RoleManagerSelectRolesPatch
         byte playerId = playerList[index].PlayerId;
         playerList.RemoveAt(index);
 
-        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetModifier, Hazel.SendOption.Reliable, -1);
+        using var writer = RPCProcedure.SendRPC(CustomRPC.SetModifier);
         writer.Write(modifierId);
         writer.Write(playerId);
         writer.Write(flag);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
         RPCProcedure.setModifier(modifierId, playerId, flag);
+
         return playerId;
     }
 

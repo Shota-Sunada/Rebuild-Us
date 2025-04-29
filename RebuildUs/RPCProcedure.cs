@@ -504,9 +504,8 @@ public static class RPCProcedure
             GameHistory.overrideDeathReasonAndKiller(oldShifter, CustomDeathReason.Shift, player);
             if (oldShifter == Lawyer.target && AmongUsClient.Instance.AmHost && Lawyer.lawyer != null)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.lawyerPromotesToPursuer();
+                using var writer = SendRPC(CustomRPC.LawyerPromotesToPursuer);
+                lawyerPromotesToPursuer();
             }
             return;
         }
@@ -1521,5 +1520,69 @@ class RPCHandlerPatch
                 EventUtility.handleKick(Helpers.playerById(kickSource), Helpers.playerById(kickTarget), reader.ReadSingle());
                 break;
         }
+    }
+}
+
+// RPCの送信を行うクラス
+// このクラスはIDisposableを実装しているため、usingステートメントを使って使い捨てることができます
+// 例:
+// using (var rpc = new RPCSender(0, 0))
+// {
+//     rpc.Write(0);
+//     rpc.Write(1);
+// } // Disposeが呼ばれる
+// ↑っていうのをCopilotが生成してくれた
+public class RPCSender(uint netId, CustomRPC callId, int targetId = -1) : IDisposable
+{
+    // Send RPC to player with netId
+    private readonly MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(netId, (byte)callId, SendOption.Reliable, targetId);
+
+    public void Dispose()
+    {
+        AmongUsClient.Instance.FinishRpcImmediately(writer);
+    }
+
+    public void Write(bool value)
+    {
+        writer.Write(value);
+    }
+
+    public void Write(byte value)
+    {
+        writer.Write(value);
+    }
+
+    public void Write(uint value, bool isPacked = false)
+    {
+        if (isPacked)
+        {
+            writer.WritePacked(value);
+        }
+        else
+        {
+            writer.Write(value);
+        }
+    }
+
+    public void Write(int value, bool isPacked = false)
+    {
+        if (isPacked)
+        {
+            writer.WritePacked(value);
+        }
+        else
+        {
+            writer.Write(value);
+        }
+    }
+
+    public void Write(float value)
+    {
+        writer.Write(value);
+    }
+
+    public void Write(string value)
+    {
+        writer.Write(value);
     }
 }

@@ -46,9 +46,9 @@ class GameModePatches
             {
                 MapOptions.gameMode = (CustomGamemodes)((int)(MapOptions.gameMode + 1) % Enum.GetNames(typeof(CustomGamemodes)).Length);
                 __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p => { pButton.buttonText.text = Helpers.cs(Color.yellow, GameModeText.GetComponent<TextMeshPro>().text); })));
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGamemode, Hazel.SendOption.Reliable, -1);
+
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGamemode);
                 writer.Write((byte)MapOptions.gameMode);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.shareGamemode((byte)MapOptions.gameMode);
             }));
             pButton.OnMouseOut = new UnityEvent();

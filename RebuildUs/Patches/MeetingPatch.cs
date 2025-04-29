@@ -141,8 +141,7 @@ class MeetingHudPatch
                         exiled = potentialExiled.ToArray().FirstOrDefault(v => v.PlayerId == tiebreakerVote);
                         tie = false;
 
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTiebreak, Hazel.SendOption.Reliable, -1);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        using var writer = RPCProcedure.SendRPC(CustomRPC.SetTiebreak);
                         RPCProcedure.setTiebreak();
                     }
                 }
@@ -353,12 +352,11 @@ class MeetingHudPatch
         }
         if (firstPlayer != null && secondPlayer != null)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SwapperSwap, Hazel.SendOption.Reliable, -1);
-            writer.Write((byte)firstPlayer.TargetPlayerId);
-            writer.Write((byte)secondPlayer.TargetPlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.SwapperSwap);
+            writer.Write(firstPlayer.TargetPlayerId);
+            writer.Write(secondPlayer.TargetPlayerId);
+            RPCProcedure.swapperSwap(firstPlayer.TargetPlayerId, secondPlayer.TargetPlayerId);
 
-            RPCProcedure.swapperSwap((byte)firstPlayer.TargetPlayerId, (byte)secondPlayer.TargetPlayerId);
             meetingExtraButtonLabel.text = Helpers.cs(Color.green, "Swapping!");
             Swapper.charges--;
             meetingExtraButtonText.text = $"Swaps: {Swapper.charges}";
@@ -424,9 +422,8 @@ class MeetingHudPatch
 
         Mayor.voteTwice = !Mayor.voteTwice;
 
-        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MayorSetVoteTwice, Hazel.SendOption.Reliable, -1);
+        using var writer = RPCProcedure.SendRPC(CustomRPC.MayorSetVoteTwice);
         writer.Write(Mayor.voteTwice);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
 
         meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, "Double Vote: " + (Mayor.voteTwice ? Helpers.cs(Color.green, "On ") : Helpers.cs(Color.red, "Off")));
     }
@@ -531,9 +528,9 @@ class MeetingHudPatch
                         __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
                         UnityEngine.Object.Destroy(container.gameObject);
 
-                        MessageWriter murderAttemptWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
-                        AmongUsClient.Instance.FinishRpcImmediately(murderAttemptWriter);
+                        using var murderAttemptWriter = RPCProcedure.SendRPC(CustomRPC.ShieldedMurderAttempt);
                         RPCProcedure.shieldedMurderAttempt();
+
                         return;
                     }
 
@@ -551,12 +548,11 @@ class MeetingHudPatch
                         __instance.playerStates.ToList().ForEach(x => { if (x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
 
                     // Shoot player and send chat info if activated
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GuesserShoot, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.GuesserShoot);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(dyingTarget.PlayerId);
                     writer.Write(focusedTarget.PlayerId);
                     writer.Write((byte)roleInfo.roleId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.guesserShoot(PlayerControl.LocalPlayer.PlayerId, dyingTarget.PlayerId, focusedTarget.PlayerId, (byte)roleInfo.roleId);
                 }
             }));
@@ -752,10 +748,9 @@ class MeetingHudPatch
             }
             if (Snitch.snitch != null && roomTracker != null)
             {
-                MessageWriter roomWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareRoom, Hazel.SendOption.Reliable, -1);
+                using var roomWriter = RPCProcedure.SendRPC(CustomRPC.ShareRoom);
                 roomWriter.Write(PlayerControl.LocalPlayer.PlayerId);
                 roomWriter.Write(roomId);
-                AmongUsClient.Instance.FinishRpcImmediately(roomWriter);
             }
 
             // Resett Bait list

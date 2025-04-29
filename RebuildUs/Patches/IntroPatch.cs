@@ -79,9 +79,8 @@ class IntroCutsceneOnDestroyPatch
             PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(MapOptions.firstKillName));
             if (target != null)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFirstKill, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.SetFirstKill);
                 writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.setFirstKill(target.PlayerId);
             }
         }

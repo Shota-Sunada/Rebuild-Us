@@ -21,9 +21,8 @@ class ExileControllerBeginPatch
         // Medic shield
         if (Medic.medic != null && AmongUsClient.Instance.AmHost && Medic.futureShielded != null && !Medic.medic.Data.IsDead)
         { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.MedicSetShielded);
             writer.Write(Medic.futureShielded.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.medicSetShielded(Medic.futureShielded.PlayerId);
         }
         if (Medic.usedShield) Medic.meetingAfterShielding = true;  // Has to be after the setting of the shield
@@ -31,9 +30,8 @@ class ExileControllerBeginPatch
         // Shifter shift
         if (Shifter.shifter != null && AmongUsClient.Instance.AmHost && Shifter.futureShift != null)
         { // We need to send the RPC from the host here, to make sure that the order of shifting and erasing is correct (for that reason the futureShifted and futureErased are being synced)
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShifterShift, Hazel.SendOption.Reliable, -1);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.ShifterShift);
             writer.Write(Shifter.futureShift.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.shifterShift(Shifter.futureShift.PlayerId);
         }
         Shifter.futureShift = null;
@@ -43,10 +41,10 @@ class ExileControllerBeginPatch
         {  // We need to send the RPC from the host here, to make sure that the order of shifting and erasing is correct (for that reason the futureShifted and futureErased are being synced)
             foreach (PlayerControl target in Eraser.futureErased)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ErasePlayerRoles, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ErasePlayerRoles);
                 writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.erasePlayerRoles(target.PlayerId);
+
                 Eraser.alreadyErased.Add(target.PlayerId);
             }
         }
@@ -76,22 +74,20 @@ class ExileControllerBeginPatch
                         continue;
                     if (target == Lawyer.target && Lawyer.lawyer != null)
                     {
-                        MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                        using var writer2 = RPCProcedure.SendRPC(CustomRPC.LawyerPromotesToPursuer);
                         RPCProcedure.lawyerPromotesToPursuer();
                     }
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedExilePlayer, Hazel.SendOption.Reliable, -1);
+
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedExilePlayer);
                     writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.uncheckedExilePlayer(target.PlayerId);
 
-                    MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                    using var writer3 = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                     writer3.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer3.Write((byte)GhostInfoTypes.DeathReasonAndKiller);
                     writer3.Write(target.PlayerId);
                     writer3.Write((byte)CustomDeathReason.WitchExile);
                     writer3.Write(Witch.witch.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer3);
 
                     GameHistory.overrideDeathReasonAndKiller(target, CustomDeathReason.WitchExile, killer: Witch.witch);
                 }

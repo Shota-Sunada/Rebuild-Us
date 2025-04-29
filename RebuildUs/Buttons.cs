@@ -294,15 +294,15 @@ static class HudManagerStartPatch
             () =>
             {
                 engineerRepairButton.Timer = 0f;
-                MessageWriter usedRepairWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerUsedRepair, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(usedRepairWriter);
+
+                using var rpc1 = RPCProcedure.SendRPC(CustomRPC.EngineerUsedRepair);
                 RPCProcedure.engineerUsedRepair();
+
                 foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator())
                 {
                     if (task.TaskType == TaskTypes.FixLights)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFixLights, Hazel.SendOption.Reliable, -1);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        using var rpc2 = RPCProcedure.SendRPC(CustomRPC.EngineerFixLights);
                         RPCProcedure.engineerFixLights();
                     }
                     else if (task.TaskType == TaskTypes.RestoreOxy)
@@ -330,8 +330,7 @@ static class HudManagerStartPatch
                     }
                     else if (SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFixSubmergedOxygen, Hazel.SendOption.Reliable, -1);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        using var rpc3 = RPCProcedure.SendRPC(CustomRPC.EngineerFixSubmergedOxygen);
                         RPCProcedure.engineerFixSubmergedOxygen();
                     }
                 }
@@ -340,10 +339,15 @@ static class HudManagerStartPatch
             () =>
             {
                 bool sabotageActive = false;
-                foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator())
-                    if (task.TaskType == TaskTypes.FixLights || task.TaskType == TaskTypes.RestoreOxy || task.TaskType == TaskTypes.ResetReactor || task.TaskType == TaskTypes.ResetSeismic || task.TaskType == TaskTypes.FixComms || task.TaskType == TaskTypes.StopCharles
+                foreach (var task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator())
+                {
+                    if (task.TaskType is TaskTypes.FixLights or TaskTypes.RestoreOxy or TaskTypes.ResetReactor or TaskTypes.ResetSeismic or TaskTypes.FixComms or TaskTypes.StopCharles
                         || SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
+                    {
                         sabotageActive = true;
+                    }
+                }
+
                 return sabotageActive && Engineer.remainingFixes > 0 && PlayerControl.LocalPlayer.CanMove;
             },
             () => { },
@@ -371,10 +375,9 @@ static class HudManagerStartPatch
                             {
                                 NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
 
-                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
+                                using var writer = RPCProcedure.SendRPC(CustomRPC.CleanBody);
                                 writer.Write(playerInfo.PlayerId);
                                 writer.Write(Janitor.janitor.PlayerId);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
                                 RPCProcedure.cleanBody(playerInfo.PlayerId, Janitor.janitor.PlayerId);
                                 janitorCleanButton.Timer = janitorCleanButton.MaxTimer;
                                 break;
@@ -417,12 +420,14 @@ static class HudManagerStartPatch
 
                     // Armored sheriff shot doesnt kill if backfired
                     if (targetId == Sheriff.sheriff.PlayerId && Helpers.checkArmored(Sheriff.sheriff, true, true))
+                    {
                         return;
-                    MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
+                    }
+
+                    using var killWriter = RPCProcedure.SendRPC(CustomRPC.UncheckedMurderPlayer);
                     killWriter.Write(Sheriff.sheriff.Data.PlayerId);
                     killWriter.Write(targetId);
                     killWriter.Write(byte.MaxValue);
-                    AmongUsClient.Instance.FinishRpcImmediately(killWriter);
                     RPCProcedure.uncheckedMurderPlayer(Sheriff.sheriff.Data.PlayerId, targetId, Byte.MaxValue);
                 }
 
@@ -443,8 +448,7 @@ static class HudManagerStartPatch
         timeMasterShieldButton = new CustomButton(
             () =>
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TimeMasterShield, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.TimeMasterShield);
                 RPCProcedure.timeMasterShield();
             },
             () => { return TimeMaster.timeMaster != null && TimeMaster.timeMaster == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -474,13 +478,17 @@ static class HudManagerStartPatch
             {
                 medicShieldButton.Timer = 0f;
 
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, Medic.setShieldAfterMeeting ? (byte)CustomRPC.SetFutureShielded : (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(Medic.setShieldAfterMeeting ? CustomRPC.SetFutureShielded : CustomRPC.MedicSetShielded); ;
                 writer.Write(Medic.currentTarget.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+
                 if (Medic.setShieldAfterMeeting)
+                {
                     RPCProcedure.setFutureShielded(Medic.currentTarget.PlayerId);
+                }
                 else
+                {
                     RPCProcedure.medicSetShielded(Medic.currentTarget.PlayerId);
+                }
                 Medic.meetingAfterShielding = false;
             },
             () => { return Medic.medic != null && Medic.medic == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -497,9 +505,8 @@ static class HudManagerStartPatch
         shifterShiftButton = new CustomButton(
             () =>
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFutureShifted, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.SetFutureShielded);
                 writer.Write(Shifter.currentTarget.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.setFutureShifted(Shifter.currentTarget.PlayerId);
             },
             () => { return Shifter.shifter != null && Shifter.shifter == PlayerControl.LocalPlayer && Shifter.futureShift == null && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -519,10 +526,10 @@ static class HudManagerStartPatch
             {
                 if (Morphing.sampledTarget != null)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MorphingMorph, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.MorphingMorph);
                     writer.Write(Morphing.sampledTarget.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.morphingMorph(Morphing.sampledTarget.PlayerId);
+
                     Morphing.sampledTarget = null;
                     morphingButton.effectDuration = Morphing.duration;
                 }
@@ -571,8 +578,7 @@ static class HudManagerStartPatch
         camouflagerButton = new CustomButton(
             () =>
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CamouflagerCamouflage, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.CamouflagerCamouflage);
                 RPCProcedure.camouflagerCamouflage();
             },
             () => { return Camouflager.camouflager != null && Camouflager.camouflager == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -748,9 +754,8 @@ static class HudManagerStartPatch
         trackerTrackPlayerButton = new CustomButton(
             () =>
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrackerUsedTracker, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.TrackerUsedTracker);
                 writer.Write(Tracker.currentTarget.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.trackerUsedTracker(Tracker.currentTarget.PlayerId);
             },
             () => { return Tracker.tracker != null && Tracker.tracker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -801,11 +806,10 @@ static class HudManagerStartPatch
                 {
                     if (Vampire.targetNearGarlic)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
+                        using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedMurderPlayer);
                         writer.Write(Vampire.vampire.PlayerId);
                         writer.Write(Vampire.currentTarget.PlayerId);
                         writer.Write(Byte.MaxValue);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.uncheckedMurderPlayer(Vampire.vampire.PlayerId, Vampire.currentTarget.PlayerId, Byte.MaxValue);
 
                         vampireKillButton.hasEffect = false; // Block effect on this click
@@ -815,10 +819,9 @@ static class HudManagerStartPatch
                     {
                         Vampire.bitten = Vampire.currentTarget;
                         // Notify players about bitten
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
+                        using var writer = RPCProcedure.SendRPC(CustomRPC.VampireSetBitten);
                         writer.Write(Vampire.bitten.PlayerId);
                         writer.Write((byte)0);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.vampireSetBitten(Vampire.bitten.PlayerId, 0);
 
                         byte lastTimer = (byte)Vampire.delay;
@@ -830,11 +833,9 @@ static class HudManagerStartPatch
                                 if (timer != lastTimer)
                                 {
                                     lastTimer = timer;
-                                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                                    using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo); writer.Write(PlayerControl.LocalPlayer.PlayerId);
                                     writer.Write((byte)GhostInfoTypes.VampireTimer);
                                     writer.Write(timer);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                                 }
                             }
                             if (p == 1f)
@@ -843,10 +844,9 @@ static class HudManagerStartPatch
                                 var res = Helpers.checkMurderAttemptAndKill(Vampire.vampire, Vampire.bitten, showAnimation: false);
                                 if (res == MurderAttemptResult.PerformKill)
                                 {
-                                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
+                                    using var writer = RPCProcedure.SendRPC(CustomRPC.VampireSetBitten);
                                     writer.Write(byte.MaxValue);
                                     writer.Write(byte.MaxValue);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                                     RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
                                 }
                             }
@@ -967,10 +967,9 @@ static class HudManagerStartPatch
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
                 {  // Ghosts can portal too, but non-blocking and only with a local animation
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UsePortal, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.UsePortal);
                     writer.Write((byte)PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(portalMakerSoloTeleport ? (byte)1 : (byte)0);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
                 RPCProcedure.usePortal(PlayerControl.LocalPlayer.PlayerId, portalMakerSoloTeleport ? (byte)1 : (byte)0);
                 usePortalButton.Timer = usePortalButton.MaxTimer;
@@ -1018,10 +1017,9 @@ static class HudManagerStartPatch
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
                 {  // Ghosts can portal too, but non-blocking and only with a local animation
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UsePortal, Hazel.SendOption.Reliable, -1);
-                    writer.Write((byte)PlayerControl.LocalPlayer.PlayerId);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.UsePortal);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write((byte)2);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
                 RPCProcedure.usePortal(PlayerControl.LocalPlayer.PlayerId, 2);
                 usePortalButton.Timer = usePortalButton.MaxTimer;
@@ -1072,9 +1070,8 @@ static class HudManagerStartPatch
         jackalSidekickButton = new CustomButton(
             () =>
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.JackalCreatesSidekick, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.JackalCreatesSidekick);
                 writer.Write(Jackal.currentTarget.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.jackalCreatesSidekick(Jackal.currentTarget.PlayerId);
             },
             () => { return Jackal.canCreateSidekick && Jackal.jackal != null && Jackal.jackal == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1158,9 +1155,8 @@ static class HudManagerStartPatch
                 eraserButton.MaxTimer += 10;
                 eraserButton.Timer = eraserButton.MaxTimer;
 
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFutureErased, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.SetFutureErased);
                 writer.Write(Eraser.currentTarget.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.setFutureErased(Eraser.currentTarget.PlayerId);
             },
             () => { return Eraser.eraser != null && Eraser.eraser == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1201,8 +1197,7 @@ static class HudManagerStartPatch
         lightsOutButton = new CustomButton(
             () =>
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LightsOut, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.LightsOut);
                 RPCProcedure.lightsOut();
             },
             () =>
@@ -1246,10 +1241,9 @@ static class HudManagerStartPatch
                             {
                                 NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
 
-                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
+                                using var writer = RPCProcedure.SendRPC(CustomRPC.CleanBody);
                                 writer.Write(playerInfo.PlayerId);
                                 writer.Write(Cleaner.cleaner.PlayerId);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
                                 RPCProcedure.cleanBody(playerInfo.PlayerId, Cleaner.cleaner.PlayerId);
 
                                 Cleaner.cleaner.killTimer = cleanerCleanButton.Timer = cleanerCleanButton.MaxTimer;
@@ -1281,12 +1275,10 @@ static class HudManagerStartPatch
                     warlockCurseButton.Timer = 1f;
 
                     // Ghost Info
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write((byte)GhostInfoTypes.WarlockTarget);
                     writer.Write(Warlock.curseVictim.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
                 }
                 else if (Warlock.curseVictim != null && Warlock.curseVictimTarget != null)
                 {
@@ -1313,12 +1305,10 @@ static class HudManagerStartPatch
                     warlockCurseButton.sprite = Warlock.getCurseButtonSprite();
                     Warlock.warlock.killTimer = warlockCurseButton.Timer = warlockCurseButton.MaxTimer;
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write((byte)GhostInfoTypes.WarlockTarget);
                     writer.Write(Byte.MaxValue); // This will set it to null!
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
                 }
             },
             () => { return Warlock.warlock != null && Warlock.warlock == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1475,8 +1465,7 @@ static class HudManagerStartPatch
                 bool dousedEveryoneAlive = Arsonist.dousedEveryoneAlive();
                 if (dousedEveryoneAlive)
                 {
-                    MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArsonistWin, Hazel.SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                    using var winWriter = RPCProcedure.SendRPC(CustomRPC.ArsonistWin);
                     RPCProcedure.arsonistWin();
                     arsonistButton.hasEffect = false;
                 }
@@ -1529,11 +1518,10 @@ static class HudManagerStartPatch
                 }
 
                 // Ghost Info
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write((byte)GhostInfoTypes.ArsonistDouse);
                 writer.Write(Arsonist.douseTarget.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 Arsonist.douseTarget = null;
             }
@@ -1556,10 +1544,9 @@ static class HudManagerStartPatch
                             {
                                 NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
 
-                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
+                                using var writer = RPCProcedure.SendRPC(CustomRPC.CleanBody);
                                 writer.Write(playerInfo.PlayerId);
                                 writer.Write(Vulture.vulture.PlayerId);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
                                 RPCProcedure.cleanBody(playerInfo.PlayerId, Vulture.vulture.PlayerId);
 
                                 Vulture.cooldown = vultureEatButton.Timer = vultureEatButton.MaxTimer;
@@ -1621,11 +1608,10 @@ static class HudManagerStartPatch
                 FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, msg);
 
                 // Ghost Info
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                 writer.Write(Medium.target.player.PlayerId);
                 writer.Write((byte)GhostInfoTypes.MediumInfo);
                 writer.Write(msg);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 // Remove soul
                 if (Medium.oneTimeUse)
@@ -1675,10 +1661,9 @@ static class HudManagerStartPatch
             {
                 if (Pursuer.target != null)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBlanked, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.SetBlanked);
                     writer.Write(Pursuer.target.PlayerId);
                     writer.Write(Byte.MaxValue);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.setBlanked(Pursuer.target.PlayerId, Byte.MaxValue);
 
                     Pursuer.target = null;
@@ -1749,9 +1734,8 @@ static class HudManagerStartPatch
                 MurderAttemptResult attempt = Helpers.checkMurderAttempt(Witch.witch, Witch.spellCastingTarget);
                 if (attempt == MurderAttemptResult.PerformKill)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFutureSpelled, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.SetFutureSpelled);
                     writer.Write(Witch.currentTarget.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.setFutureSpelled(Witch.currentTarget.PlayerId);
                 }
                 if (attempt == MurderAttemptResult.BlankKill || attempt == MurderAttemptResult.PerformKill)
@@ -1796,18 +1780,16 @@ static class HudManagerStartPatch
                         writer.EndMessage();
                         RPCProcedure.placeNinjaTrace(buff);
 
-                        MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetInvisible, Hazel.SendOption.Reliable, -1);
+                        using var invisibleWriter = RPCProcedure.SendRPC(CustomRPC.SetInvisible);
                         invisibleWriter.Write(Ninja.ninja.PlayerId);
                         invisibleWriter.Write(byte.MinValue);
-                        AmongUsClient.Instance.FinishRpcImmediately(invisibleWriter);
                         RPCProcedure.setInvisible(Ninja.ninja.PlayerId, byte.MinValue);
 
                         // Perform Kill
-                        MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
+                        using var writer2 = RPCProcedure.SendRPC(CustomRPC.UncheckedMurderPlayer);
                         writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer2.Write(Ninja.ninjaMarked.PlayerId);
                         writer2.Write(byte.MaxValue);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
                         if (SubmergedCompatibility.IsSubmerged)
                         {
                             SubmergedCompatibility.ChangeFloor(Ninja.ninjaMarked.transform.localPosition.y > -7);
@@ -1844,11 +1826,10 @@ static class HudManagerStartPatch
                     ninjaButton.Timer = 5f;
 
                     // Ghost Info
-                    writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write((byte)GhostInfoTypes.NinjaMarked);
-                    writer.Write(Ninja.ninjaMarked.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    using var writer4 = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
+                    writer4.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer4.Write((byte)GhostInfoTypes.NinjaMarked);
+                    writer4.Write(Ninja.ninjaMarked.PlayerId);
                 }
             },
             () => { return Ninja.ninja != null && Ninja.ninja == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1870,42 +1851,46 @@ static class HudManagerStartPatch
         );
 
         mayorMeetingButton = new CustomButton(
-           () =>
-           {
-               PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
-               Mayor.remoteMeetingsLeft--;
-               Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
-               RPCProcedure.uncheckedCmdReportDeadBody(PlayerControl.LocalPlayer.PlayerId, Byte.MaxValue);
+            () =>
+            {
+                PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
+                Mayor.remoteMeetingsLeft--;
+                Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
+                RPCProcedure.uncheckedCmdReportDeadBody(PlayerControl.LocalPlayer.PlayerId, Byte.MaxValue);
 
-               MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedCmdReportDeadBody, Hazel.SendOption.Reliable, -1);
-               writer.Write(PlayerControl.LocalPlayer.PlayerId);
-               writer.Write(Byte.MaxValue);
-               AmongUsClient.Instance.FinishRpcImmediately(writer);
-               mayorMeetingButton.Timer = 1f;
-           },
-           () => { return Mayor.mayor != null && Mayor.mayor == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && Mayor.meetingButton; },
-           () =>
-           {
-               mayorMeetingButton.actionButton.OverrideText("Emergency (" + Mayor.remoteMeetingsLeft + ")");
-               bool sabotageActive = false;
-               foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator())
-                   if (task.TaskType == TaskTypes.FixLights || task.TaskType == TaskTypes.RestoreOxy || task.TaskType == TaskTypes.ResetReactor || task.TaskType == TaskTypes.ResetSeismic || task.TaskType == TaskTypes.FixComms || task.TaskType == TaskTypes.StopCharles
-                       || SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
-                       sabotageActive = true;
-               return !sabotageActive && PlayerControl.LocalPlayer.CanMove && (Mayor.remoteMeetingsLeft > 0);
-           },
-           () => { mayorMeetingButton.Timer = mayorMeetingButton.MaxTimer; },
-           Mayor.getMeetingSprite(),
-           ButtonOffset.LowerRight,
-           __instance,
-           __instance.UseButton,
-           KeyCode.F,
-           true,
-           0f,
-           () => { },
-           false,
-           "Meeting"
-       );
+                using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedCmdReportDeadBody);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(byte.MaxValue);
+                mayorMeetingButton.Timer = 1f;
+            },
+            () => { return Mayor.mayor != null && Mayor.mayor == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && Mayor.meetingButton; },
+            () =>
+            {
+                mayorMeetingButton.actionButton.OverrideText("Emergency (" + Mayor.remoteMeetingsLeft + ")");
+                bool sabotageActive = false;
+                foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator())
+                {
+                    if (task.TaskType is TaskTypes.FixLights or TaskTypes.RestoreOxy or TaskTypes.ResetReactor or TaskTypes.ResetSeismic or TaskTypes.FixComms or TaskTypes.StopCharles
+                        || SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
+                    {
+                        sabotageActive = true;
+                    }
+                }
+
+                return !sabotageActive && PlayerControl.LocalPlayer.CanMove && (Mayor.remoteMeetingsLeft > 0);
+            },
+            () => { mayorMeetingButton.Timer = mayorMeetingButton.MaxTimer; },
+            Mayor.getMeetingSprite(),
+            ButtonOffset.LowerRight,
+            __instance,
+            __instance.UseButton,
+            KeyCode.F,
+            true,
+            0f,
+            () => { },
+            false,
+            "Meeting"
+        );
 
         // Trapper button
         trapperButton = new CustomButton(
@@ -2011,8 +1996,7 @@ static class HudManagerStartPatch
             Bomber.defuseDuration,
             () =>
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DefuseBomb, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.DefuseBomb);
                 RPCProcedure.defuseBomb();
 
                 defuseButton.Timer = 0f;
@@ -2036,31 +2020,28 @@ static class HudManagerStartPatch
                 if (Thief.suicideFlag)
                 {
                     // Suicide
-                    MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
-                    writer2.Write(thief.PlayerId);
-                    writer2.Write(thief.PlayerId);
-                    writer2.Write(0);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedMurderPlayer);
+                    writer.Write(thief.PlayerId);
+                    writer.Write(thief.PlayerId);
+                    writer.Write(0);
                     RPCProcedure.uncheckedMurderPlayer(thief.PlayerId, thief.PlayerId, 0);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
                     Thief.thief.clearAllTasks();
                 }
 
                 // Steal role if survived.
                 if (!Thief.thief.Data.IsDead && result == MurderAttemptResult.PerformKill)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ThiefStealsRole, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.ThiefStealsRole);
                     writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.thiefStealsRole(target.PlayerId);
                 }
                 // Kill the victim (after becoming their role - so that no win is triggered for other teams)
                 if (result == MurderAttemptResult.PerformKill)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedMurderPlayer);
                     writer.Write(thief.PlayerId);
                     writer.Write(target.PlayerId);
                     writer.Write(byte.MaxValue);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.uncheckedMurderPlayer(thief.PlayerId, target.PlayerId, byte.MaxValue);
                 }
             },

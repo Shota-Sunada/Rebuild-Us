@@ -210,8 +210,7 @@ public class RebuildUsPlugin : BasePlugin
             // Terminate round
             if (Input.GetKeyDown(KeyCode.L))
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ForceEnd, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ForceEnd);
                 RPCProcedure.forceEnd();
             }
         }

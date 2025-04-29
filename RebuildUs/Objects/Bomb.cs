@@ -98,13 +98,13 @@ public class Bomb
             {
                 Helpers.checkMurderAttemptAndKill(Bomber.bomber, PlayerControl.LocalPlayer, false, false, true, true);
 
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write((byte)GhostInfoTypes.DeathReasonAndKiller);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write((byte)CustomDeathReason.Bomb);
                 writer.Write(Bomber.bomber.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+
                 GameHistory.overrideDeathReasonAndKiller(PlayerControl.LocalPlayer, CustomDeathReason.Bomb, killer: Bomber.bomber);
             }
         }

@@ -142,13 +142,11 @@ class Trap
         }
         if (target != null && player.PlayerId != Trapper.trapper.PlayerId && !player.Data.IsDead)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TriggerTrap, Hazel.SendOption.Reliable, -1);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.TriggerTrap);
             writer.Write(player.PlayerId);
             writer.Write(target.instanceId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.triggerTrap(player.PlayerId, (byte)target.instanceId);
         }
-
 
         if (!player.Data.IsDead || player.PlayerId == Trapper.trapper.PlayerId) return;
         foreach (Trap trap in traps)

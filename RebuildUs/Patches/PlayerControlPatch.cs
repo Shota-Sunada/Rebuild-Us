@@ -212,8 +212,7 @@ public static class PlayerControlFixedUpdatePatch
         if (Deputy.promotesToSheriff == 0 || Deputy.deputy.Data.IsDead == true || Deputy.promotesToSheriff == 2 && !isMeeting) return;
         if (Sheriff.sheriff == null || Sheriff.sheriff?.Data?.Disconnected == true || Sheriff.sheriff.Data.IsDead)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DeputyPromotes, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.DeputyPromotes);
             RPCProcedure.deputyPromotes();
         }
     }
@@ -311,8 +310,7 @@ public static class PlayerControlFixedUpdatePatch
         if (Sidekick.sidekick.Data.IsDead == true || !Sidekick.promotesToJackal) return;
         if (Jackal.jackal == null || Jackal.jackal?.Data?.Disconnected == true)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SidekickPromotes, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.SidekickPromotes);
             RPCProcedure.sidekickPromotes();
         }
     }
@@ -340,12 +338,10 @@ public static class PlayerControlFixedUpdatePatch
             Deputy.setHandcuffedKnows(false);
 
             // Ghost info
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write((byte)GhostInfoTypes.HandcuffOver);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
-
     }
 
     static void engineerUpdate()
@@ -428,10 +424,9 @@ public static class PlayerControlFixedUpdatePatch
     {
         if (Ninja.isInvisble && Ninja.invisibleTimer <= 0 && Ninja.ninja == PlayerControl.LocalPlayer)
         {
-            MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetInvisible, Hazel.SendOption.Reliable, -1);
+            using var invisibleWriter = RPCProcedure.SendRPC(CustomRPC.SetInvisible);
             invisibleWriter.Write(Ninja.ninja.PlayerId);
             invisibleWriter.Write(byte.MaxValue);
-            AmongUsClient.Instance.FinishRpcImmediately(invisibleWriter);
             RPCProcedure.setInvisible(Ninja.ninja.PlayerId, byte.MaxValue);
         }
         if (Ninja.arrow?.arrow != null)
@@ -795,11 +790,10 @@ public static class PlayerControlFixedUpdatePatch
             if (BountyHunter.bounty == null) return;
 
             // Ghost Info
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write((byte)GhostInfoTypes.BountyTarget);
             writer.Write(BountyHunter.bounty.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             // Show poolable player
             if (FastDestroyableSingleton<HudManager>.Instance != null && FastDestroyableSingleton<HudManager>.Instance.UseButton != null)
@@ -938,9 +932,9 @@ public static class PlayerControlFixedUpdatePatch
         // Promote to Pursuer
         if (Lawyer.target != null && Lawyer.target.Data.Disconnected && !Lawyer.lawyer.Data.IsDead)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.LawyerPromotesToPursuer);
             RPCProcedure.lawyerPromotesToPursuer();
+
             return;
         }
     }
@@ -1033,10 +1027,9 @@ public static class PlayerControlFixedUpdatePatch
                     Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
                     RPCProcedure.uncheckedCmdReportDeadBody(entry.Key.killerIfExisting.PlayerId, entry.Key.player.PlayerId);
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedCmdReportDeadBody, Hazel.SendOption.Reliable, -1);
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedCmdReportDeadBody);
                     writer.Write(entry.Key.killerIfExisting.PlayerId);
                     writer.Write(entry.Key.player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
         }
@@ -1277,11 +1270,10 @@ class BodyReportPatch
                         FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, msg);
 
                         // Ghost Info
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                        using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write((byte)GhostInfoTypes.DetectiveOrMedicInfo);
                         writer.Write(msg);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                     if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
@@ -1339,16 +1331,14 @@ public static class MurderPlayerPatch
         // Sidekick promotion trigger on murder
         if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && target == Jackal.jackal && Jackal.jackal == PlayerControl.LocalPlayer)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SidekickPromotes, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.SidekickPromotes);
             RPCProcedure.sidekickPromotes();
         }
 
         // Pursuer promotion trigger on murder (the host sends the call such that everyone recieves the update before a possible game End)
         if (target == Lawyer.target && AmongUsClient.Instance.AmHost && Lawyer.lawyer != null)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.LawyerPromotesToPursuer);
             RPCProcedure.lawyerPromotesToPursuer();
         }
 
@@ -1420,10 +1410,9 @@ public static class MurderPlayerPatch
         // Add Bloody Modifier
         if (Bloody.bloody.FindAll(x => x.PlayerId == target.PlayerId).Count > 0)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Bloody, Hazel.SendOption.Reliable, -1);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.Bloody);
             writer.Write(__instance.PlayerId);
             writer.Write(target.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.bloody(__instance.PlayerId, target.PlayerId);
         }
 
@@ -1531,8 +1520,7 @@ public static class ExilePlayerPatch
         // Sidekick promotion trigger on exile
         if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && __instance == Jackal.jackal && Jackal.jackal == PlayerControl.LocalPlayer)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SidekickPromotes, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            using var writer = RPCProcedure.SendRPC(CustomRPC.SidekickPromotes);
             RPCProcedure.sidekickPromotes();
         }
 
@@ -1542,8 +1530,7 @@ public static class ExilePlayerPatch
             PlayerControl lawyer = Lawyer.lawyer;
             if (AmongUsClient.Instance.AmHost && ((Lawyer.target != Jester.jester && !Lawyer.isProsecutor) || Lawyer.targetWasGuessed))
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.LawyerPromotesToPursuer);
                 RPCProcedure.lawyerPromotesToPursuer();
             }
 
@@ -1552,13 +1539,13 @@ public static class ExilePlayerPatch
                 if (Lawyer.lawyer != null) Lawyer.lawyer.Exiled();
                 if (Pursuer.pursuer != null) Pursuer.pursuer.Exiled();
 
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write((byte)GhostInfoTypes.DeathReasonAndKiller);
                 writer.Write(lawyer.PlayerId);
                 writer.Write((byte)CustomDeathReason.LawyerSuicide);
                 writer.Write(lawyer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+
                 GameHistory.overrideDeathReasonAndKiller(lawyer, CustomDeathReason.LawyerSuicide, lawyer);  // TODO: only executed on host?!
             }
         }
