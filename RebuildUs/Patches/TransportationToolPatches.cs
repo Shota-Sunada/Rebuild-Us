@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using System;
 using UnityEngine.Windows.Speech;

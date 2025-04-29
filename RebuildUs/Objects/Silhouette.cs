@@ -1,4 +1,4 @@
-﻿using Innersloth.DebugTool;
+using Innersloth.DebugTool;
 using LibCpp2IL.Elf;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using RebuildUs;
 
 namespace RebuildUs.Modules.CustomHats.Patches;

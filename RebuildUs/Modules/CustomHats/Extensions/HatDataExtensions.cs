@@ -1,4 +1,4 @@
-﻿namespace RebuildUs.Modules.CustomHats.Extensions;
+namespace RebuildUs.Modules.CustomHats.Extensions;
 
 internal static class HatDataExtensions
 {

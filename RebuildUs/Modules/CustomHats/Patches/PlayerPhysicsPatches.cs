@@ -1,4 +1,4 @@
-﻿using RebuildUs.Modules.CustomHats.Extensions;
+using RebuildUs.Modules.CustomHats.Extensions;
 using HarmonyLib;
 
 namespace RebuildUs.Modules.CustomHats.Patches;
