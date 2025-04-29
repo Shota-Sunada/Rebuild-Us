@@ -19,6 +19,14 @@ namespace RebuildUs;
 
 public static class Helpers
 {
+    public static bool RolesEnabled
+    {
+        get
+        {
+            return CustomOptionHolder.activateRoles.getBool();
+        }
+    }
+
     public static string previousEndGameSummary = "";
     public static Dictionary<string, Sprite> CachedSprites = [];
 
@@ -768,5 +776,17 @@ public static class Helpers
     public static void Destroy(this UnityEngine.Object obj)
     {
         UnityEngine.Object.Destroy(obj);
+    }
+
+    public static bool isDead(this PlayerControl player)
+    {
+        // return player == null || player?.Data?.IsDead == true || player?.Data?.Disconnected == true ||
+        //       (finalStatuses != null && finalStatuses.ContainsKey(player.PlayerId) && finalStatuses[player.PlayerId] != FinalStatus.Alive);
+        return player == null || player?.Data?.IsDead == true || player?.Data?.Disconnected == true;
+    }
+
+    public static bool isAlive(this PlayerControl player)
+    {
+        return !isDead(player);
     }
 }

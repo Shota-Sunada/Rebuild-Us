@@ -1,6 +1,6 @@
 namespace RebuildUs.Enums;
 
-public enum RoleId
+public enum RoleId : byte
 {
     Jester,
     Mayor,
@@ -60,5 +60,7 @@ public enum RoleId
     Invert,
     Chameleon,
     Armored,
-    Shifter
+    Shifter,
+
+    NoRole = byte.MaxValue
 }
