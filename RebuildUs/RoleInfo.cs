@@ -272,10 +272,6 @@ public class RoleInfo
                     roleName = Helpers.cs(Color.gray, "(erased) ") + roleName;
                 if (Vampire.vampire != null && !Vampire.vampire.Data.IsDead && Vampire.bitten == p && !p.Data.IsDead)
                     roleName = Helpers.cs(Vampire.color, $"(bitten {(int)HudManagerStartPatch.vampireKillButton.Timer + 1}) ") + roleName;
-                if (Deputy.handcuffedPlayers.Contains(p.PlayerId))
-                    roleName = Helpers.cs(Color.gray, "(cuffed) ") + roleName;
-                if (Deputy.handcuffedKnows.ContainsKey(p.PlayerId))  // Active cuff
-                    roleName = Helpers.cs(Deputy.color, "(cuffed) ") + roleName;
                 if (p == Warlock.curseVictim)
                     roleName = Helpers.cs(Warlock.color, "(cursed) ") + roleName;
                 if (p == Ninja.ninjaMarked)
