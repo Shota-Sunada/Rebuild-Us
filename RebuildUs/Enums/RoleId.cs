@@ -7,7 +7,6 @@ public enum RoleId : byte
     Portalmaker,
     Engineer,
     Sheriff,
-    Deputy,
     Lighter,
     Godfather,
     Mafioso,

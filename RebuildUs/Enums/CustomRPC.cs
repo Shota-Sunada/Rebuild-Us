@@ -4,7 +4,7 @@ public enum CustomRPC
 {
     // Main Controls
 
-    ResetVaribles = 100,
+    ResetVariables = 100,
     ShareOptions,
     ForceEnd,
     WorkaroundSetRoles,
@@ -26,6 +26,7 @@ public enum CustomRPC
     EngineerFixSubmergedOxygen,
     EngineerUsedRepair,
     CleanBody,
+    SheriffKill,
     MedicSetShielded,
     ShieldedMurderAttempt,
     TimeMasterShield,
@@ -37,8 +38,6 @@ public enum CustomRPC
     TrackerUsedTracker,
     VampireSetBitten,
     PlaceGarlic,
-    DeputyUsedHandcuffs,
-    DeputyPromotes,
     JackalCreatesSidekick,
     SidekickPromotes,
     ErasePlayerRoles,

@@ -28,11 +28,13 @@ static class GameHistory
 {
     public static List<Tuple<Vector3, bool>> localPlayerPositions = [];
     public static List<DeadPlayer> deadPlayers = [];
+    public static Dictionary<int, FinalStatus> finalStatuses = [];
 
     public static void clearGameHistory()
     {
         localPlayerPositions = [];
         deadPlayers = [];
+        finalStatuses = [];
     }
 
     public static void overrideDeathReasonAndKiller(PlayerControl player, CustomDeathReason deathReason, PlayerControl killer = null)

@@ -89,7 +89,7 @@ class HudManagerUpdatePatch
             if (Deputy.deputy != null && Deputy.knowsSheriff) {
                 setPlayerNameColor(Deputy.deputy, Deputy.color);
             }
-        } else*/
+        } else
         if (Deputy.deputy != null && Deputy.deputy == localPlayer)
         {
             setPlayerNameColor(Deputy.deputy, Deputy.color);
@@ -97,7 +97,7 @@ class HudManagerUpdatePatch
             {
                 setPlayerNameColor(Sheriff.sheriff, Sheriff.color);
             }
-        } /*else if (Portalmaker.portalmaker != null && Portalmaker.portalmaker == localPlayer)
+        } else if (Portalmaker.portalmaker != null && Portalmaker.portalmaker == localPlayer)
             setPlayerNameColor(Portalmaker.portalmaker, Portalmaker.color);
         else if (Lighter.lighter != null && Lighter.lighter == localPlayer)
             setPlayerNameColor(Lighter.lighter, Lighter.color);
@@ -119,7 +119,7 @@ class HudManagerUpdatePatch
             setPlayerNameColor(Tracker.tracker, Tracker.color);
         else if (Snitch.snitch != null && Snitch.snitch == localPlayer)
             setPlayerNameColor(Snitch.snitch, Snitch.color);*/
-        else if (Jackal.jackal != null && Jackal.jackal == localPlayer)
+        if (Jackal.jackal != null && Jackal.jackal == localPlayer)
         {
             // Jackal can see his sidekick
             setPlayerNameColor(Jackal.jackal, Jackal.color);
@@ -283,8 +283,6 @@ class HudManagerUpdatePatch
         Trickster.lightsOutTimer -= dt;
         Tracker.corpsesTrackingTimer -= dt;
         Ninja.invisibleTimer -= dt;
-        foreach (byte key in Deputy.handcuffedKnows.Keys)
-            Deputy.handcuffedKnows[key] -= dt;
     }
 
     public static void miniUpdate()
@@ -329,21 +327,19 @@ class HudManagerUpdatePatch
 
         if (enabled) __instance.KillButton.Show();
         else __instance.KillButton.Hide();
-
-        if (Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[PlayerControl.LocalPlayer.PlayerId] > 0) __instance.KillButton.Hide();
     }
 
     static void updateReportButton(HudManager __instance)
     {
         if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return;
-        if (Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[PlayerControl.LocalPlayer.PlayerId] > 0 || MeetingHud.Instance) __instance.ReportButton.Hide();
+        if (MeetingHud.Instance) __instance.ReportButton.Hide();
         else if (!__instance.ReportButton.isActiveAndEnabled) __instance.ReportButton.Show();
     }
 
     static void updateVentButton(HudManager __instance)
     {
         if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return;
-        if (Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[PlayerControl.LocalPlayer.PlayerId] > 0 || MeetingHud.Instance) __instance.ImpostorVentButton.Hide();
+        if (MeetingHud.Instance) __instance.ImpostorVentButton.Hide();
         else if (PlayerControl.LocalPlayer.roleCanUseVents() && !__instance.ImpostorVentButton.isActiveAndEnabled)
         {
             __instance.ImpostorVentButton.Show();

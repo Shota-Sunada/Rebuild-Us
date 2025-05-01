@@ -196,9 +196,6 @@ public class CustomButton
             actionButton.graphic.color = new Color(1f, 1f, 1f, 0.3f);
             onClick();
 
-            // Deputy skip onClickEvent if handcuffed
-            if (Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[PlayerControl.LocalPlayer.PlayerId] > 0f) return;
-
             if (hasEffect && !isEffectActive)
             {
                 DeputyTimer = effectDuration;
@@ -348,17 +345,6 @@ public class CustomButton
         // Trigger OnClickEvent if the hotkey is being pressed down
         if (hotkey.HasValue && Input.GetKeyDown(hotkey.Value)) OnClickEvent();
 
-        // Deputy disable the button and display Handcuffs instead...
-        if (Deputy.handcuffedPlayers.Contains(PlayerControl.LocalPlayer.PlayerId))
-        {
-            onClick = () =>
-            {
-                Deputy.setHandcuffedKnows();
-            };
-        }
-        else // Reset.
-        {
-            onClick = initialOnClick;
-        }
+        onClick = initialOnClick;
     }
 }

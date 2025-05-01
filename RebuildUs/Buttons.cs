@@ -20,7 +20,6 @@ static class HudManagerStartPatch
     private static CustomButton engineerRepairButton;
     private static CustomButton janitorCleanButton;
     public static CustomButton sheriffKillButton;
-    private static CustomButton deputyHandcuffButton;
     private static CustomButton timeMasterShieldButton;
     private static CustomButton medicShieldButton;
     private static CustomButton shifterShiftButton;
@@ -63,12 +62,10 @@ static class HudManagerStartPatch
     public static CustomButton zoomOutButton;
     public static CustomButton eventKickButton;
 
-    public static Dictionary<byte, List<CustomButton>> deputyHandcuffedButtons = null;
     public static PoolablePlayer targetDisplay;
 
     public static TMPro.TMP_Text securityGuardButtonScrewsText;
     public static TMPro.TMP_Text securityGuardChargesText;
-    public static TMPro.TMP_Text deputyButtonHandcuffsText;
     public static TMPro.TMP_Text pursuerButtonBlanksText;
     public static TMPro.TMP_Text hackerAdminTableChargesText;
     public static TMPro.TMP_Text hackerVitalsChargesText;
@@ -92,8 +89,6 @@ static class HudManagerStartPatch
         }
         engineerRepairButton.MaxTimer = 0f;
         janitorCleanButton.MaxTimer = Janitor.cooldown;
-        sheriffKillButton.MaxTimer = Sheriff.cooldown;
-        deputyHandcuffButton.MaxTimer = Deputy.handcuffCooldown;
         timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
         medicShieldButton.MaxTimer = 0f;
         shifterShiftButton.MaxTimer = 0f;
@@ -160,90 +155,6 @@ static class HudManagerStartPatch
         timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
         timeMasterShieldButton.isEffectActive = false;
         timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-    }
-
-    private static void addReplacementHandcuffedButton(CustomButton button, Vector3? positionOffset = null, Func<bool> couldUse = null)
-    {
-        Vector3 positionOffsetValue = positionOffset ?? button.positionOffset;  // For non custom buttons, we can set these manually.
-        positionOffsetValue.z = -0.1f;
-        couldUse ??= button.couldUse;
-        var replacementHandcuffedButton = new CustomButton(
-            () => { },
-            () => { return true; },
-            couldUse,
-            () => { },
-            Deputy.getHandcuffedButtonSprite(),
-            positionOffsetValue,
-            button.hudManager,
-            button.hudManager.UseButton,
-            button.hotkey,
-            true,
-            Deputy.handcuffDuration,
-            () => { },
-            button.mirror
-        );
-        replacementHandcuffedButton.Timer = replacementHandcuffedButton.effectDuration;
-        replacementHandcuffedButton.actionButton.cooldownTimerText.color = new Color(0F, 0.8F, 0F);
-        replacementHandcuffedButton.isEffectActive = true;
-        if (deputyHandcuffedButtons.ContainsKey(PlayerControl.LocalPlayer.PlayerId))
-        {
-            deputyHandcuffedButtons[PlayerControl.LocalPlayer.PlayerId].Add(replacementHandcuffedButton);
-        }
-        else
-        {
-            deputyHandcuffedButtons.Add(PlayerControl.LocalPlayer.PlayerId, [replacementHandcuffedButton]);
-        }
-    }
-
-    // Disables / Enables all Buttons (except the ones disabled in the Deputy class), and replaces them with new buttons.
-    public static void setAllButtonsHandcuffedStatus(bool handcuffed, bool reset = false)
-    {
-        if (reset)
-        {
-            deputyHandcuffedButtons = [];
-            return;
-        }
-        if (handcuffed && !deputyHandcuffedButtons.ContainsKey(PlayerControl.LocalPlayer.PlayerId))
-        {
-            int maxI = CustomButton.buttons.Count;
-            for (int i = 0; i < maxI; i++)
-            {
-                try
-                {
-                    if (CustomButton.buttons[i].hasButton())  // For each custom button the player has
-                    {
-                        addReplacementHandcuffedButton(CustomButton.buttons[i]);  // The new buttons are the only non-handcuffed buttons now!
-                    }
-                    CustomButton.buttons[i].isHandcuffed = true;
-                }
-                catch (NullReferenceException)
-                {
-                    System.Console.WriteLine("[WARNING] NullReferenceException from MeetingEndedUpdate().HasButton(), if theres only one warning its fine");  // Note: idk what this is good for, but i copied it from above /gendelo
-                }
-            }
-            // Non Custom (Vanilla) Buttons. The Originals are disabled / hidden in UpdatePatch.cs already, just need to replace them. Can use any button, as we replace onClick etc anyways.
-            // Kill Button if enabled for the Role
-            if (FastDestroyableSingleton<HudManager>.Instance.KillButton.isActiveAndEnabled) addReplacementHandcuffedButton(arsonistButton, new(0f, 1f, 0f), couldUse: () => { return FastDestroyableSingleton<HudManager>.Instance.KillButton.currentTarget != null; });
-            // Vent Button if enabled
-            if (PlayerControl.LocalPlayer.roleCanUseVents()) addReplacementHandcuffedButton(arsonistButton, new(-1f, 1f, 0f), couldUse: () => { return FastDestroyableSingleton<HudManager>.Instance.ImpostorVentButton.currentTarget != null; });
-            // Report Button
-            addReplacementHandcuffedButton(arsonistButton, (!PlayerControl.LocalPlayer.Data.Role.IsImpostor) ? new Vector3(-1f, -0.06f, 0) : new(-2f, -0.06f, 0), () => { return FastDestroyableSingleton<HudManager>.Instance.ReportButton.graphic.color == Palette.EnabledColor; });
-        }
-        else if (!handcuffed && deputyHandcuffedButtons.ContainsKey(PlayerControl.LocalPlayer.PlayerId))  // Reset to original. Disables the replacements, enables the original buttons.
-        {
-            foreach (CustomButton replacementButton in deputyHandcuffedButtons[PlayerControl.LocalPlayer.PlayerId])
-            {
-                replacementButton.hasButton = () => { return false; };
-                replacementButton.Update(); // To make it disappear properly.
-                CustomButton.buttons.Remove(replacementButton);
-            }
-            deputyHandcuffedButtons.Remove(PlayerControl.LocalPlayer.PlayerId);
-
-            foreach (CustomButton button in CustomButton.buttons)
-            {
-                button.isHandcuffed = false;
-            }
-        }
     }
 
     private static void setButtonTargetDisplay(PlayerControl target, CustomButton button = null, Vector3? offset = null)
@@ -394,54 +305,6 @@ static class HudManagerStartPatch
             __instance,
             __instance.UseButton,
             KeyCode.F
-        );
-
-        // Sheriff Kill
-        sheriffKillButton = new CustomButton(
-            () =>
-            {
-                MurderAttemptResult murderAttemptResult = Helpers.checkMurderAttempt(Sheriff.sheriff, Sheriff.currentTarget);
-                if (murderAttemptResult == MurderAttemptResult.SuppressKill) return;
-
-                if (murderAttemptResult == MurderAttemptResult.PerformKill)
-                {
-                    byte targetId = 0;
-                    if ((Sheriff.currentTarget.Data.Role.IsImpostor && (Sheriff.currentTarget != Mini.mini || Mini.isGrownUp())) ||
-                        (Sheriff.spyCanDieToSheriff && Spy.spy == Sheriff.currentTarget) ||
-                        (Sheriff.canKillNeutrals && Helpers.isNeutral(Sheriff.currentTarget)) ||
-                        (Jackal.jackal == Sheriff.currentTarget || Sidekick.sidekick == Sheriff.currentTarget))
-                    {
-                        targetId = Sheriff.currentTarget.PlayerId;
-                    }
-                    else
-                    {
-                        targetId = PlayerControl.LocalPlayer.PlayerId;
-                    }
-
-                    // Armored sheriff shot doesnt kill if backfired
-                    if (targetId == Sheriff.sheriff.PlayerId && Helpers.checkArmored(Sheriff.sheriff, true, true))
-                    {
-                        return;
-                    }
-
-                    using var killWriter = RPCProcedure.SendRPC(CustomRPC.UncheckedMurderPlayer);
-                    killWriter.Write(Sheriff.sheriff.Data.PlayerId);
-                    killWriter.Write(targetId);
-                    killWriter.Write(byte.MaxValue);
-                    RPCProcedure.uncheckedMurderPlayer(Sheriff.sheriff.Data.PlayerId, targetId, Byte.MaxValue);
-                }
-
-                sheriffKillButton.Timer = sheriffKillButton.MaxTimer;
-                Sheriff.currentTarget = null;
-            },
-            () => { return Sheriff.sheriff != null && Sheriff.sheriff == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return Sheriff.currentTarget && PlayerControl.LocalPlayer.CanMove; },
-            () => { sheriffKillButton.Timer = sheriffKillButton.MaxTimer; },
-            __instance.KillButton.graphic.sprite,
-            ButtonOffset.UpperRight,
-            __instance,
-            __instance.KillButton,
-            KeyCode.Q
         );
 
         // Time Master Rewind Time
@@ -2254,7 +2117,5 @@ static class HudManagerStartPatch
         // Set the default (or settings from the previous game) timers / durations when spawning the buttons
         initialized = true;
         setCustomButtonCooldowns();
-        deputyHandcuffedButtons = [];
-
     }
 }

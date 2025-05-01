@@ -96,17 +96,6 @@ public static class VentCanUsePatch
     }
 }
 
-[HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
-class VentButtonDoClickPatch
-{
-    static bool Prefix(VentButton __instance)
-    {
-        // Manually modifying the VentButton to use Vent.Use again in order to trigger the Vent.Use prefix patch
-        if (__instance.currentTarget != null && !Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId)) __instance.currentTarget.Use();
-        return false;
-    }
-}
-
 [HarmonyPatch(typeof(Vent), nameof(Vent.Use))]
 public static class VentUsePatch
 {
@@ -114,11 +103,7 @@ public static class VentUsePatch
     {
         if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return true;
         // Deputy handcuff disables the vents
-        if (Deputy.handcuffedPlayers.Contains(PlayerControl.LocalPlayer.PlayerId))
-        {
-            Deputy.setHandcuffedKnows();
-            return false;
-        }
+
         if (Trapper.playersOnMap.Contains(PlayerControl.LocalPlayer.PlayerId)) return false;
 
         bool canUse;
@@ -199,13 +184,6 @@ class KillButtonDoClickPatch
     {
         if (__instance.isActiveAndEnabled && __instance.currentTarget && !__instance.isCoolingDown && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.CanMove)
         {
-            // Deputy handcuff update.
-            if (Deputy.handcuffedPlayers.Contains(PlayerControl.LocalPlayer.PlayerId))
-            {
-                Deputy.setHandcuffedKnows();
-                return false;
-            }
-
             // Use an unchecked kill command, to allow shorter kill cooldowns etc. without getting kicked
             MurderAttemptResult res = Helpers.checkMurderAttemptAndKill(PlayerControl.LocalPlayer, __instance.currentTarget);
             // Handle blank kill
@@ -241,16 +219,6 @@ class SabotageButtonRefreshPatch
         {
             FastDestroyableSingleton<HudManager>.Instance.SabotageButton.SetDisabled();
         }
-    }
-}
-
-[HarmonyPatch(typeof(ReportButton), nameof(ReportButton.DoClick))]
-class ReportButtonDoClickPatch
-{
-    public static bool Prefix(ReportButton __instance)
-    {
-        if (__instance.isActiveAndEnabled && Deputy.handcuffedPlayers.Contains(PlayerControl.LocalPlayer.PlayerId) && __instance.graphic.color == Palette.EnabledColor) Deputy.setHandcuffedKnows();
-        return !Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId);
     }
 }
 

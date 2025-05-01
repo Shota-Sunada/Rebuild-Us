@@ -52,7 +52,7 @@ class RoleManagerSelectRolesPatch
     private static List<Tuple<byte, byte>> playerRoleMap = [];
     public static void Postfix()
     {
-        using var writer = RPCProcedure.SendRPC(CustomRPC.ResetVaribles);
+        using var writer = RPCProcedure.SendRPC(CustomRPC.ResetVariables);
         RPCProcedure.resetVariables();
 
         if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return; // Don't assign Roles in Hide N Seek
@@ -155,6 +155,7 @@ class RoleManagerSelectRolesPatch
         crewSettings.Add((byte)RoleId.Snitch, CustomOptionHolder.snitchSpawnRate.getSelection());
         crewSettings.Add((byte)RoleId.Medium, CustomOptionHolder.mediumSpawnRate.getSelection());
         crewSettings.Add((byte)RoleId.Trapper, CustomOptionHolder.trapperSpawnRate.getSelection());
+        crewSettings.Add((byte)RoleId.Sheriff, CustomOptionHolder.sheriffSpawnRate.getSelection());
         if (impostors.Count > 1)
         {
             // Only add Spy if more than 1 impostor as the spy role is otherwise useless
@@ -198,13 +199,6 @@ class RoleManagerSelectRolesPatch
             if (isEvilGuesser) data.impSettings.Add((byte)RoleId.EvilGuesser, CustomOptionHolder.guesserSpawnRate.getSelection());
             else data.crewSettings.Add((byte)RoleId.NiceGuesser, CustomOptionHolder.guesserSpawnRate.getSelection());
         }
-
-        // Assign Sheriff
-        if ((CustomOptionHolder.deputySpawnRate.getSelection() > 0 &&
-            CustomOptionHolder.sheriffSpawnRate.getSelection() == 10) ||
-            CustomOptionHolder.deputySpawnRate.getSelection() == 0)
-            data.crewSettings.Add((byte)RoleId.Sheriff, CustomOptionHolder.sheriffSpawnRate.getSelection());
-
 
         crewValues = data.crewSettings.Values.ToList().Sum();
         impValues = data.impSettings.Values.ToList().Sum();
@@ -272,10 +266,8 @@ class RoleManagerSelectRolesPatch
         // Roles that prob have a dependent role
         bool guesserFlag = CustomOptionHolder.guesserSpawnBothRate.getSelection() > 0
             && CustomOptionHolder.guesserSpawnRate.getSelection() > 0;
-        bool sheriffFlag = CustomOptionHolder.deputySpawnRate.getSelection() > 0
-            && CustomOptionHolder.sheriffSpawnRate.getSelection() > 0;
 
-        if (!guesserFlag && !sheriffFlag) return; // assignDependentRoles is not needed
+        if (!guesserFlag) return; // assignDependentRoles is not needed
 
         int crew = data.crewmates.Count < data.maxCrewmateRoles ? data.crewmates.Count : data.maxCrewmateRoles; // Max number of crew loops
         int imp = data.impostors.Count < data.maxImpostorRoles ? data.impostors.Count : data.maxImpostorRoles; // Max number of imp loops
@@ -283,18 +275,19 @@ class RoleManagerSelectRolesPatch
         int impSteps = imp / data.impSettings.Keys.Count(); // Avarage impvalues deducted after each loop
 
         // set to false if needed, otherwise we can skip the loop
-        bool isSheriff = !sheriffFlag;
+        // bool isSheriff = !sheriffFlag;
         bool isGuesser = !guesserFlag;
 
         // --- Simulate Crew & Imp ticket system ---
-        while (crew > 0 && (!isSheriff || (!isEvilGuesser && !isGuesser)))
+        // while (crew > 0 && (!isSheriff || (!isEvilGuesser && !isGuesser)))
+        while (crew > 0 && !isEvilGuesser && !isGuesser)
         {
-            if (!isSheriff && rnd.Next(crewValues) < CustomOptionHolder.sheriffSpawnRate.getSelection()) isSheriff = true;
+            // if (!isSheriff && rnd.Next(crewValues) < CustomOptionHolder.sheriffSpawnRate.getSelection()) isSheriff = true;
             if (!isEvilGuesser && !isGuesser && rnd.Next(crewValues) < CustomOptionHolder.guesserSpawnRate.getSelection()) isGuesser = true;
             crew--;
             crewValues -= crewSteps;
         }
-        while (imp > 0 && (isEvilGuesser && !isGuesser))
+        while (imp > 0 && isEvilGuesser && !isGuesser)
         {
             if (rnd.Next(impValues) < CustomOptionHolder.guesserSpawnRate.getSelection()) isGuesser = true;
             imp--;
@@ -302,12 +295,12 @@ class RoleManagerSelectRolesPatch
         }
 
         // --- Assign Main Roles if they won the lottery ---
-        if (isSheriff && Sheriff.sheriff == null && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0 && sheriffFlag)
-        { // Set Sheriff cause he won the lottery
-            byte sheriff = setRoleToRandomPlayer((byte)RoleId.Sheriff, data.crewmates);
-            data.crewmates.ToList().RemoveAll(x => x.PlayerId == sheriff);
-            data.maxCrewmateRoles--;
-        }
+        // if (isSheriff && Sheriff.sheriff == null && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0 && sheriffFlag)
+        // { // Set Sheriff cause he won the lottery
+        //     byte sheriff = setRoleToRandomPlayer((byte)RoleId.Sheriff, data.crewmates);
+        //     data.crewmates.ToList().RemoveAll(x => x.PlayerId == sheriff);
+        //     data.maxCrewmateRoles--;
+        // }
         if (!isEvilGuesser && isGuesser && Guesser.niceGuesser == null && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0 && guesserFlag)
         { // Set Nice Guesser cause he won the lottery
             byte niceGuesser = setRoleToRandomPlayer((byte)RoleId.NiceGuesser, data.crewmates);
@@ -322,17 +315,17 @@ class RoleManagerSelectRolesPatch
         }
 
         // --- Assign Dependent Roles if main role exists ---
-        if (Sheriff.sheriff != null)
-        { // Deputy
-            if (CustomOptionHolder.deputySpawnRate.getSelection() == 10 && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0)
-            { // Force Deputy
-                byte deputy = setRoleToRandomPlayer((byte)RoleId.Deputy, data.crewmates);
-                data.crewmates.ToList().RemoveAll(x => x.PlayerId == deputy);
-                data.maxCrewmateRoles--;
-            }
-            else if (CustomOptionHolder.deputySpawnRate.getSelection() < 10) // Dont force, add Deputy to the ticket system
-                data.crewSettings.Add((byte)RoleId.Deputy, CustomOptionHolder.deputySpawnRate.getSelection());
-        }
+        // if (Sheriff.sheriff != null)
+        // { // Deputy
+        //     if (CustomOptionHolder.deputySpawnRate.getSelection() == 10 && data.crewmates.Count > 0 && data.maxCrewmateRoles > 0)
+        //     { // Force Deputy
+        //         byte deputy = setRoleToRandomPlayer((byte)RoleId.Deputy, data.crewmates);
+        //         data.crewmates.ToList().RemoveAll(x => x.PlayerId == deputy);
+        //         data.maxCrewmateRoles--;
+        //     }
+        //     else if (CustomOptionHolder.deputySpawnRate.getSelection() < 10) // Dont force, add Deputy to the ticket system
+        //         data.crewSettings.Add((byte)RoleId.Deputy, CustomOptionHolder.deputySpawnRate.getSelection());
+        // }
 
         if (!data.crewSettings.ContainsKey((byte)RoleId.Sheriff)) data.crewSettings.Add((byte)RoleId.Sheriff, 0);
 

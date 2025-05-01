@@ -142,13 +142,6 @@ public class CustomOptionHolder
     public static CustomOption sheriffNumShots;
     public static CustomOption sheriffMisfireKillsTarget;
     public static CustomOption sheriffCanKillNeutrals;
-    public static CustomOption deputySpawnRate;
-    public static CustomOption deputyNumberOfHandcuffs;
-    public static CustomOption deputyHandcuffCooldown;
-    public static CustomOption deputyGetsPromoted;
-    public static CustomOption deputyKeepsHandcuffs;
-    public static CustomOption deputyHandcuffDuration;
-    public static CustomOption deputyKnowsSheriff;
 
     public static CustomOption lighterSpawnRate;
     public static CustomOption lighterModeLightsOnVision;

@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using RebuildUs.CustomGameModes;
 using AmongUs.GameOptions;
 using RebuildUs.Patches;
+using static RebuildUs.GameHistory;
+using RebuildUs.Roles;
+using RebuildUs.Roles.Crewmate;
 
 namespace RebuildUs;
 
@@ -386,7 +389,6 @@ public static class Helpers
         else if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target == Sidekick.sidekick && Sidekick.wasTeamRed || target == Jackal.jackal && Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
         else if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
         else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
-        else if (Deputy.knowsSheriff && (source == Sheriff.sheriff || source == Deputy.deputy) && (target == Sheriff.sheriff || target == Deputy.deputy)) return false; // Sheriff & Deputy see the names of each other
         return true;
     }
 
@@ -575,7 +577,7 @@ public static class Helpers
 
         // Block Armored with armor kill
 
-        else if (checkArmored(target, true, killer == PlayerControl.LocalPlayer, Sheriff.sheriff == null || killer.PlayerId != Sheriff.sheriff.PlayerId || isEvil(target) && Sheriff.canKillNeutrals || isKiller(target)))
+        else if (checkArmored(target, true, killer == PlayerControl.LocalPlayer, Sheriff.exists || killer.isRole(RoleId.Sheriff) || isEvil(target) && Sheriff.canKillNeutrals || isKiller(target)))
         {
             return MurderAttemptResult.BlankKill;
         }
@@ -652,7 +654,7 @@ public static class Helpers
         return team;
     }
 
-    public static bool isNeutral(PlayerControl player)
+    public static bool isNeutral(this PlayerControl player)
     {
         RoleInfo roleInfo = RoleInfo.getRoleInfoForPlayer(player, false).FirstOrDefault();
         if (roleInfo != null)
@@ -773,9 +775,8 @@ public static class Helpers
 
     public static bool isDead(this PlayerControl player)
     {
-        // return player == null || player?.Data?.IsDead == true || player?.Data?.Disconnected == true ||
-        //       (finalStatuses != null && finalStatuses.ContainsKey(player.PlayerId) && finalStatuses[player.PlayerId] != FinalStatus.Alive);
-        return player == null || player?.Data?.IsDead == true || player?.Data?.Disconnected == true;
+        return player == null || player?.Data?.IsDead == true || player?.Data?.Disconnected == true ||
+                (finalStatuses != null && finalStatuses.ContainsKey(player.PlayerId) && finalStatuses[player.PlayerId] != FinalStatus.Alive);
     }
 
     public static bool isAlive(this PlayerControl player)

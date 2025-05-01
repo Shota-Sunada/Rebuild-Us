@@ -14,6 +14,7 @@ using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Assets.CoreScripts;
 using Sentry.Internal.Extensions;
+using RebuildUs.Roles.Crewmate;
 
 namespace RebuildUs.Patches;
 
@@ -191,32 +192,6 @@ public static class PlayerControlFixedUpdatePatch
         setPlayerOutline(Morphing.currentTarget, Morphing.color);
     }
 
-    static void sheriffSetTarget()
-    {
-        if (Sheriff.sheriff == null || Sheriff.sheriff != PlayerControl.LocalPlayer) return;
-        Sheriff.currentTarget = setTarget();
-        setPlayerOutline(Sheriff.currentTarget, Sheriff.color);
-    }
-
-    static void deputySetTarget()
-    {
-        if (Deputy.deputy == null || Deputy.deputy != PlayerControl.LocalPlayer) return;
-        Deputy.currentTarget = setTarget();
-        setPlayerOutline(Deputy.currentTarget, Deputy.color);
-    }
-
-    public static void deputyCheckPromotion(bool isMeeting = false)
-    {
-        // If LocalPlayer is Deputy, the Sheriff is disconnected and Deputy promotion is enabled, then trigger promotion
-        if (Deputy.deputy == null || Deputy.deputy != PlayerControl.LocalPlayer) return;
-        if (Deputy.promotesToSheriff == 0 || Deputy.deputy.Data.IsDead == true || Deputy.promotesToSheriff == 2 && !isMeeting) return;
-        if (Sheriff.sheriff == null || Sheriff.sheriff?.Data?.Disconnected == true || Sheriff.sheriff.Data.IsDead)
-        {
-            using var writer = RPCProcedure.SendRPC(CustomRPC.DeputyPromotes);
-            RPCProcedure.deputyPromotes();
-        }
-    }
-
     static void trackerSetTarget()
     {
         if (Tracker.tracker == null || Tracker.tracker != PlayerControl.LocalPlayer) return;
@@ -325,23 +300,6 @@ public static class PlayerControlFixedUpdatePatch
         if (Jackal.wasTeamRed) untargetables.Add(Jackal.jackal);
         Eraser.currentTarget = setTarget(onlyCrewmates: !Eraser.canEraseAnyone, untargetablePlayers: Eraser.canEraseAnyone?[] : untargetables);
         setPlayerOutline(Eraser.currentTarget, Eraser.color);
-    }
-
-    static void deputyUpdate()
-    {
-        if (PlayerControl.LocalPlayer == null || !Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId)) return;
-
-        if (Deputy.handcuffedKnows[PlayerControl.LocalPlayer.PlayerId] <= 0)
-        {
-            Deputy.handcuffedKnows.Remove(PlayerControl.LocalPlayer.PlayerId);
-            // Resets the buttons
-            Deputy.setHandcuffedKnows(false);
-
-            // Ghost info
-            using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write((byte)GhostInfoTypes.HandcuffOver);
-        }
     }
 
     static void engineerUpdate()
@@ -1117,11 +1075,6 @@ public static class PlayerControlFixedUpdatePatch
             medicSetTarget();
             // Shifter
             shifterSetTarget();
-            // Sheriff
-            sheriffSetTarget();
-            // Deputy
-            deputySetTarget();
-            deputyUpdate();
             // Detective
             detectiveUpdateFootPrints();
             // Tracker
@@ -1144,8 +1097,6 @@ public static class PlayerControlFixedUpdatePatch
             impostorSetTarget();
             // Warlock
             warlockSetTarget();
-            // Check for deputy promotion on Sheriff disconnect
-            deputyCheckPromotion();
             // Check for sidekick promotion on Jackal disconnect
             sidekickCheckPromotion();
             // SecurityGuard

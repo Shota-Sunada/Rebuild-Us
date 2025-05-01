@@ -8,6 +8,7 @@ using RebuildUs.Objects;
 using RebuildUs.Utilities;
 using RebuildUs.CustomGameModes;
 using static RebuildUs.RebuildUs;
+using RebuildUs.Roles;
 using AmongUs.Data;
 using Hazel;
 
@@ -24,8 +25,6 @@ public static class RebuildUs
         Mayor.clearAndReload();
         Portalmaker.clearAndReload();
         Engineer.clearAndReload();
-        Sheriff.clearAndReload();
-        Deputy.clearAndReload();
         Lighter.clearAndReload();
         Godfather.clearAndReload();
         Mafioso.clearAndReload();
@@ -272,113 +271,39 @@ public static class RebuildUs
         }
     }
 
-    public static class Sheriff
-    {
-        public static PlayerControl sheriff;
-        public static Color color = RebuildPalette.SheriffYellow;
+    // public static class Sheriff
+    // {
+    //     public static PlayerControl sheriff;
+    //     public static Color color = RebuildPalette.SheriffYellow;
 
-        public static float cooldown = 30f;
-        public static bool canKillNeutrals = false;
-        public static bool spyCanDieToSheriff = false;
+    //     public static float cooldown = 30f;
+    //     public static bool canKillNeutrals = false;
+    //     public static bool spyCanDieToSheriff = false;
 
-        public static PlayerControl currentTarget;
+    //     public static PlayerControl currentTarget;
 
-        public static PlayerControl formerDeputy;  // Needed for keeping handcuffs + shifting
-        public static PlayerControl formerSheriff;  // When deputy gets promoted...
+    //     public static PlayerControl formerDeputy;  // Needed for keeping handcuffs + shifting
+    //     public static PlayerControl formerSheriff;  // When deputy gets promoted...
 
-        public static void replaceCurrentSheriff(PlayerControl deputy)
-        {
-            if (!formerSheriff) formerSheriff = sheriff;
-            sheriff = deputy;
-            currentTarget = null;
-            cooldown = CustomOptionHolder.sheriffCooldown.getFloat();
-        }
+    //     public static void replaceCurrentSheriff(PlayerControl deputy)
+    //     {
+    //         if (!formerSheriff) formerSheriff = sheriff;
+    //         sheriff = deputy;
+    //         currentTarget = null;
+    //         cooldown = CustomOptionHolder.sheriffCooldown.getFloat();
+    //     }
 
-        public static void clearAndReload()
-        {
-            sheriff = null;
-            currentTarget = null;
-            formerDeputy = null;
-            formerSheriff = null;
-            cooldown = CustomOptionHolder.sheriffCooldown.getFloat();
-            canKillNeutrals = CustomOptionHolder.sheriffCanKillNeutrals.getBool();
-            spyCanDieToSheriff = CustomOptionHolder.spyCanDieToSheriff.getBool();
-        }
-    }
-
-    public static class Deputy
-    {
-        public static PlayerControl deputy;
-        public static Color color = Sheriff.color;
-
-        public static PlayerControl currentTarget;
-        public static List<byte> handcuffedPlayers = [];
-        public static int promotesToSheriff; // No: 0, Immediately: 1, After Meeting: 2
-        public static bool keepsHandcuffsOnPromotion;
-        public static float handcuffDuration;
-        public static float remainingHandcuffs;
-        public static float handcuffCooldown;
-        public static bool knowsSheriff;
-        public static Dictionary<byte, float> handcuffedKnows = [];
-
-        private static Sprite buttonSprite;
-        private static Sprite handcuffedSprite;
-
-        public static Sprite getButtonSprite()
-        {
-            if (buttonSprite) return buttonSprite;
-            buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.DeputyHandcuffButton.png", 115f);
-            return buttonSprite;
-        }
-
-        public static Sprite getHandcuffedButtonSprite()
-        {
-            if (handcuffedSprite) return handcuffedSprite;
-            handcuffedSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.DeputyHandcuffed.png", 115f);
-            return handcuffedSprite;
-        }
-
-        // Can be used to enable / disable the handcuff effect on the target's buttons
-        public static void setHandcuffedKnows(bool active = true, byte playerId = Byte.MaxValue)
-        {
-            if (playerId == Byte.MaxValue)
-                playerId = PlayerControl.LocalPlayer.PlayerId;
-
-            if (active && playerId == PlayerControl.LocalPlayer.PlayerId)
-            {
-                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write((byte)GhostInfoTypes.HandcuffNoticed);
-            }
-
-            if (active)
-            {
-                handcuffedKnows.Add(playerId, handcuffDuration);
-                handcuffedPlayers.RemoveAll(x => x == playerId);
-            }
-
-            if (playerId == PlayerControl.LocalPlayer.PlayerId)
-            {
-                HudManagerStartPatch.setAllButtonsHandcuffedStatus(active);
-            }
-
-        }
-
-        public static void clearAndReload()
-        {
-            deputy = null;
-            currentTarget = null;
-            handcuffedPlayers = [];
-            handcuffedKnows = [];
-            HudManagerStartPatch.setAllButtonsHandcuffedStatus(false, true);
-            promotesToSheriff = CustomOptionHolder.deputyGetsPromoted.getSelection();
-            remainingHandcuffs = CustomOptionHolder.deputyNumberOfHandcuffs.getFloat();
-            handcuffCooldown = CustomOptionHolder.deputyHandcuffCooldown.getFloat();
-            keepsHandcuffsOnPromotion = CustomOptionHolder.deputyKeepsHandcuffs.getBool();
-            handcuffDuration = CustomOptionHolder.deputyHandcuffDuration.getFloat();
-            knowsSheriff = CustomOptionHolder.deputyKnowsSheriff.getBool();
-        }
-    }
+    //     public static void clearAndReload()
+    //     {
+    //         sheriff = null;
+    //         currentTarget = null;
+    //         formerDeputy = null;
+    //         formerSheriff = null;
+    //         cooldown = CustomOptionHolder.sheriffCooldown.getFloat();
+    //         canKillNeutrals = CustomOptionHolder.sheriffCanKillNeutrals.getBool();
+    //         spyCanDieToSheriff = CustomOptionHolder.spyCanDieToSheriff.getBool();
+    //     }
+    // }
 
     public static class Lighter
     {
@@ -1573,7 +1498,7 @@ public static class Medium
         // suicides:
         if (killer == target)
         {
-            if ((target == Sheriff.sheriff || target == Sheriff.formerSheriff) && deathReason != CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.SheriffSuicide);
+            if (target.isRole(RoleId.Sheriff) && deathReason != CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.SheriffSuicide);
             if (target == Lovers.lover1 || target == Lovers.lover2) infos.Add(SpecialMediumInfo.PassiveLoverSuicide);
             if (target == Thief.thief && deathReason != CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.ThiefSuicide);
             if (target == Warlock.warlock && deathReason != CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.WarlockSuicide);
@@ -2291,11 +2216,6 @@ public static class Shifter
             if (repeat) shiftRole(player2, player1, false);
             if (Sheriff.formerDeputy != null && Sheriff.formerDeputy == Sheriff.sheriff) Sheriff.formerDeputy = player1;  // Shifter also shifts info on promoted deputy (to get handcuffs)
             Sheriff.sheriff = player1;
-        }
-        else if (Deputy.deputy != null && Deputy.deputy == player2)
-        {
-            if (repeat) shiftRole(player2, player1, false);
-            Deputy.deputy = player1;
         }
         else if (Lighter.lighter != null && Lighter.lighter == player2)
         {

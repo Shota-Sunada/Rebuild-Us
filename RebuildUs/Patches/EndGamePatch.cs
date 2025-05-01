@@ -9,7 +9,7 @@ using System.Text;
 
 using RebuildUs.Utilities;
 using RebuildUs.CustomGameModes;
-using LibCpp2IL.Elf;
+using static RebuildUs.GameHistory;
 
 namespace RebuildUs.Patches;
 
@@ -36,6 +36,7 @@ static class AdditionalTempData
         public int TasksTotal { get; set; }
         public int? Kills { get; set; }
         public bool IsAlive { get; set; }
+        public FinalStatus Status { get; set; }
     }
 }
 
@@ -61,13 +62,31 @@ public static class OnGameEndPatch
         {
             var roles = RoleInfo.getRoleInfoForPlayer(playerControl);
             var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data);
-            int? killCount = GameHistory.deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
+
+            var finalStatus = finalStatuses[playerControl.PlayerId] =
+                    playerControl.Data.Disconnected ? FinalStatus.Disconnected :
+                    finalStatuses.ContainsKey(playerControl.PlayerId) ? finalStatuses[playerControl.PlayerId] :
+                    playerControl.Data.IsDead ? FinalStatus.Dead :
+                    gameOverReason == GameOverReason.ImpostorsBySabotage && !playerControl.Data.Role.IsImpostor ? FinalStatus.Sabotage :
+                    FinalStatus.Alive;
+
+            int? killCount = deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
             if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor))
             {
                 killCount = null;
             }
             string roleString = RoleInfo.GetRolesString(playerControl, true, true, false);
-            AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString, TasksTotal = tasksTotal, TasksCompleted = tasksCompleted, Kills = killCount, IsAlive = !playerControl.Data.IsDead });
+            AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo()
+            {
+                PlayerName = playerControl.Data.PlayerName,
+                Roles = roles,
+                RoleNames = roleString,
+                TasksTotal = tasksTotal,
+                TasksCompleted = tasksCompleted,
+                Kills = killCount,
+                IsAlive = !playerControl.Data.IsDead,
+                Status = finalStatus
+            });
         }
 
         // Remove Jester, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
