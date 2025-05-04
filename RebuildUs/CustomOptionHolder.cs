@@ -145,8 +145,6 @@ public class CustomOptionHolder
     public static CustomOption lighterSpawnRate;
     public static CustomOption lighterModeLightsOnVision;
     public static CustomOption lighterModeLightsOffVision;
-    public static CustomOption lighterCooldown;
-    public static CustomOption lighterDuration;
     public static CustomOption lighterFlashlightWidth;
 
     public static CustomOption detectiveSpawnRate;
@@ -542,7 +540,7 @@ public class CustomOptionHolder
 
         #region Crewmate Roles
 
-        mayorSpawnRate = new CustomRoleOption(700, 701, CustomOptionType.Crewmate, ("Mayor", RebuildPalette.MayorGreen), 1);
+        mayorSpawnRate = new CustomRoleOption(700, 701, CustomOptionType.Crewmate, ("Mayor", Mayor.Color), 1);
         mayorNumVotes = CustomOption.Create(702, CustomOptionType.Crewmate, "MayorNumVotes", 2f, 2f, 10f, 1f, mayorSpawnRate, unitType: UnitType.UnitVotes);
         mayorCanSeeVoteColors = CustomOption.Create(703, CustomOptionType.Crewmate, "MayorCanSeeVoteColors", false, mayorSpawnRate);
         mayorTasksNeededToSeeVoteColors = CustomOption.Create(704, CustomOptionType.Crewmate, "MayorTasksNeededToSeeVoteColors", 5f, 0f, 20f, 1f, mayorCanSeeVoteColors, unitType: UnitType.UnitTimes);
@@ -560,12 +558,10 @@ public class CustomOptionHolder
         sheriffMisfireKillsTarget = CustomOption.Create(724, CustomOptionType.Crewmate, "SheriffMisfireKillsTarget", false, sheriffSpawnRate);
         sheriffCanKillNeutrals = CustomOption.Create(725, CustomOptionType.Crewmate, "SheriffCanKillNeutrals", false, sheriffSpawnRate);
 
-        lighterSpawnRate = new CustomRoleOption(730, 731, CustomOptionType.Crewmate, ("Lighter", Lighter.color), 1);
+        lighterSpawnRate = new CustomRoleOption(730, 731, CustomOptionType.Crewmate, ("Lighter", Lighter.Color), 1);
         lighterModeLightsOnVision = CustomOption.Create(732, CustomOptionType.Crewmate, "LighterModeLightsOnVision", 1.5f, 0.25f, 5f, 0.25f, lighterSpawnRate);
         lighterModeLightsOffVision = CustomOption.Create(733, CustomOptionType.Crewmate, "LighterModeLightsOffVision", 0.5f, 0.25f, 5f, 0.25f, lighterSpawnRate);
-        lighterCooldown = CustomOption.Create(734, CustomOptionType.Crewmate, "LighterCooldown", 30f, 5f, 120f, 5f, lighterSpawnRate, unitType: UnitType.UnitSeconds);
-        lighterDuration = CustomOption.Create(735, CustomOptionType.Crewmate, "LighterDuration", 5f, 2.5f, 60f, 2.5f, lighterSpawnRate, unitType: UnitType.UnitSeconds);
-        lighterFlashlightWidth = CustomOption.Create(736, CustomOptionType.Crewmate, "LighterFlashlightWidth", 0.3f, 0.1f, 1f, 0.1f, lighterSpawnRate);
+        lighterFlashlightWidth = CustomOption.Create(734, CustomOptionType.Crewmate, "LighterFlashlightWidth", 0.3f, 0.1f, 1f, 0.1f, lighterSpawnRate);
 
         detectiveSpawnRate = new CustomRoleOption(740, 741, CustomOptionType.Crewmate, ("Detective", Detective.color), 1);
         detectiveAnonymousFootprints = CustomOption.Create(742, CustomOptionType.Crewmate, "DetectiveAnonymousFootprints", false, detectiveSpawnRate);

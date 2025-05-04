@@ -15,7 +15,6 @@ using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Assets.CoreScripts;
 using Sentry.Internal.Extensions;
-using RebuildUs.Roles.Crewmate;
 
 namespace RebuildUs.Patches;
 
@@ -990,7 +989,7 @@ public static class PlayerControlFixedUpdatePatch
         if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini)
         {
             var multiplier = Mini.isGrownUp() ? 0.66f : 2f;
-            HudManagerStartPatch.sheriffKillButton.MaxTimer = Sheriff.cooldown * multiplier;
+            Sheriff.sheriffKillButton.MaxTimer = Sheriff.cooldown * multiplier;
             HudManagerStartPatch.vampireKillButton.MaxTimer = Vampire.cooldown * multiplier;
             HudManagerStartPatch.jackalKillButton.MaxTimer = Jackal.cooldown * multiplier;
             HudManagerStartPatch.sidekickKillButton.MaxTimer = Sidekick.cooldown * multiplier;
@@ -1499,7 +1498,7 @@ public static class IsFlashlightEnabledPatch
         if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek)
             return true;
         __result = false;
-        if (!PlayerControl.LocalPlayer.Data.IsDead && Lighter.lighter != null && Lighter.lighter.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+        if (!PlayerControl.LocalPlayer.Data.IsDead && Lighter.exists && PlayerControl.LocalPlayer.isRole(RoleId.Lighter))
         {
             __result = true;
         }
@@ -1513,9 +1512,9 @@ public static class AdjustLight
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        if (__instance == null || PlayerControl.LocalPlayer == null || Lighter.lighter == null) return true;
+        if (__instance == null || PlayerControl.LocalPlayer == null || Lighter.exists) return true;
 
-        bool hasFlashlight = !PlayerControl.LocalPlayer.Data.IsDead && Lighter.lighter.PlayerId == PlayerControl.LocalPlayer.PlayerId;
+        bool hasFlashlight = !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.isRole(RoleId.Lighter);
         __instance.SetFlashlightInputMethod();
         __instance.lightSource.SetupLightingForGameplay(hasFlashlight, Lighter.flashlightWidth, __instance.TargetFlashlight.transform);
 

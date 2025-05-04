@@ -305,23 +305,23 @@ public static class RebuildUs
     //     }
     // }
 
-    public static class Lighter
-    {
-        public static PlayerControl lighter;
-        public static Color color = new Color32(238, 229, 190, byte.MaxValue);
+    // public static class Lighter
+    // {
+    //     public static PlayerControl lighter;
+    //     public static Color color = new Color32(238, 229, 190, byte.MaxValue);
 
-        public static float lighterModeLightsOnVision = 2f;
-        public static float lighterModeLightsOffVision = 0.75f;
-        public static float flashlightWidth = 0.75f;
+    //     public static float lighterModeLightsOnVision = 2f;
+    //     public static float lighterModeLightsOffVision = 0.75f;
+    //     public static float flashlightWidth = 0.75f;
 
-        public static void clearAndReload()
-        {
-            lighter = null;
-            flashlightWidth = CustomOptionHolder.lighterFlashlightWidth.getFloat();
-            lighterModeLightsOnVision = CustomOptionHolder.lighterModeLightsOnVision.getFloat();
-            lighterModeLightsOffVision = CustomOptionHolder.lighterModeLightsOffVision.getFloat();
-        }
-    }
+    //     public static void clearAndReload()
+    //     {
+    //         lighter = null;
+    //         flashlightWidth = CustomOptionHolder.lighterFlashlightWidth.getFloat();
+    //         lighterModeLightsOnVision = CustomOptionHolder.lighterModeLightsOnVision.getFloat();
+    //         lighterModeLightsOffVision = CustomOptionHolder.lighterModeLightsOffVision.getFloat();
+    //     }
+    // }
 
     public static class Detective
     {
@@ -2217,10 +2217,10 @@ public static class Shifter
             if (Sheriff.formerDeputy != null && Sheriff.formerDeputy == Sheriff.sheriff) Sheriff.formerDeputy = player1;  // Shifter also shifts info on promoted deputy (to get handcuffs)
             Sheriff.sheriff = player1;
         }
-        else if (Lighter.lighter != null && Lighter.lighter == player2)
+        else if (RebuildUs.Lighter.lighter != null && RebuildUs.Lighter.lighter == player2)
         {
             if (repeat) shiftRole(player2, player1, false);
-            Lighter.lighter = player1;
+            RebuildUs.Lighter.lighter = player1;
         }
         else if (Detective.detective != null && Detective.detective == player2)
         {

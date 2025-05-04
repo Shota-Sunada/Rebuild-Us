@@ -19,7 +19,7 @@ static class HudManagerStartPatch
 
     // private static CustomButton engineerRepairButton;
     private static CustomButton janitorCleanButton;
-    public static CustomButton sheriffKillButton;
+    // public static CustomButton sheriffKillButton;
     private static CustomButton timeMasterShieldButton;
     private static CustomButton medicShieldButton;
     private static CustomButton shifterShiftButton;

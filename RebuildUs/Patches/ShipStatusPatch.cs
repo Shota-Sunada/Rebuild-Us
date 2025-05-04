@@ -28,10 +28,10 @@ public class ShipStatusPatch
         }
 
         // If player is Lighter with ability active
-        if (Lighter.lighter != null && Lighter.lighter.PlayerId == player.PlayerId)
+        if (Lighter.exists && player.Object.isRole(RoleId.Lighter))
         {
             float unlerped = Mathf.InverseLerp(__instance.MinLightRadius, __instance.MaxLightRadius, GetNeutralLightRadius(__instance, false));
-            __result = Mathf.Lerp(__instance.MaxLightRadius * Lighter.lighterModeLightsOffVision, __instance.MaxLightRadius * Lighter.lighterModeLightsOnVision, unlerped);
+            __result = Mathf.Lerp(__instance.MaxLightRadius * Lighter.modeLightsOffVision, __instance.MaxLightRadius * Lighter.modeLightsOnVision, unlerped);
         }
 
         // If there is a Trickster with their ability active

@@ -381,7 +381,7 @@ public static class RoleHelpers
         // if (player == RebuildUs.Mayor.mayor) RebuildUs.Mayor.clearAndReload();
         if (player == Portalmaker.portalmaker) Portalmaker.clearAndReload();
         // if (player == RebuildUs.Engineer.engineer) RebuildUs.Engineer.clearAndReload();
-        if (player == Lighter.lighter) Lighter.clearAndReload();
+        // if (player == RebuildUs.Lighter.lighter) RebuildUs.Lighter.clearAndReload();
         if (player == Detective.detective) Detective.clearAndReload();
         if (player == TimeMaster.timeMaster) TimeMaster.clearAndReload();
         if (player == Medic.medic) Medic.clearAndReload();
