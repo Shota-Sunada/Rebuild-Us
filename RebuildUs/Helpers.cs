@@ -17,17 +17,134 @@ using RebuildUs.Patches;
 using static RebuildUs.GameHistory;
 using RebuildUs.Roles;
 using RebuildUs.Roles.Crewmate;
+using RebuildUs.Localization;
 
 namespace RebuildUs;
 
 public static class Helpers
 {
+    public static bool ShowButtons
+    {
+        get
+        {
+            return !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+                    !MeetingHud.Instance &&
+                    !ExileController.Instance;
+        }
+    }
+
+    public static bool ShowMeetingText
+    {
+        get
+        {
+            return MeetingHud.Instance != null && (MeetingHud.Instance.state is MeetingHud.VoteStates.Voted or MeetingHud.VoteStates.NotVoted or MeetingHud.VoteStates.Discussion);
+        }
+    }
+
+    public static bool GameStarted
+    {
+        get
+        {
+            return AmongUsClient.Instance != null && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started;
+        }
+    }
+
     public static bool RolesEnabled
     {
         get
         {
             return CustomOptionHolder.activateRoles.getBool();
         }
+    }
+
+    public static bool RefundVotes
+    {
+        get
+        {
+            return CustomOptionHolder.refundVotesOnDeath.getBool();
+        }
+    }
+
+    public static List<byte> generateTasks(int numCommon, int numShort, int numLong)
+    {
+        if (numCommon + numShort + numLong <= 0)
+        {
+            numShort = 1;
+        }
+
+        var tasks = new Il2CppSystem.Collections.Generic.List<byte>();
+        var hashSet = new Il2CppSystem.Collections.Generic.HashSet<TaskTypes>();
+
+        var commonTasks = new Il2CppSystem.Collections.Generic.List<NormalPlayerTask>();
+        foreach (var task in ShipStatus.Instance.CommonTasks.OrderBy(x => rnd.Next())) commonTasks.Add(task);
+
+        var shortTasks = new Il2CppSystem.Collections.Generic.List<NormalPlayerTask>();
+        foreach (var task in ShipStatus.Instance.ShortTasks.OrderBy(x => rnd.Next())) shortTasks.Add(task);
+
+        var longTasks = new Il2CppSystem.Collections.Generic.List<NormalPlayerTask>();
+        foreach (var task in ShipStatus.Instance.LongTasks.OrderBy(x => rnd.Next())) longTasks.Add(task);
+
+        int start = 0;
+        ShipStatus.Instance.AddTasksFromList(ref start, numCommon, tasks, hashSet, commonTasks);
+
+        start = 0;
+        ShipStatus.Instance.AddTasksFromList(ref start, numShort, tasks, hashSet, shortTasks);
+
+        start = 0;
+        ShipStatus.Instance.AddTasksFromList(ref start, numLong, tasks, hashSet, longTasks);
+
+        return tasks.ToArray().ToList();
+    }
+
+    public static void generateAndAssignTasks(this PlayerControl player, int numCommon, int numShort, int numLong)
+    {
+        if (player == null) return;
+
+        List<byte> taskTypeIds = generateTasks(numCommon, numShort, numLong);
+
+        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedSetTasks, Hazel.SendOption.Reliable, -1);
+        writer.Write(player.PlayerId);
+        writer.WriteBytesAndSize(taskTypeIds.ToArray());
+        AmongUsClient.Instance.FinishRpcImmediately(writer);
+        RPCProcedure.uncheckedSetTasks(player.PlayerId, taskTypeIds.ToArray());
+    }
+
+    public static void setSkinWithAnim(PlayerPhysics playerPhysics, string SkinId, int ColorId)
+    {
+        SkinViewData nextSkin;
+        try { nextSkin = ShipStatus.Instance.CosmeticsCache.GetSkin(SkinId); } catch { return; }
+        var spriteAnim = playerPhysics.Animations.Animator;
+        var anim = spriteAnim.m_animator;
+
+        var currentPhysicsAnim = playerPhysics.Animations.Animator.GetCurrentAnimation();
+        AnimationClip clip;
+        if (currentPhysicsAnim == playerPhysics.Animations.group.RunAnim)
+        {
+            clip = nextSkin.RunAnim;
+        }
+        else if (currentPhysicsAnim == playerPhysics.Animations.group.SpawnAnim)
+        {
+            clip = nextSkin.SpawnAnim;
+        }
+        else if (currentPhysicsAnim == playerPhysics.Animations.group.EnterVentAnim)
+        {
+            clip = nextSkin.EnterVentAnim;
+        }
+        else if (currentPhysicsAnim == playerPhysics.Animations.group.ExitVentAnim)
+        {
+            clip = nextSkin.ExitVentAnim;
+        }
+        else
+        {
+            clip = nextSkin.IdleAnim;
+        }
+
+        float progress = playerPhysics.Animations.Animator.m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        playerPhysics.myPlayer.RawSetSkin(SkinId, ColorId);
+
+        spriteAnim.Play(clip, 1f);
+        anim.Play("a", 0, progress % 1);
+        anim.Update(0f);
     }
 
     public static string previousEndGameSummary = "";
@@ -144,8 +261,11 @@ public static class Helpers
     public static PlayerControl playerById(byte id)
     {
         foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+        {
             if (player.PlayerId == id)
                 return player;
+        }
+
         return null;
     }
 
@@ -169,8 +289,10 @@ public static class Helpers
 
     public static void refreshRoleDescription(PlayerControl player)
     {
-        List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(player);
-        List<string> taskTexts = new(infos.Count);
+        if (player == null) return;
+
+        var infos = RoleInfo.getRoleInfoForPlayer(player);
+        var taskTexts = new List<string>(infos.Count);
 
         foreach (var roleInfo in infos)
         {
@@ -178,7 +300,7 @@ public static class Helpers
         }
 
         var toRemove = new List<PlayerTask>();
-        foreach (PlayerTask t in player.myTasks.GetFastEnumerator())
+        foreach (var t in player.myTasks.GetFastEnumerator())
         {
             var textTask = t.TryCast<ImportantTextTask>();
             if (textTask == null) continue;
@@ -202,6 +324,14 @@ public static class Helpers
             var task = new GameObject("RoleTask").AddComponent<ImportantTextTask>();
             task.transform.SetParent(player.transform, false);
             task.Text = title;
+            player.myTasks.Insert(0, task);
+        }
+
+        if (player.hasModifier(ModifierId.Madmate))
+        {
+            var task = new GameObject("RoleTask").AddComponent<ImportantTextTask>();
+            task.transform.SetParent(player.transform, false);
+            task.Text = cs(Madmate.color, $"{Madmate.fullName}: " + Tr.Get("madmateShortDesc"));
             player.myTasks.Insert(0, task);
         }
     }
@@ -239,26 +369,69 @@ public static class Helpers
         return n != StringNames.ServerNA && n != StringNames.ServerEU && n != StringNames.ServerAS;
     }
 
+    public static bool isDead(this PlayerControl player)
+    {
+        return player == null || player?.Data?.IsDead == true || player?.Data?.Disconnected == true ||
+                (finalStatuses != null && finalStatuses.ContainsKey(player.PlayerId) && finalStatuses[player.PlayerId] != FinalStatus.Alive);
+    }
+
+    public static bool isAlive(this PlayerControl player)
+    {
+        return !isDead(player);
+    }
+
+    public static bool isNeutral(this PlayerControl player)
+    {
+        var roleInfo = RoleInfo.getRoleInfoForPlayer(player, false).FirstOrDefault();
+        return roleInfo != null && roleInfo.isNeutral;
+    }
+
+    public static bool isCrew(this PlayerControl player)
+    {
+        return player != null && !player.isImpostor() && !player.isNeutral();
+    }
+
+    public static bool isImpostor(this PlayerControl player)
+    {
+        return player != null && player.Data.Role.IsImpostor;
+    }
+
     public static bool hasFakeTasks(this PlayerControl player)
     {
-        return player.isRole(RoleId.Jester) || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player);
+        return player.isNeutral() && !player.neutralHasTasks();
+    }
+
+    public static bool neutralHasTasks(this PlayerControl player)
+    {
+        return player.isNeutral();
+        // return player.isNeutral() &&
+        //     (player.isRole(RoleType.Lawyer) ||
+        //      player.isRole(RoleType.Pursuer) ||
+        //      player.isRole(RoleType.Shifter) ||
+        //      player.isRole(RoleType.Fox));
+    }
+
+    public static bool isLovers(this PlayerControl player)
+    {
+        return player != null && Lovers.isLovers(player);
+    }
+
+    public static PlayerControl getPartner(this PlayerControl player)
+    {
+        return Lovers.getPartner(player);
     }
 
     public static bool canBeErased(this PlayerControl player)
     {
-        return (player != Jackal.jackal && player != Sidekick.sidekick && !Jackal.formerJackals.Any(x => x == player));
-    }
-
-    public static bool shouldShowGhostInfo()
-    {
-        return PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && MapOptions.ghostsSeeInformation || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
+        return player != Jackal.jackal && player != Sidekick.sidekick && !Jackal.formerJackals.Any(x => x == player);
     }
 
     public static void clearAllTasks(this PlayerControl player)
     {
         if (player == null) return;
-        foreach (var playerTask in player.myTasks.GetFastEnumerator())
+        for (int i = 0; i < player.myTasks.Count; i++)
         {
+            PlayerTask playerTask = player.myTasks[i];
             playerTask.OnRemove();
             UnityEngine.Object.Destroy(playerTask.gameObject);
         }
@@ -266,6 +439,26 @@ public static class Helpers
 
         if (player.Data != null && player.Data.Tasks != null)
             player.Data.Tasks.Clear();
+    }
+
+    public static void setSemiTransparent(this PoolablePlayer player, bool value)
+    {
+        float alpha = value ? 0.25f : 1f;
+        foreach (SpriteRenderer r in player.gameObject.GetComponentsInChildren<SpriteRenderer>())
+        {
+            r.color = new Color(r.color.r, r.color.g, r.color.b, alpha);
+        }
+        player.cosmetics.nameText.color = new Color(player.cosmetics.nameText.color.r, player.cosmetics.nameText.color.g, player.cosmetics.nameText.color.b, alpha);
+    }
+
+    public static string GetString(this TranslationController t, StringNames key, params Il2CppSystem.Object[] parts)
+    {
+        return t.GetString(key, parts);
+    }
+
+    public static bool shouldShowGhostInfo()
+    {
+        return PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && MapOptions.ghostsSeeInformation || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
     }
 
     public static void MurderPlayer(this PlayerControl player, PlayerControl target)
@@ -306,7 +499,6 @@ public static class Helpers
         return PlayerControl.LocalPlayer.myTasks.ToArray().Any((x) => x.TaskType == TaskTypes.MushroomMixupSabotage);
     }
 
-
     public static bool sabotageActive()
     {
         var sabSystem = ShipStatus.Instance.Systems[SystemTypes.Sabotage].CastFast<SabotageSystemType>();
@@ -318,6 +510,7 @@ public static class Helpers
         var sabSystem = ShipStatus.Instance.Systems[SystemTypes.Sabotage].CastFast<SabotageSystemType>();
         return sabSystem.Timer;
     }
+
     public static bool canUseSabotage()
     {
         var sabSystem = ShipStatus.Instance.Systems[SystemTypes.Sabotage].CastFast<SabotageSystemType>();
@@ -328,19 +521,6 @@ public static class Helpers
             doors = systemType.CastFast<IActivatable>();
         }
         return GameManager.Instance.SabotagesEnabled() && sabSystem.Timer <= 0f && !sabSystem.AnyActive && !(doors != null && doors.IsActive);
-    }
-
-    public static void setSemiTransparent(this PoolablePlayer player, bool value, float alpha = 0.25f)
-    {
-        alpha = value ? alpha : 1f;
-        foreach (SpriteRenderer r in player.gameObject.GetComponentsInChildren<SpriteRenderer>())
-            r.color = new Color(r.color.r, r.color.g, r.color.b, alpha);
-        player.cosmetics.nameText.color = new Color(player.cosmetics.nameText.color.r, player.cosmetics.nameText.color.g, player.cosmetics.nameText.color.b, alpha);
-    }
-
-    public static string GetString(this TranslationController t, StringNames key, params Il2CppSystem.Object[] parts)
-    {
-        return t.GetString(key, parts);
     }
 
     public static string cs(Color c, string s)
@@ -378,17 +558,24 @@ public static class Helpers
         return result;
     }
 
+    public static bool hidePlayerName(PlayerControl target)
+    {
+        return hidePlayerName(PlayerControl.LocalPlayer, target);
+    }
+
     public static bool hidePlayerName(PlayerControl source, PlayerControl target)
     {
-        if (Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive()) return true; // No names are visible
+        if (source == target) return false;
+        if (source == null || target == null) return true;
+        if (source.isDead()) return false;
+        if (target.isDead()) return true;
+        if (Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive()) return true;
         if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
-        else if (Ninja.isInvisble && Ninja.ninja == target) return true;
-        else if (!MapOptions.hidePlayerNames) return false; // All names are visible
-        else if (source == null || target == null) return true;
-        else if (source == target) return false; // Player sees his own name
-        else if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target == Sidekick.sidekick && Sidekick.wasTeamRed || target == Jackal.jackal && Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
-        else if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
-        else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
+        if (Ninja.isInvisble && Ninja.ninja == target) return true;
+        if (!MapOptions.hidePlayerNames) return false; // All names are visible
+        if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target == Sidekick.sidekick && Sidekick.wasTeamRed || target == Jackal.jackal && Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
+        if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
+        if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
         return true;
     }
 
@@ -402,7 +589,9 @@ public static class Helpers
             target.MixUpOutfit(playerOutfit);
         }
         else
+        {
             target.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, enforceNightVisionUpdate);
+        }
     }
 
     public static void setLook(this PlayerControl target, String playerName, int colorId, string hatId, string visorId, string skinId, string petId, bool enforceNightVisionUpdate = true)
@@ -412,17 +601,15 @@ public static class Helpers
         target.RawSetHat(hatId, colorId);
         target.RawSetName(hidePlayerName(PlayerControl.LocalPlayer, target) ? "" : playerName);
 
-
-        SkinViewData nextSkin = null;
+        SkinViewData nextSkin;
         try { nextSkin = ShipStatus.Instance.CosmeticsCache.GetSkin(skinId); } catch { return; }
         ;
 
         PlayerPhysics playerPhysics = target.MyPhysics;
-        AnimationClip clip = null;
         var spriteAnim = playerPhysics.myPlayer.cosmetics.skin.animator;
         var currentPhysicsAnim = playerPhysics.Animations.Animator.GetCurrentAnimation();
 
-
+        AnimationClip clip;
         if (currentPhysicsAnim == playerPhysics.Animations.group.RunAnim) clip = nextSkin.RunAnim;
         else if (currentPhysicsAnim == playerPhysics.Animations.group.SpawnAnim) clip = nextSkin.SpawnAnim;
         else if (currentPhysicsAnim == playerPhysics.Animations.group.EnterVentAnim) clip = nextSkin.EnterVentAnim;
@@ -478,17 +665,29 @@ public static class Helpers
     {
         bool roleCouldUse = false;
         if (Engineer.engineer != null && Engineer.engineer == player)
+        {
             roleCouldUse = true;
+        }
         else if (Jackal.canUseVents && Jackal.jackal != null && Jackal.jackal == player)
+        {
             roleCouldUse = true;
+        }
         else if (Sidekick.canUseVents && Sidekick.sidekick != null && Sidekick.sidekick == player)
+        {
             roleCouldUse = true;
+        }
         else if (Spy.canEnterVents && Spy.spy != null && Spy.spy == player)
+        {
             roleCouldUse = true;
+        }
         else if (Vulture.canUseVents && Vulture.vulture != null && Vulture.vulture == player)
+        {
             roleCouldUse = true;
+        }
         else if (Thief.canUseVents && Thief.thief != null && Thief.thief == player)
+        {
             roleCouldUse = true;
+        }
         else if (player.Data?.Role != null && player.Data.Role.CanVent)
         {
             if (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer)
@@ -498,6 +697,23 @@ public static class Helpers
             else
                 roleCouldUse = true;
         }
+        return roleCouldUse;
+    }
+
+    public static bool roleCanSabotage(this PlayerControl player)
+    {
+        bool roleCouldUse = false;
+        if (Jester.canSabotage && player.isRole(RoleId.Jester))
+            roleCouldUse = true;
+        // else if (Madmate.canSabotage && player.hasModifier(ModifierId.Madmate))
+        //     roleCouldUse = true;
+        // else if (!Mafioso.canSabotage && player.isRole(RoleId.Mafioso))
+        //     roleCouldUse = false;
+        // else if (!Janitor.canSabotage && player.isRole(RoleId.Janitor))
+        //     roleCouldUse = false;
+        // else if (player.Data?.Role != null && player.Data.Role.IsImpostor)
+        //     roleCouldUse = true;
+
         return roleCouldUse;
     }
 
@@ -587,7 +803,10 @@ public static class Helpers
             return MurderAttemptResult.DelayVampireKill;
         }
         else if (TransportationToolPatches.isUsingTransportation(target))
+        {
             return MurderAttemptResult.SuppressKill;
+        }
+
         return MurderAttemptResult.PerformKill;
     }
 
@@ -652,12 +871,6 @@ public static class Helpers
         }
 
         return team;
-    }
-
-    public static bool isNeutral(this PlayerControl player)
-    {
-        var roleInfo = RoleInfo.getRoleInfoForPlayer(player, false).FirstOrDefault();
-        return roleInfo != null && roleInfo.isNeutral;
     }
 
     public static bool isKiller(PlayerControl player)
@@ -728,7 +941,9 @@ public static class Helpers
                 var client = new System.Net.Http.HttpClient();
                 using var response = await client.GetAsync("http://www.google.com/");
                 if (response.IsSuccessStatusCode)
+                {
                     now = response.Headers.Date?.UtcDateTime;
+                }
                 else
                 {
                     RebuildUsPlugin.Instance.Logger.LogMessage($"Could not get time from server: {response.StatusCode}");
@@ -746,7 +961,10 @@ public static class Helpers
                 Application.Quit();
 
             }
-            else RebuildUsPlugin.Instance.Logger.LogMessage($"Beta will remain runnable for {RebuildUsPlugin.betaDays - (now - compileTime)?.TotalDays} days!");
+            else
+            {
+                RebuildUsPlugin.Instance.Logger.LogMessage($"Beta will remain runnable for {RebuildUsPlugin.betaDays - (now - compileTime)?.TotalDays} days!");
+            }
         }
     }
 
@@ -768,16 +986,5 @@ public static class Helpers
     public static void Destroy(this UnityEngine.Object obj)
     {
         UnityEngine.Object.Destroy(obj);
-    }
-
-    public static bool isDead(this PlayerControl player)
-    {
-        return player == null || player?.Data?.IsDead == true || player?.Data?.Disconnected == true ||
-                (finalStatuses != null && finalStatuses.ContainsKey(player.PlayerId) && finalStatuses[player.PlayerId] != FinalStatus.Alive);
-    }
-
-    public static bool isAlive(this PlayerControl player)
-    {
-        return !isDead(player);
     }
 }
