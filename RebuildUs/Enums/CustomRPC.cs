@@ -65,7 +65,6 @@ public enum CustomRPC
     ThiefStealsRole,
     SetTrap,
     TriggerTrap,
-    MayorSetVoteTwice,
     PlaceBomb,
     DefuseBomb,
     ShareRoom,

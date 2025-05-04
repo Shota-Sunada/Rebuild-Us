@@ -36,18 +36,14 @@ class MeetingHudPatch
             Dictionary<byte, int> dictionary = [];
             for (int i = 0; i < __instance.playerStates.Length; i++)
             {
-                PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                var playerVoteArea = __instance.playerStates[i];
                 if (playerVoteArea.VotedFor != 252 && playerVoteArea.VotedFor != 255 && playerVoteArea.VotedFor != 254)
                 {
-                    PlayerControl player = Helpers.playerById((byte)playerVoteArea.TargetPlayerId);
+                    PlayerControl player = Helpers.playerById(playerVoteArea.TargetPlayerId);
                     if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected) continue;
 
-                    int currentVotes;
-                    int additionalVotes = (Mayor.mayor != null && Mayor.mayor.PlayerId == playerVoteArea.TargetPlayerId && Mayor.voteTwice) ? 2 : 1; // Mayor vote
-                    if (dictionary.TryGetValue(playerVoteArea.VotedFor, out currentVotes))
-                        dictionary[playerVoteArea.VotedFor] = currentVotes + additionalVotes;
-                    else
-                        dictionary[playerVoteArea.VotedFor] = additionalVotes;
+                    int additionalVotes = (Mayor.exists && Mayor.players.Any(x => x.player.PlayerId == playerVoteArea.TargetPlayerId)) ? Mayor.numVotes : 1; // Mayor vote
+                    dictionary[playerVoteArea.VotedFor] = dictionary.TryGetValue(playerVoteArea.VotedFor, out int currentVotes) ? currentVotes + additionalVotes : additionalVotes;
                 }
             }
             // Swapper swap votes
@@ -161,8 +157,8 @@ class MeetingHudPatch
         {
             var spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
             var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
-                                  (PlayerControl.LocalPlayer.Data.IsDead && MapOptions.ghostsSeeVotes) ||
-                                  (Mayor.mayor != null && Mayor.mayor == PlayerControl.LocalPlayer && Mayor.canSeeVoteColors && TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors);
+                                    (PlayerControl.LocalPlayer.Data.IsDead && MapOptions.ghostsSeeVotes) ||
+                                    (Mayor.exists && PlayerControl.LocalPlayer.isRole(RoleId.Mayor) && Mayor.canSeeVoteColors && TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors);
             if (showVoteColors)
             {
                 PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);
@@ -222,7 +218,7 @@ class MeetingHudPatch
 
                 playerVoteArea.ClearForResults();
                 int num2 = 0;
-                bool mayorFirstVoteDisplayed = false;
+                var votesApplied = new Dictionary<int, int>();
                 for (int j = 0; j < states.Length; j++)
                 {
                     MeetingHud.VoterState voterState = states[j];
@@ -242,10 +238,14 @@ class MeetingHudPatch
                         num2++;
                     }
 
+                    if (!votesApplied.ContainsKey(playerById.PlayerId))
+                        votesApplied[playerById.PlayerId] = 0;
+
+                    votesApplied[playerById.PlayerId]++;
+
                     // Major vote, redo this iteration to place a second vote
-                    if (Mayor.mayor != null && voterState.VoterId == (sbyte)Mayor.mayor.PlayerId && !mayorFirstVoteDisplayed && Mayor.voteTwice)
+                    if (Mayor.exists && Mayor.players.Any(x => x.player.PlayerId == voterState.VoterId) && votesApplied[playerById.PlayerId] < Mayor.numVotes)
                     {
-                        mayorFirstVoteDisplayed = true;
                         j--;
                     }
                 }
@@ -405,28 +405,6 @@ class MeetingHudPatch
         }
         meetingExtraButtonText.text = $"Swaps: {Swapper.charges}";
         meetingExtraButtonLabel.text = Helpers.cs(Color.red, "Confirm Swap");
-
-    }
-
-    static void mayorToggleVoteTwice(MeetingHud __instance)
-    {
-        __instance.playerStates[0].Cancel();  // This will stop the underlying buttons of the template from showing up
-        if (__instance.state == MeetingHud.VoteStates.Results || Mayor.mayor.Data.IsDead) return;
-        if (Mayor.mayorChooseSingleVote == 1)
-        { // Only accept changes until the mayor voted
-            var mayorPVA = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == Mayor.mayor.PlayerId);
-            if (mayorPVA != null && mayorPVA.DidVote)
-            {
-                return;
-            }
-        }
-
-        Mayor.voteTwice = !Mayor.voteTwice;
-
-        using var writer = RPCProcedure.SendRPC(CustomRPC.MayorSetVoteTwice);
-        writer.Write(Mayor.voteTwice);
-
-        meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, "Double Vote: " + (Mayor.voteTwice ? Helpers.cs(Color.green, "On ") : Helpers.cs(Color.red, "Off")));
     }
 
     public static GameObject guesserUI;
@@ -575,7 +553,6 @@ class MeetingHudPatch
     {
         // Add Swapper Buttons
         bool addSwapperButtons = Swapper.swapper != null && PlayerControl.LocalPlayer == Swapper.swapper && !Swapper.swapper.Data.IsDead;
-        bool addMayorButton = Mayor.mayor != null && PlayerControl.LocalPlayer == Mayor.mayor && !Mayor.mayor.Data.IsDead && Mayor.mayorChooseSingleVote > 0;
         if (addSwapperButtons)
         {
             selections = new bool[__instance.playerStates.Length];
@@ -610,7 +587,7 @@ class MeetingHudPatch
         }
 
         // Add meeting extra button, i.e. Swapper Confirm Button or Mayor Toggle Double Vote Button. Swapper Button uses ExtraButtonText on the Left of the Button. (Future meeting buttons can easily be added here)
-        if (addSwapperButtons || addMayorButton)
+        if (addSwapperButtons)
         {
             Transform meetingUI = UnityEngine.Object.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
 
@@ -642,19 +619,12 @@ class MeetingHudPatch
                 meetingExtraButtonLabel.transform.localScale *= 1.7f;
                 meetingExtraButtonLabel.text = Helpers.cs(Color.red, "Confirm Swap");
             }
-            else if (addMayorButton)
-            {
-                meetingExtraButtonLabel.transform.localScale = new Vector3(meetingExtraButtonLabel.transform.localScale.x * 1.5f, meetingExtraButtonLabel.transform.localScale.x * 1.7f, meetingExtraButtonLabel.transform.localScale.x * 1.7f);
-                meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, "Double Vote: " + (Mayor.voteTwice ? Helpers.cs(Color.green, "On ") : Helpers.cs(Color.red, "Off")));
-            }
             PassiveButton passiveButton = meetingExtraButton.GetComponent<PassiveButton>();
             passiveButton.OnClick.RemoveAllListeners();
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
                 if (addSwapperButtons)
                     passiveButton.OnClick.AddListener((Action)(() => swapperConfirm(__instance)));
-                else if (addMayorButton)
-                    passiveButton.OnClick.AddListener((Action)(() => mayorToggleVoteTwice(__instance)));
             }
             meetingExtraButton.parent.gameObject.SetActive(false);
             __instance.StartCoroutine(Effects.Lerp(7.27f, new Action<float>((p) =>

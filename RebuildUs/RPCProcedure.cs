@@ -1160,9 +1160,6 @@ class RPCHandlerPatch
                 byte playerId2 = reader.ReadByte();
                 RPCProcedure.swapperSwap(playerId1, playerId2);
                 break;
-            case (byte)CustomRPC.MayorSetVoteTwice:
-                Mayor.voteTwice = reader.ReadBoolean();
-                break;
             case (byte)CustomRPC.MorphingMorph:
                 RPCProcedure.morphingMorph(reader.ReadByte());
                 break;

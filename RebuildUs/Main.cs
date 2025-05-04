@@ -5,6 +5,7 @@ global using Il2CppInterop.Runtime.InteropTypes.Arrays;
 global using Il2CppInterop.Runtime.Injection;
 
 global using RebuildUs.Enums;
+global using RebuildUs.Utilities;
 global using RebuildUs.Roles;
 
 using BepInEx;
@@ -17,7 +18,6 @@ using System.Linq;
 using System;
 using UnityEngine;
 using RebuildUs.Modules;
-using RebuildUs.Utilities;
 using Il2CppSystem.Security.Cryptography;
 using Il2CppSystem.Text;
 using AmongUs.Data;

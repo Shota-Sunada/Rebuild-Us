@@ -124,7 +124,6 @@ public class CustomOptionHolder
     public static CustomOption mayorTasksNeededToSeeVoteColors;
     public static CustomOption mayorMeetingButton;
     public static CustomOption mayorMaxRemoteMeetings;
-    public static CustomOption mayorChooseSingleVote;
 
     public static CustomOption portalmakerSpawnRate;
     public static CustomOption portalmakerCooldown;
@@ -544,13 +543,12 @@ public class CustomOptionHolder
 
         #region Crewmate Roles
 
-        mayorSpawnRate = new CustomRoleOption(700, 701, CustomOptionType.Crewmate, ("Mayor", Mayor.color), 1);
+        mayorSpawnRate = new CustomRoleOption(700, 701, CustomOptionType.Crewmate, ("Mayor", RebuildPalette.MayorGreen), 1);
         mayorNumVotes = CustomOption.Create(702, CustomOptionType.Crewmate, "MayorNumVotes", 2f, 2f, 10f, 1f, mayorSpawnRate, unitType: UnitType.UnitVotes);
         mayorCanSeeVoteColors = CustomOption.Create(703, CustomOptionType.Crewmate, "MayorCanSeeVoteColors", false, mayorSpawnRate);
         mayorTasksNeededToSeeVoteColors = CustomOption.Create(704, CustomOptionType.Crewmate, "MayorTasksNeededToSeeVoteColors", 5f, 0f, 20f, 1f, mayorCanSeeVoteColors, unitType: UnitType.UnitTimes);
         mayorMeetingButton = CustomOption.Create(705, CustomOptionType.Crewmate, "MayorMeetingButton", true, mayorSpawnRate);
         mayorMaxRemoteMeetings = CustomOption.Create(706, CustomOptionType.Crewmate, "MayorMaxRemoteMeetings", 1f, 1f, 5f, 1f, mayorMeetingButton, unitType: UnitType.UnitTimes);
-        mayorChooseSingleVote = CustomOption.Create(707, CustomOptionType.Crewmate, "MayorChooseSingleVote", ["Off", "On (Before Voting)", "On (Until Meeting Ends)"], mayorSpawnRate);
 
         engineerSpawnRate = new CustomRoleOption(710, 711, CustomOptionType.Crewmate, ("Engineer", Engineer.color), 1);
         engineerNumberOfFixes = CustomOption.Create(712, CustomOptionType.Crewmate, "EngineerNumberOfFixes", 1f, 1f, 3f, 1f, engineerSpawnRate, unitType: UnitType.UnitTimes);

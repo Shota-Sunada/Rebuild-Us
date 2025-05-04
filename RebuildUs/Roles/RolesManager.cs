@@ -149,8 +149,8 @@ public static class RoleHelpers
         {
             // case RoleId.Jester:
             //     return RebuildUs.Jester.jester == player;
-            case RoleId.Mayor:
-                return Mayor.mayor == player;
+            // case RoleId.Mayor:
+            //     return RebuildUs.Mayor.mayor == player;
             case RoleId.Engineer:
                 return Engineer.engineer == player;
             case RoleId.Godfather:
@@ -243,9 +243,9 @@ public static class RoleHelpers
             // case RoleId.Jester:
             //     RebuildUs.Jester.jester = player;
             //     break;
-            case RoleId.Mayor:
-                Mayor.mayor = player;
-                break;
+            // case RoleId.Mayor:
+            //     RebuildUs.Mayor.mayor = player;
+            //     break;
             case RoleId.Engineer:
                 Engineer.engineer = player;
                 break;
@@ -378,7 +378,7 @@ public static class RoleHelpers
         }
 
         // Crewmate roles
-        if (player == Mayor.mayor) Mayor.clearAndReload();
+        // if (player == RebuildUs.Mayor.mayor) RebuildUs.Mayor.clearAndReload();
         if (player == Portalmaker.portalmaker) Portalmaker.clearAndReload();
         if (player == Engineer.engineer) Engineer.clearAndReload();
         if (player == Lighter.lighter) Lighter.clearAndReload();
@@ -445,7 +445,7 @@ public static class RoleHelpers
             }
         }
 
-        if (player.isRole(RoleId.Mayor)) Mayor.mayor = target;
+        // if (player.isRole(RoleId.Mayor)) RebuildUs.Mayor.mayor = target;
         if (player.isRole(RoleId.Engineer)) Engineer.engineer = target;
         if (player.isRole(RoleId.Detective)) Detective.detective = target;
         if (player.isRole(RoleId.TimeMaster)) TimeMaster.timeMaster = target;

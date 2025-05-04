@@ -52,7 +52,7 @@ static class HudManagerStartPatch
     public static CustomButton pursuerButton;
     public static CustomButton witchSpellButton;
     public static CustomButton ninjaButton;
-    public static CustomButton mayorMeetingButton;
+    // public static CustomButton mayorMeetingButton;
     public static CustomButton thiefKillButton;
     public static CustomButton trapperButton;
     public static CustomButton bomberButton;
@@ -121,7 +121,7 @@ static class HudManagerStartPatch
         witchSpellButton.MaxTimer = Witch.cooldown;
         ninjaButton.MaxTimer = Ninja.cooldown;
         thiefKillButton.MaxTimer = Thief.cooldown;
-        mayorMeetingButton.MaxTimer = GameManager.Instance.LogicOptions.GetEmergencyCooldown();
+        // mayorMeetingButton.MaxTimer = GameManager.Instance.LogicOptions.GetEmergencyCooldown();
         trapperButton.MaxTimer = Trapper.cooldown;
         bomberButton.MaxTimer = Bomber.bombCooldown;
         yoyoButton.MaxTimer = Yoyo.markCooldown;
@@ -1713,47 +1713,47 @@ static class HudManagerStartPatch
             KeyCode.F
         );
 
-        mayorMeetingButton = new CustomButton(
-            () =>
-            {
-                PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
-                Mayor.remoteMeetingsLeft--;
-                Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
-                RPCProcedure.uncheckedCmdReportDeadBody(PlayerControl.LocalPlayer.PlayerId, Byte.MaxValue);
+        // mayorMeetingButton = new CustomButton(
+        //     () =>
+        //     {
+        //         PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
+        //         RebuildUs.Mayor.remoteMeetingsLeft--;
+        //         Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
+        //         RPCProcedure.uncheckedCmdReportDeadBody(PlayerControl.LocalPlayer.PlayerId, byte.MaxValue);
 
-                using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedCmdReportDeadBody);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(byte.MaxValue);
-                mayorMeetingButton.Timer = 1f;
-            },
-            () => { return Mayor.mayor != null && Mayor.mayor == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && Mayor.meetingButton; },
-            () =>
-            {
-                mayorMeetingButton.actionButton.OverrideText("Emergency (" + Mayor.remoteMeetingsLeft + ")");
-                bool sabotageActive = false;
-                foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator())
-                {
-                    if (task.TaskType is TaskTypes.FixLights or TaskTypes.RestoreOxy or TaskTypes.ResetReactor or TaskTypes.ResetSeismic or TaskTypes.FixComms or TaskTypes.StopCharles
-                        || SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
-                    {
-                        sabotageActive = true;
-                    }
-                }
+        //         using var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedCmdReportDeadBody);
+        //         writer.Write(PlayerControl.LocalPlayer.PlayerId);
+        //         writer.Write(byte.MaxValue);
+        //         mayorMeetingButton.Timer = 1f;
+        //     },
+        //     () => { return RebuildUs.Mayor.mayor != null && RebuildUs.Mayor.mayor == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && RebuildUs.Mayor.meetingButton; },
+        //     () =>
+        //     {
+        //         mayorMeetingButton.actionButton.OverrideText("Emergency (" + RebuildUs.Mayor.remoteMeetingsLeft + ")");
+        //         bool sabotageActive = false;
+        //         foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator())
+        //         {
+        //             if (task.TaskType is TaskTypes.FixLights or TaskTypes.RestoreOxy or TaskTypes.ResetReactor or TaskTypes.ResetSeismic or TaskTypes.FixComms or TaskTypes.StopCharles
+        //                 || SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
+        //             {
+        //                 sabotageActive = true;
+        //             }
+        //         }
 
-                return !sabotageActive && PlayerControl.LocalPlayer.CanMove && (Mayor.remoteMeetingsLeft > 0);
-            },
-            () => { mayorMeetingButton.Timer = mayorMeetingButton.MaxTimer; },
-            Mayor.getMeetingSprite(),
-            ButtonOffset.LowerRight,
-            __instance,
-            __instance.UseButton,
-            KeyCode.F,
-            true,
-            0f,
-            () => { },
-            false,
-            "Meeting"
-        );
+        //         return !sabotageActive && PlayerControl.LocalPlayer.CanMove && (RebuildUs.Mayor.remoteMeetingsLeft > 0);
+        //     },
+        //     () => { mayorMeetingButton.Timer = mayorMeetingButton.MaxTimer; },
+        //     RebuildUs.Mayor.getMeetingSprite(),
+        //     ButtonOffset.LowerRight,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.F,
+        //     true,
+        //     0f,
+        //     () => { },
+        //     false,
+        //     "Meeting"
+        // );
 
         // Trapper button
         trapperButton = new CustomButton(

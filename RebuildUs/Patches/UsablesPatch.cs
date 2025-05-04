@@ -265,7 +265,7 @@ class EmergencyMinigameUpdatePatch
         {
             int localRemaining = PlayerControl.LocalPlayer.RemainingEmergencies;
             int teamRemaining = Mathf.Max(0, maxNumberOfMeetings - meetingsCount);
-            int remaining = Mathf.Min(localRemaining, (Mayor.mayor != null && Mayor.mayor == PlayerControl.LocalPlayer) ? 1 : teamRemaining);
+            int remaining = Mathf.Min(localRemaining, (Mayor.exists && PlayerControl.LocalPlayer.isRole(RoleId.Mayor)) ? 1 : teamRemaining);
             __instance.NumberText.text = $"{localRemaining.ToString()} and the ship has {teamRemaining.ToString()}";
             __instance.ButtonActive = remaining > 0;
             __instance.ClosedLid.gameObject.SetActive(!__instance.ButtonActive);

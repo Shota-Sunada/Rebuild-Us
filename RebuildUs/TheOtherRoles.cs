@@ -164,41 +164,41 @@ public static class RebuildUs
 
     }
 
-    public static class Mayor
-    {
-        public static PlayerControl mayor;
-        public static Color color = new Color32(32, 77, 66, byte.MaxValue);
-        public static Minigame emergency = null;
-        public static Sprite emergencySprite = null;
-        public static int remoteMeetingsLeft = 1;
+    // public static class Mayor
+    // {
+    //     public static PlayerControl mayor;
+    //     public static Color color = new Color32(32, 77, 66, byte.MaxValue);
+    //     public static Minigame emergency = null;
+    //     public static Sprite emergencySprite = null;
+    //     public static int remoteMeetingsLeft = 1;
 
-        public static bool canSeeVoteColors = false;
-        public static int tasksNeededToSeeVoteColors;
-        public static bool meetingButton = true;
-        public static int mayorChooseSingleVote;
+    //     public static bool canSeeVoteColors = false;
+    //     public static int tasksNeededToSeeVoteColors;
+    //     public static bool meetingButton = true;
+    //     public static int mayorChooseSingleVote;
 
-        public static bool voteTwice = true;
+    //     public static bool voteTwice = true;
 
-        public static Sprite getMeetingSprite()
-        {
-            if (emergencySprite) return emergencySprite;
-            emergencySprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.EmergencyButton.png", 550f);
-            return emergencySprite;
-        }
+    //     public static Sprite getMeetingSprite()
+    //     {
+    //         if (emergencySprite) return emergencySprite;
+    //         emergencySprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.EmergencyButton.png", 550f);
+    //         return emergencySprite;
+    //     }
 
-        public static void clearAndReload()
-        {
-            mayor = null;
-            emergency = null;
-            emergencySprite = null;
-            remoteMeetingsLeft = Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat());
-            canSeeVoteColors = CustomOptionHolder.mayorCanSeeVoteColors.getBool();
-            tasksNeededToSeeVoteColors = (int)CustomOptionHolder.mayorTasksNeededToSeeVoteColors.getFloat();
-            meetingButton = CustomOptionHolder.mayorMeetingButton.getBool();
-            mayorChooseSingleVote = CustomOptionHolder.mayorChooseSingleVote.getSelection();
-            voteTwice = true;
-        }
-    }
+    //     public static void clearAndReload()
+    //     {
+    //         mayor = null;
+    //         emergency = null;
+    //         emergencySprite = null;
+    //         remoteMeetingsLeft = Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat());
+    //         canSeeVoteColors = CustomOptionHolder.mayorCanSeeVoteColors.getBool();
+    //         tasksNeededToSeeVoteColors = (int)CustomOptionHolder.mayorTasksNeededToSeeVoteColors.getFloat();
+    //         meetingButton = CustomOptionHolder.mayorMeetingButton.getBool();
+    //         mayorChooseSingleVote = CustomOptionHolder.mayorChooseSingleVote.getSelection();
+    //         voteTwice = true;
+    //     }
+    // }
 
     public static class Engineer
     {
@@ -2196,10 +2196,10 @@ public static class Shifter
 
     public static void shiftRole(PlayerControl player1, PlayerControl player2, bool repeat = true)
     {
-        if (Mayor.mayor != null && Mayor.mayor == player2)
+        if (RebuildUs.Mayor.mayor != null && RebuildUs.Mayor.mayor == player2)
         {
             if (repeat) shiftRole(player2, player1, false);
-            Mayor.mayor = player1;
+            RebuildUs.Mayor.mayor = player1;
         }
         else if (Portalmaker.portalmaker != null && Portalmaker.portalmaker == player2)
         {
