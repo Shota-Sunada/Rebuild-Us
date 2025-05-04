@@ -23,6 +23,9 @@ public class RoleInfo
     public bool isModifier;
     public bool isImpostor => color == Palette.ImpostorRed && !(roleId == RoleId.Spy);
     public static Dictionary<RoleId, RoleInfo> roleInfoById = [];
+    private CustomOption baseOption;
+
+    public bool enabled { get { return Helpers.RolesEnabled && (this == crewmate || this == impostor || (baseOption != null && baseOption.Enabled)); } }
 
     public RoleInfo(string name, Color color, string introDescription, string shortDescription, RoleId roleId, bool isNeutral = false, bool isModifier = false)
     {
@@ -95,7 +98,7 @@ public class RoleInfo
     public static RoleInfo tiebreaker = new("Tiebreaker", Color.yellow, "Your vote breaks the tie", "Break the tie", RoleId.Tiebreaker, false, true);
     public static RoleInfo bait = new("Bait", Color.yellow, "Bait your enemies", "Bait your enemies", RoleId.Bait, false, true);
     public static RoleInfo sunglasses = new("Sunglasses", Color.yellow, "You got the sunglasses", "Your vision is reduced", RoleId.Sunglasses, false, true);
-    public static RoleInfo lover = new("Lover", Lovers.color, $"You are in love", $"You are in love", RoleId.Lover, false, true);
+    public static RoleInfo lovers = new("Lover", Lovers.Color, $"You are in love", $"You are in love", RoleId.NoRole, false, true);
     public static RoleInfo mini = new("Mini", Color.yellow, "No one will harm you until you grow up", "No one will harm you", RoleId.Mini, false, true);
     public static RoleInfo vip = new("VIP", Color.yellow, "You are the VIP", "Everyone is notified when you die", RoleId.Vip, false, true);
     public static RoleInfo invert = new("Invert", Color.yellow, "Your movement is inverted", "Your movement is inverted", RoleId.Invert, false, true);
@@ -123,7 +126,7 @@ public class RoleInfo
         yoyo,
         goodGuesser,
         badGuesser,
-        lover,
+        lovers,
         jester,
         arsonist,
         jackal,
@@ -179,7 +182,7 @@ public class RoleInfo
                 if (Bloody.bloody.Any(x => x.PlayerId == p.PlayerId)) infos.Add(bloody);
                 if (Vip.vip.Any(x => x.PlayerId == p.PlayerId)) infos.Add(vip);
             }
-            if (p == Lovers.lover1 || p == Lovers.lover2) infos.Add(lover);
+            if (p.isLovers()) infos.Add(lovers);
             if (p == Tiebreaker.tiebreaker) infos.Add(tiebreaker);
             if (AntiTeleport.antiTeleport.Any(x => x.PlayerId == p.PlayerId)) infos.Add(antiTeleport);
             if (Sunglasses.sunglasses.Any(x => x.PlayerId == p.PlayerId)) infos.Add(sunglasses);
@@ -327,7 +330,7 @@ public class RoleInfo
                                 deathReasonString = $" - {Helpers.cs(Witch.color, "witched")} by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
                                 break;
                             case CustomDeathReason.LoverSuicide:
-                                deathReasonString = $" - {Helpers.cs(Lovers.color, "lover died")}";
+                                deathReasonString = $" - {Helpers.cs(Lovers.Color, "lover died")}";
                                 break;
                             case CustomDeathReason.LawyerSuicide:
                                 deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";

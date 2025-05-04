@@ -11,6 +11,7 @@ using RebuildUs.Utilities;
 using RebuildUs.CustomGameModes;
 using static RebuildUs.GameHistory;
 using RebuildUs.Roles;
+using RebuildUs.Localization;
 
 namespace RebuildUs.Patches;
 
@@ -104,6 +105,15 @@ public static class OnGameEndPatch
 
         notWinners.AddRange(Jester.allPlayers);
 
+        if (Lovers.separateTeam)
+        {
+            foreach (var couple in Lovers.couples)
+            {
+                notWinners.Add(couple.lover1);
+                notWinners.Add(couple.lover2);
+            }
+        }
+
         var winnersToRemove = new List<CachedPlayerData>();
         foreach (CachedPlayerData winner in EndGameResult.CachedWinners.GetFastEnumerator())
         {
@@ -114,7 +124,7 @@ public static class OnGameEndPatch
         bool jesterWin = Jester.exists && gameOverReason == (GameOverReason)CustomGameOverReason.JesterWin;
         bool arsonistWin = Arsonist.arsonist != null && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
         bool miniLose = Mini.mini != null && gameOverReason == (GameOverReason)CustomGameOverReason.MiniLose;
-        bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (GameManager.Instance.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
+        bool loversWin = Lovers.anyAlive() && !(Lovers.separateTeam && gameOverReason == GameOverReason.CrewmatesByTask);
         bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
         bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
         bool prosecutorWin = Lawyer.lawyer != null && gameOverReason == (GameOverReason)CustomGameOverReason.ProsecutorWin;
@@ -179,28 +189,25 @@ public static class OnGameEndPatch
         else if (loversWin)
         {
             // Double win for lovers, crewmates also win
-            if (!Lovers.existingWithKiller())
+            if (EndGameResult.DidHumansWin(gameOverReason) && !Lovers.separateTeam && Lovers.anyNonKillingCouples())
             {
                 AdditionalTempData.winCondition = WinCondition.LoversTeamWin;
-                EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-                {
-                    if (p == null) continue;
-                    if (p == Lovers.lover1 || p == Lovers.lover2)
-                        EndGameResult.CachedWinners.Add(new CachedPlayerData(p.Data));
-                    else if (p == Pursuer.pursuer && !Pursuer.pursuer.Data.IsDead)
-                        EndGameResult.CachedWinners.Add(new CachedPlayerData(p.Data));
-                    else if (!p.isRole(RoleId.Jester) && p != Jackal.jackal && p != Sidekick.sidekick && p != Arsonist.arsonist && p != Vulture.vulture && !Jackal.formerJackals.Contains(p) && !p.Data.Role.IsImpostor)
-                        EndGameResult.CachedWinners.Add(new CachedPlayerData(p.Data));
-                }
+                AdditionalTempData.additionalWinConditions.Add(WinCondition.LoversTeamWin);
             }
             // Lovers solo win
             else
             {
                 AdditionalTempData.winCondition = WinCondition.LoversSoloWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                EndGameResult.CachedWinners.Add(new CachedPlayerData(Lovers.lover1.Data));
-                EndGameResult.CachedWinners.Add(new CachedPlayerData(Lovers.lover2.Data));
+
+                foreach (var couple in Lovers.couples)
+                {
+                    if (couple.existingAndAlive)
+                    {
+                        EndGameResult.CachedWinners.Add(new(couple.lover1.Data));
+                        EndGameResult.CachedWinners.Add(new(couple.lover2.Data));
+                    }
+                }
             }
         }
 
@@ -345,14 +352,14 @@ public class EndGameManagerSetUpPatch
         else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin)
         {
             textRenderer.text = "Lovers And Crewmates Win";
-            textRenderer.color = Lovers.color;
-            __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);
+            textRenderer.color = Lovers.Color;
+            __instance.BackgroundBar.material.SetColor("_Color", Lovers.Color);
         }
         else if (AdditionalTempData.winCondition == WinCondition.LoversSoloWin)
         {
             textRenderer.text = "Lovers Win";
-            textRenderer.color = Lovers.color;
-            __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);
+            textRenderer.color = Lovers.Color;
+            __instance.BackgroundBar.material.SetColor("_Color", Lovers.Color);
         }
         else if (AdditionalTempData.winCondition == WinCondition.JackalWin)
         {
@@ -409,6 +416,10 @@ public class EndGameManagerSetUpPatch
             {
                 textRenderer.text += $"\n{Helpers.cs(Pursuer.color, "The Pursuer survived")}";
             }
+            else if (cond == WinCondition.LoversTeamWin)
+            {
+                // textRenderer.text += Tr.Get("loversExtra");
+            }
         }
 
         if (MapOptions.showRoleSummary)
@@ -461,7 +472,7 @@ class CheckEndCriteriaPatch
         if (CheckAndEndGameForSabotageWin(__instance)) return false;
         if (CheckAndEndGameForTaskWin(__instance)) return false;
         if (CheckAndEndGameForProsecutorWin(__instance)) return false;
-        if (CheckAndEndGameForLoverWin(__instance, statistics)) return false;
+        if (CheckAndEndGameForLoversWin(__instance, statistics)) return false;
         if (CheckAndEndGameForJackalWin(__instance, statistics)) return false;
         if (CheckAndEndGameForImpostorWin(__instance, statistics)) return false;
         if (CheckAndEndGameForCrewmateWin(__instance, statistics)) return false;
@@ -563,11 +574,10 @@ class CheckEndCriteriaPatch
         return false;
     }
 
-    private static bool CheckAndEndGameForLoverWin(ShipStatus __instance, PlayerStatistics statistics)
+    private static bool CheckAndEndGameForLoversWin(ShipStatus __instance, PlayerStatistics statistics)
     {
-        if (statistics.TeamLoversAlive == 2 && statistics.TotalAlive <= 3)
+        if (statistics.CouplesAlive == 1 && statistics.TotalAlive <= 3)
         {
-            //__instance.enabled = false;
             GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.LoversWin, false);
             return true;
         }
@@ -576,7 +586,10 @@ class CheckEndCriteriaPatch
 
     private static bool CheckAndEndGameForJackalWin(ShipStatus __instance, PlayerStatistics statistics)
     {
-        if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive && statistics.TeamImpostorsAlive == 0 && !(statistics.TeamJackalHasAliveLover && statistics.TeamLoversAlive == 2))
+
+        if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive &&
+            statistics.TeamImpostorsAlive == 0 &&
+            (statistics.TeamJackalLovers == 0 || statistics.TeamJackalLovers >= statistics.CouplesAlive * 2))
         {
             //__instance.enabled = false;
             GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.TeamJackalWin, false);
@@ -587,7 +600,9 @@ class CheckEndCriteriaPatch
 
     private static bool CheckAndEndGameForImpostorWin(ShipStatus __instance, PlayerStatistics statistics)
     {
-        if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && !(statistics.TeamImpostorHasAliveLover && statistics.TeamLoversAlive == 2))
+        if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive &&
+            statistics.TeamJackalAlive == 0 &&
+            (statistics.TeamImpostorLovers == 0 || statistics.TeamImpostorLovers >= statistics.CouplesAlive * 2))
         {
             //__instance.enabled = false;
             GameOverReason endReason;
@@ -634,9 +649,12 @@ internal class PlayerStatistics
     public int TeamImpostorsAlive { get; set; }
     public int TeamJackalAlive { get; set; }
     public int TeamLoversAlive { get; set; }
+    public int CouplesAlive { get; set; }
+    public int TeamCrew { get; set; }
+    public int NeutralAlive { get; set; }
     public int TotalAlive { get; set; }
-    public bool TeamImpostorHasAliveLover { get; set; }
-    public bool TeamJackalHasAliveLover { get; set; }
+    public int TeamImpostorLovers { get; set; }
+    public int TeamJackalLovers { get; set; }
 
     public PlayerStatistics(ShipStatus __instance)
     {
@@ -645,22 +663,32 @@ internal class PlayerStatistics
 
     private bool isLover(NetworkedPlayerInfo p)
     {
-        return (Lovers.lover1 != null && Lovers.lover1.PlayerId == p.PlayerId) || (Lovers.lover2 != null && Lovers.lover2.PlayerId == p.PlayerId);
+        foreach (var couple in Lovers.couples)
+        {
+            if (p.PlayerId == couple.lover1.PlayerId || p.PlayerId == couple.lover2.PlayerId) return true;
+        }
+        return false;
     }
 
     private void GetPlayerCounts()
     {
         int numJackalAlive = 0;
         int numImpostorsAlive = 0;
-        int numLoversAlive = 0;
         int numTotalAlive = 0;
-        bool impLover = false;
-        bool jackalLover = false;
+        int numNeutralAlive = 0;
+        int numCrew = 0;
 
-        foreach (var playerInfo in GameData.Instance.AllPlayers.GetFastEnumerator())
+        int numLoversAlive = 0;
+        int numCouplesAlive = 0;
+        int impLovers = 0;
+        int jackalLovers = 0;
+
+        for (int i = 0; i < GameData.Instance.PlayerCount; i++)
         {
+            var playerInfo = GameData.Instance.AllPlayers[i];
             if (!playerInfo.Disconnected)
             {
+                if (playerInfo.Object.isCrew()) numCrew++;
                 if (!playerInfo.IsDead)
                 {
                     numTotalAlive++;
@@ -671,27 +699,44 @@ internal class PlayerStatistics
                     if (playerInfo.Role.IsImpostor)
                     {
                         numImpostorsAlive++;
-                        if (lover) impLover = true;
+                        if (lover) impLovers++;
                     }
                     if (Jackal.jackal != null && Jackal.jackal.PlayerId == playerInfo.PlayerId)
                     {
                         numJackalAlive++;
-                        if (lover) jackalLover = true;
+                        if (lover) jackalLovers++;
                     }
                     if (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == playerInfo.PlayerId)
                     {
                         numJackalAlive++;
-                        if (lover) jackalLover = true;
+                        if (lover) jackalLovers++;
                     }
+
+                    if (playerInfo.Object.isNeutral()) numNeutralAlive++;
                 }
             }
         }
 
+        foreach (var couple in Lovers.couples)
+        {
+            if (couple.alive) numCouplesAlive++;
+        }
+
+        // In the special case of Mafia being enabled, but only the janitor's left alive,
+        // count it as zero impostors alive bc they can't actually do anything.
+        if (Godfather.godfather?.isDead() == true && Mafioso.mafioso?.isDead() == true && Janitor.janitor?.isDead() == false)
+        {
+            numImpostorsAlive = 0;
+        }
+
+        TeamCrew = numCrew;
         TeamJackalAlive = numJackalAlive;
         TeamImpostorsAlive = numImpostorsAlive;
         TeamLoversAlive = numLoversAlive;
+        NeutralAlive = numNeutralAlive;
         TotalAlive = numTotalAlive;
-        TeamImpostorHasAliveLover = impLover;
-        TeamJackalHasAliveLover = jackalLover;
+        CouplesAlive = numCouplesAlive;
+        TeamImpostorLovers = impLovers;
+        TeamJackalLovers = jackalLovers;
     }
 }

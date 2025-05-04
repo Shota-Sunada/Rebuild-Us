@@ -46,6 +46,8 @@ class GameOptionsDataValidatePatch
 [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
 class RoleManagerSelectRolesPatch
 {
+    private static List<RoleId> blockLovers = [];
+
     private static int crewValues;
     private static int impValues;
     private static bool isEvilGuesser;
@@ -61,6 +63,18 @@ class RoleManagerSelectRolesPatch
 
     private static void assignRoles()
     {
+        blockLovers = [RoleId.Bait];
+
+        if (!Lovers.hasTasks)
+        {
+            blockLovers.Add(RoleId.Snitch);
+        }
+
+        if (!CustomOptionHolder.arsonistCanBeLovers.getBool())
+        {
+            blockLovers.Add(RoleId.Arsonist);
+        }
+
         var data = getRoleAssignmentData();
         assignSpecialRoles(data); // Assign special roles like mafia and lovers first as they assign a role to multiple players and the chances are independent of the ticket system
         selectFactionForFactionIndependentRoles(data);
@@ -178,6 +192,66 @@ class RoleManagerSelectRolesPatch
 
     private static void assignSpecialRoles(RoleAssignmentData data)
     {
+        if (CustomOptionHolder.loversSpawnRate.Enabled)
+        {
+            for (int i = 0; i < CustomOptionHolder.loversNumCouples.getFloat(); i++)
+            {
+                var singleCrew = data.crewmates.FindAll(x => !x.isLovers());
+                var singleImps = data.impostors.FindAll(x => !x.isLovers());
+
+                bool isOnlyRole = !CustomOptionHolder.loversCanHaveAnotherRole.getBool();
+                if (rnd.Next(1, 101) <= CustomOptionHolder.loversSpawnRate.getSelection() * 10)
+                {
+                    int lover1 = -1;
+                    int lover2 = -1;
+                    int lover1Index = -1;
+                    int lover2Index = -1;
+                    if (singleImps.Count > 0 && singleCrew.Count > 0 && (!isOnlyRole || (data.maxCrewmateRoles > 0 && data.maxImpostorRoles > 0)) && rnd.Next(1, 101) <= CustomOptionHolder.loversImpLoverRate.getSelection() * 10)
+                    {
+                        lover1Index = rnd.Next(0, singleImps.Count);
+                        lover1 = singleImps[lover1Index].PlayerId;
+
+                        lover2Index = rnd.Next(0, singleCrew.Count);
+                        lover2 = singleCrew[lover2Index].PlayerId;
+
+                        if (isOnlyRole)
+                        {
+                            data.maxImpostorRoles--;
+                            data.maxCrewmateRoles--;
+
+                            data.impostors.RemoveAll(x => x.PlayerId == lover1);
+                            data.crewmates.RemoveAll(x => x.PlayerId == lover2);
+                        }
+                    }
+
+                    else if (singleCrew.Count >= 2 && (isOnlyRole || data.maxCrewmateRoles >= 2))
+                    {
+                        lover1Index = rnd.Next(0, singleCrew.Count);
+                        while (lover2Index == lover1Index || lover2Index < 0) lover2Index = rnd.Next(0, singleCrew.Count);
+
+                        lover1 = singleCrew[lover1Index].PlayerId;
+                        lover2 = singleCrew[lover2Index].PlayerId;
+
+                        if (isOnlyRole)
+                        {
+                            data.maxCrewmateRoles -= 2;
+                            data.crewmates.RemoveAll(x => x.PlayerId == lover1);
+                            data.crewmates.RemoveAll(x => x.PlayerId == lover2);
+                        }
+                    }
+
+                    if (lover1 >= 0 && lover2 >= 0)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetLovers, Hazel.SendOption.Reliable, -1);
+                        writer.Write((byte)lover1);
+                        writer.Write((byte)lover2);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.setLovers((byte)lover1, (byte)lover2);
+                    }
+                }
+            }
+        }
+
         // Assign Mafia
         if (data.impostors.Count >= 3 && data.maxImpostorRoles >= 3 && (rnd.Next(1, 101) <= CustomOptionHolder.mafiaSpawnRate.getSelection() * 10))
         {
@@ -414,7 +488,7 @@ class RoleManagerSelectRolesPatch
             { // Lawyer
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if (!p.Data.IsDead && !p.Data.Disconnected && p != Lovers.lover1 && p != Lovers.lover2 && (p.Data.Role.IsImpostor || p == Jackal.jackal || (Lawyer.targetCanBeJester && p.isRole(RoleId.Jester))))
+                    if (!p.Data.IsDead && !p.Data.Disconnected && !p.isLovers() && (p.Data.Role.IsImpostor || p == Jackal.jackal || (Lawyer.targetCanBeJester && p.isRole(RoleId.Jester))))
                         possibleTargets.Add(p);
                 }
             }
@@ -422,7 +496,7 @@ class RoleManagerSelectRolesPatch
             { // Prosecutor
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if (!p.Data.IsDead && !p.Data.Disconnected && p != Lovers.lover1 && p != Lovers.lover2 && p != Mini.mini && !p.Data.Role.IsImpostor && !Helpers.isNeutral(p) && p != Swapper.swapper)
+                    if (!p.Data.IsDead && !p.Data.Disconnected && !p.isLovers() && p != Mini.mini && !p.Data.Role.IsImpostor && !Helpers.isNeutral(p) && p != Swapper.swapper)
                         possibleTargets.Add(p);
                 }
             }
@@ -471,23 +545,6 @@ class RoleManagerSelectRolesPatch
             RoleId.Shifter
         });
 
-        if (rnd.Next(1, 101) <= CustomOptionHolder.modifierLover.getSelection() * 10)
-        { // Assign lover
-            bool isEvilLover = rnd.Next(1, 101) <= CustomOptionHolder.modifierLoverImpLoverRate.getSelection() * 10;
-            byte firstLoverId;
-            List<PlayerControl> impPlayer = new(players);
-            List<PlayerControl> crewPlayer = new(players);
-            impPlayer.RemoveAll(x => !x.Data.Role.IsImpostor);
-            crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer);
-
-            if (isEvilLover) firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, impPlayer);
-            else firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, crewPlayer);
-            byte secondLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, crewPlayer, 1);
-
-            players.RemoveAll(x => x.PlayerId == firstLoverId || x.PlayerId == secondLoverId);
-            modifierCount--;
-        }
-
         foreach (RoleId m in allModifiers)
         {
             if (getSelectionForRoleId(m) == 10) ensuredModifiers.AddRange(Enumerable.Repeat(m, getSelectionForRoleId(m, true) / 10));
@@ -522,6 +579,13 @@ class RoleManagerSelectRolesPatch
     {
         var index = rnd.Next(0, playerList.Count);
         byte playerId = playerList[index].PlayerId;
+        if (RoleInfo.lovers.enabled &&
+            Helpers.playerById(playerId)?.isLovers() == true &&
+            blockLovers.Contains((RoleId)roleId))
+        {
+            return byte.MaxValue;
+        }
+
         if (removePlayer) playerList.RemoveAt(index);
 
         playerRoleMap.Add(new Tuple<byte, byte>(playerId, roleId));
@@ -599,8 +663,6 @@ class RoleManagerSelectRolesPatch
         int selection = 0;
         switch (roleId)
         {
-            case RoleId.Lover:
-                selection = CustomOptionHolder.modifierLover.getSelection(); break;
             case RoleId.Tiebreaker:
                 selection = CustomOptionHolder.modifierTieBreaker.getSelection(); break;
             case RoleId.Mini:

@@ -195,12 +195,10 @@ class IntroPatch
             }
             if (modifierInfo != null)
             {
-                if (modifierInfo.roleId != RoleId.Lover)
-                    __instance.RoleBlurbText.text += Helpers.cs(modifierInfo.color, $"\n{modifierInfo.introDescription}");
-                else
+                if (PlayerControl.LocalPlayer.isLovers())
                 {
-                    PlayerControl otherLover = PlayerControl.LocalPlayer == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
-                    __instance.RoleBlurbText.text += Helpers.cs(Lovers.color, $"\n♥ You are in love with {otherLover?.Data?.PlayerName ?? ""} ♥");
+                    var partner = Lovers.getPartner(PlayerControl.LocalPlayer);
+                    __instance.RoleBlurbText.text += Helpers.cs(Lovers.Color, $"\n♥ You are in love with {partner?.Data?.PlayerName ?? ""} ♥");
                 }
             }
         }

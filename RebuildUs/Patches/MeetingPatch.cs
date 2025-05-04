@@ -264,11 +264,16 @@ class MeetingHudPatch
             Swapper.playerId2 = Byte.MaxValue;
 
             // Lovers, Lawyer & Pursuer save next to be exiled, because RPC of ending game comes before RPC of exiled
-            Lovers.notAckedExiledIsLover = false;
             Pursuer.notAckedExiled = false;
             if (exiled != null)
             {
-                Lovers.notAckedExiledIsLover = ((Lovers.lover1 != null && Lovers.lover1.PlayerId == exiled.PlayerId) || (Lovers.lover2 != null && Lovers.lover2.PlayerId == exiled.PlayerId));
+                GameHistory.finalStatuses[exiled.PlayerId] = FinalStatus.Exiled;
+                bool isLovers = exiled.Object.isLovers();
+                if (isLovers)
+                {
+                    GameHistory.finalStatuses[exiled.Object.getPartner().PlayerId] = FinalStatus.Suicide;
+                }
+
                 Pursuer.notAckedExiled = (Pursuer.pursuer != null && Pursuer.pursuer.PlayerId == exiled.PlayerId) || (Lawyer.lawyer != null && Lawyer.target != null && Lawyer.target.PlayerId == exiled.PlayerId && Lawyer.target.isRole(RoleId.Jester) && !Lawyer.isProsecutor);
             }
 

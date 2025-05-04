@@ -9,8 +9,6 @@ namespace RebuildUs.Modules;
 [HarmonyPatch]
 public static class ChatCommands
 {
-    public static bool isLover(this PlayerControl player) => !(player == null) && (player == Lovers.lover1 || player == Lovers.lover2);
-
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
     private static class SendChatPatch
     {
@@ -127,7 +125,7 @@ public static class ChatCommands
     {
         public static void Postfix(HudManager __instance)
         {
-            if (!__instance.Chat.isActiveAndEnabled && (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay || (PlayerControl.LocalPlayer.isLover() && Lovers.enableChat)))
+            if (!__instance.Chat.isActiveAndEnabled && (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay || (PlayerControl.LocalPlayer.isLovers() && Lovers.enableChat)))
                 __instance.Chat.SetVisible(true);
         }
     }
@@ -150,8 +148,12 @@ public static class ChatCommands
             if (__instance != FastDestroyableSingleton<HudManager>.Instance.Chat)
                 return true;
             PlayerControl localPlayer = PlayerControl.LocalPlayer;
-            return localPlayer == null || (MeetingHud.Instance != null || LobbyBehaviour.Instance != null || (localPlayer.Data.IsDead || localPlayer.isLover() && Lovers.enableChat) || (int)sourcePlayer.PlayerId == (int)PlayerControl.LocalPlayer.PlayerId);
-
+            return localPlayer == null ||
+                MeetingHud.Instance != null ||
+                LobbyBehaviour.Instance != null ||
+                localPlayer.isDead() ||
+                localPlayer.PlayerId == sourcePlayer.PlayerId ||
+                (Lovers.enableChat && localPlayer.getPartner() == sourcePlayer);
         }
     }
 }

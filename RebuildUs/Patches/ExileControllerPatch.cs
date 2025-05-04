@@ -64,14 +64,14 @@ class ExileControllerBeginPatch
         if (Witch.witch != null && Witch.futureSpelled != null && AmongUsClient.Instance.AmHost)
         {
             bool exiledIsWitch = exiled != null && exiled.PlayerId == Witch.witch.PlayerId;
-            bool witchDiesWithExiledLover = exiled != null && Lovers.existing() && Lovers.bothDie && (Lovers.lover1.PlayerId == Witch.witch.PlayerId || Lovers.lover2.PlayerId == Witch.witch.PlayerId) && (exiled.PlayerId == Lovers.lover1.PlayerId || exiled.PlayerId == Lovers.lover2.PlayerId);
+            bool witchDiesWithExiledLover = exiled != null && Lovers.bothDie && exiled.Object.isLovers() && exiled.Object.getPartner() == Witch.witch;
 
             if ((witchDiesWithExiledLover || exiledIsWitch) && Witch.witchVoteSavesTargets) Witch.futureSpelled = [];
             foreach (PlayerControl target in Witch.futureSpelled)
             {
                 if (target != null && !target.Data.IsDead && Helpers.checkMurderAttempt(Witch.witch, target, true) == MurderAttemptResult.PerformKill)
                 {
-                    if (exiled != null && Lawyer.lawyer != null && (target == Lawyer.lawyer || target == Lovers.otherLover(Lawyer.lawyer)) && Lawyer.target != null && Lawyer.isProsecutor && Lawyer.target.PlayerId == exiled.PlayerId)
+                    if (exiled != null && Lawyer.lawyer != null && (target == Lawyer.lawyer || target == Lovers.getPartner(Lawyer.lawyer)) && Lawyer.target != null && Lawyer.isProsecutor && Lawyer.target.PlayerId == exiled.PlayerId)
                         continue;
                     if (target == Lawyer.target && Lawyer.lawyer != null)
                     {

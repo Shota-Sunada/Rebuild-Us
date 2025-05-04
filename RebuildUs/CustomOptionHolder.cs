@@ -290,10 +290,14 @@ public class CustomOptionHolder
     public static CustomOption modifierBaitReportDelayMax;
     public static CustomOption modifierBaitShowKillFlash;
 
-    public static CustomOption modifierLover;
-    public static CustomOption modifierLoverImpLoverRate;
-    public static CustomOption modifierLoverBothDie;
-    public static CustomOption modifierLoverEnableChat;
+    public static CustomOption loversSpawnRate;
+    public static CustomOption loversNumCouples;
+    public static CustomOption loversImpLoverRate;
+    public static CustomOption loversBothDie;
+    public static CustomOption loversEnableChat;
+    public static CustomOption loversCanHaveAnotherRole;
+    public static CustomOption loversSeparateTeam;
+    public static CustomOption loversTasksCount;
 
     public static CustomOption modifierBloody;
     public static CustomOption modifierBloodyQuantity;
@@ -663,10 +667,14 @@ public class CustomOptionHolder
         modifierBaitReportDelayMax = CustomOption.Create(1243, CustomOptionType.Modifier, "ModifierBaitReportDelayMax", 0f, 0f, 10f, 1f, modifierBait, unitType: UnitType.UnitSeconds);
         modifierBaitShowKillFlash = CustomOption.Create(1244, CustomOptionType.Modifier, "ModifierBaitShowKillFlash", true, modifierBait);
 
-        modifierLover = new CustomRoleOption(1250, 1251, CustomOptionType.Modifier, ("Lovers", Color.yellow), 1);
-        modifierLoverImpLoverRate = CustomOption.Create(1252, CustomOptionType.Modifier, "ModifierLoverImpLoverRate", rates, modifierLover);
-        modifierLoverBothDie = CustomOption.Create(1253, CustomOptionType.Modifier, "ModifierLoverBothDie", true, modifierLover);
-        modifierLoverEnableChat = CustomOption.Create(1254, CustomOptionType.Modifier, "ModifierLoverEnableChat", true, modifierLover);
+        loversSpawnRate = new CustomRoleOption(1250, 1251, CustomOptionType.Modifier, ("Lovers", Lovers.Color), 7);
+        loversNumCouples = CustomOption.Create(1252, CustomOptionType.Modifier, "LoversNumCouples", 1f, 1f, 7f, 1f, loversSpawnRate, unitType: UnitType.UnitCouples);
+        loversImpLoverRate = CustomOption.Create(1253, CustomOptionType.Modifier, "LoversImpLoverRate", rates, loversSpawnRate);
+        loversBothDie = CustomOption.Create(1254, CustomOptionType.Modifier, "LoversBothDie", true, loversSpawnRate);
+        loversEnableChat = CustomOption.Create(1255, CustomOptionType.Modifier, "LoversEnableChat", true, loversSpawnRate);
+        loversCanHaveAnotherRole = CustomOption.Create(1256, CustomOptionType.Modifier, "LoversCanHaveAnotherRole", true, loversSpawnRate);
+        loversSeparateTeam = CustomOption.Create(1257, CustomOptionType.Modifier, "LoversSeparateTeam", true, loversSpawnRate);
+        loversTasksCount = CustomOption.Create(1258, CustomOptionType.Modifier, "LoversTasksCount", false, loversSpawnRate);
 
         modifierSunglasses = new CustomRoleOption(1260, 1261, CustomOptionType.Modifier, ("Sunglasses", Color.yellow), 3);
         modifierSunglassesVision = CustomOption.Create(1262, CustomOptionType.Modifier, "ModifierSunglassesVision", ["-10%", "-20%", "-30%", "-40%", "-50%"], modifierSunglasses);
@@ -674,7 +682,7 @@ public class CustomOptionHolder
         modifierMini = new CustomRoleOption(1270, 1271, CustomOptionType.Modifier, ("Mini", Color.yellow), 3);
         modifierMiniGrowingUpDuration = CustomOption.Create(1272, CustomOptionType.Modifier, "ModifierMiniGrowingUpDuration", 400f, 100f, 1500f, 100f, modifierMini);
         modifierMiniGrowingUpInMeeting = CustomOption.Create(1273, CustomOptionType.Modifier, "ModifierMiniGrowingUpInMeeting", true, modifierMini);
-        if (Utilities.EventUtility.canBeEnabled || Utilities.EventUtility.isEnabled)
+        if (EventUtility.canBeEnabled || EventUtility.isEnabled)
         {
             eventKicksPerRound = CustomOption.Create(1274, CustomOptionType.Modifier, ("EventKicksPerRound", Color.green), 4f, 0f, 14f, 1f, modifierMini);
             eventHeavyAge = CustomOption.Create(1275, CustomOptionType.Modifier, ("EventHeavyAge", Color.green), 12f, 6f, 18f, 0.5f, modifierMini);

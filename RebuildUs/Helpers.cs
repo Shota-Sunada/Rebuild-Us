@@ -16,7 +16,6 @@ using AmongUs.GameOptions;
 using RebuildUs.Patches;
 using static RebuildUs.GameHistory;
 using RebuildUs.Roles;
-using RebuildUs.Roles.Crewmate;
 using RebuildUs.Localization;
 
 namespace RebuildUs;
@@ -398,7 +397,8 @@ public static class Helpers
 
     public static bool hasFakeTasks(this PlayerControl player)
     {
-        return player.isNeutral() && !player.neutralHasTasks();
+        return player.isNeutral() && !player.neutralHasTasks() ||
+            (player.isLovers() && Lovers.separateTeam && !Lovers.tasksCount);
     }
 
     public static bool neutralHasTasks(this PlayerControl player)
@@ -574,7 +574,7 @@ public static class Helpers
         if (Ninja.isInvisble && Ninja.ninja == target) return true;
         if (!MapOptions.hidePlayerNames) return false; // All names are visible
         if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target == Sidekick.sidekick && Sidekick.wasTeamRed || target == Jackal.jackal && Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
-        if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
+        if (source.isLovers() && target.isLovers()) return false; // Members of team Lovers see the names of each other
         if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
         return true;
     }

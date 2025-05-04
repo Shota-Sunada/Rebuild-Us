@@ -1218,17 +1218,6 @@ public static class MurderPlayerPatch
         // First kill (set before lover suicide)
         if (MapOptions.firstKillName == "") MapOptions.firstKillName = target.Data.PlayerName;
 
-        // Lover suicide trigger on murder
-        if ((Lovers.lover1 != null && target == Lovers.lover1) || (Lovers.lover2 != null && target == Lovers.lover2))
-        {
-            PlayerControl otherLover = target == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
-            if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie)
-            {
-                otherLover.MurderPlayer(otherLover);
-                GameHistory.overrideDeathReasonAndKiller(otherLover, CustomDeathReason.LoverSuicide);
-            }
-        }
-
         // Sidekick promotion trigger on murder
         if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && target == Jackal.jackal && Jackal.jackal == PlayerControl.LocalPlayer)
         {
@@ -1407,17 +1396,6 @@ public static class ExilePlayerPatch
         if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief)
             __instance.clearAllTasks();
 
-        // Lover suicide trigger on exile
-        if ((Lovers.lover1 != null && __instance == Lovers.lover1) || (Lovers.lover2 != null && __instance == Lovers.lover2))
-        {
-            PlayerControl otherLover = __instance == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
-            if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie)
-            {
-                otherLover.Exiled();
-                GameHistory.overrideDeathReasonAndKiller(otherLover, CustomDeathReason.LoverSuicide);
-            }
-
-        }
         // Sidekick promotion trigger on exile
         if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && __instance == Jackal.jackal && Jackal.jackal == PlayerControl.LocalPlayer)
         {

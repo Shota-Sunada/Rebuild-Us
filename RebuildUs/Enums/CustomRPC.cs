@@ -71,6 +71,7 @@ public enum CustomRPC
     YoyoMarkLocation,
     YoyoBlink,
     BreakArmor,
+    SetLovers,
 
     // Other functionality
     ShareTimer,

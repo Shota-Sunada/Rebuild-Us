@@ -48,7 +48,6 @@ public enum RoleId : byte
     Crewmate,
     Impostor,
     // Modifier ---
-    Lover,
     Bait,
     Bloody,
     AntiTeleport,

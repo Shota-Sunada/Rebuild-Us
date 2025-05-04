@@ -145,10 +145,6 @@ public static class RPCProcedure
             case RoleId.Bait:
                 Bait.bait.Add(player);
                 break;
-            case RoleId.Lover:
-                if (flag == 0) Lovers.lover1 = player;
-                else Lovers.lover2 = player;
-                break;
             case RoleId.Bloody:
                 Bloody.bloody.Add(player);
                 break;
@@ -1036,6 +1032,11 @@ public static class RPCProcedure
             Armored.armored.ShowFailedMurder();
         }
     }
+
+    public static void setLovers(byte playerId1, byte playerId2)
+    {
+        Lovers.addCouple(Helpers.playerById(playerId1), Helpers.playerById(playerId2));
+    }
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -1292,6 +1293,9 @@ class RPCHandlerPatch
                 break;
             case (byte)CustomRPC.BreakArmor:
                 RPCProcedure.breakArmor();
+                break;
+            case (byte)CustomRPC.SetLovers:
+                RPCProcedure.setLovers(reader.ReadByte(), reader.ReadByte());
                 break;
 
             case (byte)CustomRPC.ShareRoom:

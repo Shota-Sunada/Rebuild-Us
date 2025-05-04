@@ -206,15 +206,19 @@ class HudManagerUpdatePatch
         }
 
         // Lovers
-        if (Lovers.lover1 != null && Lovers.lover2 != null && (Lovers.lover1 == PlayerControl.LocalPlayer || Lovers.lover2 == PlayerControl.LocalPlayer))
+        if (PlayerControl.LocalPlayer.isLovers() && PlayerControl.LocalPlayer.isAlive())
         {
-            string suffix = Helpers.cs(Lovers.color, " ♥");
-            Lovers.lover1.cosmetics.nameText.text += suffix;
-            Lovers.lover2.cosmetics.nameText.text += suffix;
+            string suffix = Lovers.getIcon(PlayerControl.LocalPlayer);
+            var lover1 = PlayerControl.LocalPlayer;
+            var lover2 = PlayerControl.LocalPlayer.getPartner();
 
-            if (MeetingHud.Instance != null)
+            lover1.cosmetics.nameText.text += suffix;
+            if (!Helpers.hidePlayerName(lover2))
+                lover2.cosmetics.nameText.text += suffix;
+
+            if (Helpers.ShowMeetingText)
                 foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
-                    if (Lovers.lover1.PlayerId == player.TargetPlayerId || Lovers.lover2.PlayerId == player.TargetPlayerId)
+                    if (lover1.PlayerId == player.TargetPlayerId || lover2.PlayerId == player.TargetPlayerId)
                         player.NameText.text += suffix;
         }
 

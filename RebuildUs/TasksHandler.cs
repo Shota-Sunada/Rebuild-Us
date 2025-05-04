@@ -15,8 +15,8 @@ public static class TasksHandler
         if (playerInfo != null && !playerInfo.Disconnected && playerInfo.Tasks != null &&
             playerInfo.Object &&
             playerInfo.Role && playerInfo.Role.TasksCountTowardProgress &&
-            !playerInfo.Object.hasFakeTasks() && !playerInfo.Role.IsImpostor
-            )
+            !(playerInfo.Object.isLovers() && !Lovers.hasTasks) &&
+            !playerInfo.Object.hasFakeTasks())
         {
             foreach (var playerInfoTask in playerInfo.Tasks.GetFastEnumerator())
             {
@@ -32,20 +32,21 @@ public static class TasksHandler
     {
         private static bool Prefix(GameData __instance)
         {
-
-
             var totalTasks = 0;
             var completedTasks = 0;
 
             foreach (var playerInfo in GameData.Instance.AllPlayers.GetFastEnumerator())
             {
-                if (playerInfo.Object
-                    && playerInfo.Object.hasAliveKillingLover() // Tasks do not count if a Crewmate has an alive killing Lover
+                if (playerInfo.Object &&
+                    ((playerInfo.Object?.isLovers() == true && !Lovers.tasksCount)
                     || playerInfo.PlayerId == Lawyer.lawyer?.PlayerId // Tasks of the Lawyer do not count
                     || (playerInfo.PlayerId == Pursuer.pursuer?.PlayerId && Pursuer.pursuer.Data.IsDead) // Tasks of the Pursuer only count, if he's alive
                     || playerInfo.PlayerId == Thief.thief?.PlayerId // Thief's tasks only count after joining crew team as sheriff (and then the thief is not the thief anymore)
-                   )
+                   ))
+                {
                     continue;
+                }
+
                 var (playerCompleted, playerTotal) = taskInfo(playerInfo);
                 totalTasks += playerTotal;
                 completedTasks += playerCompleted;
@@ -56,5 +57,4 @@ public static class TasksHandler
             return false;
         }
     }
-
 }

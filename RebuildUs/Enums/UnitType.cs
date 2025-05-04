@@ -10,4 +10,5 @@ public enum UnitType
     UnitMinutes, // m, 秒
     UnitShots, // [], 発
     UnitVotes, // [], 票
+    UnitCouples, // [], 組
 }

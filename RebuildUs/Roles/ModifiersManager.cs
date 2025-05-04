@@ -197,7 +197,6 @@ public static class ModifierHelpers
             t.Value.GetMethod("eraseModifier", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { player, newRole });
         }
 
-        if (player == global::RebuildUs.Lovers.lover1 || player == global::RebuildUs.Lovers.lover2) global::RebuildUs.Lovers.clearAndReload(); // The whole Lover couple is being erased
         if (Bait.bait.Any(x => x.PlayerId == player.PlayerId)) Bait.bait.RemoveAll(x => x.PlayerId == player.PlayerId);
         if (Bloody.bloody.Any(x => x.PlayerId == player.PlayerId)) Bloody.bloody.RemoveAll(x => x.PlayerId == player.PlayerId);
         if (AntiTeleport.antiTeleport.Any(x => x.PlayerId == player.PlayerId)) AntiTeleport.antiTeleport.RemoveAll(x => x.PlayerId == player.PlayerId);
