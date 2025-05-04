@@ -199,24 +199,6 @@ public static class PlayerControlFixedUpdatePatch
         if (!Tracker.usedTracker) setPlayerOutline(Tracker.currentTarget, Tracker.color);
     }
 
-    static void detectiveUpdateFootPrints()
-    {
-        if (Detective.detective == null || Detective.detective != PlayerControl.LocalPlayer) return;
-
-        Detective.timer -= Time.fixedDeltaTime;
-        if (Detective.timer <= 0f)
-        {
-            Detective.timer = Detective.footprintIntervall;
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                if (player != null && player != PlayerControl.LocalPlayer && !player.Data.IsDead && !player.inVent)
-                {
-                    FootprintHolder.Instance.MakeFootprint(player);
-                }
-            }
-        }
-    }
-
     static void vampireSetTarget()
     {
         if (Vampire.vampire == null || Vampire.vampire != PlayerControl.LocalPlayer) return;
@@ -1047,8 +1029,6 @@ public static class PlayerControlFixedUpdatePatch
             medicSetTarget();
             // Shifter
             shifterSetTarget();
-            // Detective
-            detectiveUpdateFootPrints();
             // Tracker
             trackerSetTarget();
             // Vampire
@@ -1153,14 +1133,14 @@ class BodyReportPatch
     {
         // Medic or Detective report
         bool isMedicReport = Medic.medic != null && Medic.medic == PlayerControl.LocalPlayer && __instance.PlayerId == Medic.medic.PlayerId;
-        bool isDetectiveReport = Detective.detective != null && Detective.detective == PlayerControl.LocalPlayer && __instance.PlayerId == Detective.detective.PlayerId;
+        bool isDetectiveReport = Detective.exists && PlayerControl.LocalPlayer.isRole(RoleId.Detective) && Detective.allPlayers.Contains(__instance);
         if (isMedicReport || isDetectiveReport)
         {
             DeadPlayer deadPlayer = deadPlayers?.Where(x => x.player?.PlayerId == target?.PlayerId)?.FirstOrDefault();
 
             if (deadPlayer != null && deadPlayer.killerIfExisting != null)
             {
-                float timeSinceDeath = ((float)(DateTime.UtcNow - deadPlayer.timeOfDeath).TotalMilliseconds);
+                float timeSinceDeath = (float)(DateTime.UtcNow - deadPlayer.timeOfDeath).TotalMilliseconds;
                 string msg = "";
 
                 if (isMedicReport)

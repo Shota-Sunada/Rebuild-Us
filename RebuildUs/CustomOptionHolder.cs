@@ -563,7 +563,7 @@ public class CustomOptionHolder
         lighterModeLightsOffVision = CustomOption.Create(733, CustomOptionType.Crewmate, "LighterModeLightsOffVision", 0.5f, 0.25f, 5f, 0.25f, lighterSpawnRate);
         lighterFlashlightWidth = CustomOption.Create(734, CustomOptionType.Crewmate, "LighterFlashlightWidth", 0.3f, 0.1f, 1f, 0.1f, lighterSpawnRate);
 
-        detectiveSpawnRate = new CustomRoleOption(740, 741, CustomOptionType.Crewmate, ("Detective", Detective.color), 1);
+        detectiveSpawnRate = new CustomRoleOption(740, 741, CustomOptionType.Crewmate, ("Detective", Detective.Color), 1);
         detectiveAnonymousFootprints = CustomOption.Create(742, CustomOptionType.Crewmate, "DetectiveAnonymousFootprints", false, detectiveSpawnRate);
         detectiveFootprintInterval = CustomOption.Create(743, CustomOptionType.Crewmate, "DetectiveFootprintInterval", 0.5f, 0.25f, 10f, 0.25f, detectiveSpawnRate, unitType: UnitType.UnitSeconds);
         detectiveFootprintDuration = CustomOption.Create(744, CustomOptionType.Crewmate, "DetectiveFootprintDuration", 5f, 0.25f, 10f, 0.25f, detectiveSpawnRate, unitType: UnitType.UnitSeconds);

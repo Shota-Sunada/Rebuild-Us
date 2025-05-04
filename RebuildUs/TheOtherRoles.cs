@@ -21,15 +21,15 @@ public static class RebuildUs
 
     public static void clearAndReloadRoles()
     {
-        Jester.clearAndReload();
-        Mayor.clearAndReload();
+        // Jester.clearAndReload();
+        // Mayor.clearAndReload();
         Portalmaker.clearAndReload();
-        Engineer.clearAndReload();
-        Lighter.clearAndReload();
+        // Engineer.clearAndReload();
+        // Lighter.clearAndReload();
         Godfather.clearAndReload();
         Mafioso.clearAndReload();
         Janitor.clearAndReload();
-        Detective.clearAndReload();
+        // Detective.clearAndReload();
         TimeMaster.clearAndReload();
         Medic.clearAndReload();
         Shifter.clearAndReload();
@@ -323,29 +323,29 @@ public static class RebuildUs
     //     }
     // }
 
-    public static class Detective
-    {
-        public static PlayerControl detective;
-        public static Color color = new Color32(45, 106, 165, byte.MaxValue);
+    // public static class Detective
+    // {
+    //     public static PlayerControl detective;
+    //     public static Color color = new Color32(45, 106, 165, byte.MaxValue);
 
-        public static float footprintIntervall = 1f;
-        public static float footprintDuration = 1f;
-        public static bool anonymousFootprints = false;
-        public static float reportNameDuration = 0f;
-        public static float reportColorDuration = 20f;
-        public static float timer = 6.2f;
+    //     public static float footprintIntervall = 1f;
+    //     public static float footprintDuration = 1f;
+    //     public static bool anonymousFootprints = false;
+    //     public static float reportNameDuration = 0f;
+    //     public static float reportColorDuration = 20f;
+    //     public static float timer = 6.2f;
 
-        public static void clearAndReload()
-        {
-            detective = null;
-            anonymousFootprints = CustomOptionHolder.detectiveAnonymousFootprints.getBool();
-            footprintIntervall = CustomOptionHolder.detectiveFootprintInterval.getFloat();
-            footprintDuration = CustomOptionHolder.detectiveFootprintDuration.getFloat();
-            reportNameDuration = CustomOptionHolder.detectiveReportNameDuration.getFloat();
-            reportColorDuration = CustomOptionHolder.detectiveReportColorDuration.getFloat();
-            timer = 6.2f;
-        }
-    }
+    //     public static void clearAndReload()
+    //     {
+    //         detective = null;
+    //         anonymousFootprints = CustomOptionHolder.detectiveAnonymousFootprints.getBool();
+    //         footprintIntervall = CustomOptionHolder.detectiveFootprintInterval.getFloat();
+    //         footprintDuration = CustomOptionHolder.detectiveFootprintDuration.getFloat();
+    //         reportNameDuration = CustomOptionHolder.detectiveReportNameDuration.getFloat();
+    //         reportColorDuration = CustomOptionHolder.detectiveReportColorDuration.getFloat();
+    //         timer = 6.2f;
+    //     }
+    // }
 }
 
 public static class TimeMaster
@@ -2222,10 +2222,10 @@ public static class Shifter
             if (repeat) shiftRole(player2, player1, false);
             RebuildUs.Lighter.lighter = player1;
         }
-        else if (Detective.detective != null && Detective.detective == player2)
+        else if (RebuildUs.Detective.detective != null && RebuildUs.Detective.detective == player2)
         {
             if (repeat) shiftRole(player2, player1, false);
-            Detective.detective = player1;
+            RebuildUs.Detective.detective = player1;
         }
         else if (TimeMaster.timeMaster != null && TimeMaster.timeMaster == player2)
         {
