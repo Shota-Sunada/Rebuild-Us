@@ -64,7 +64,8 @@ public class Engineer : RoleBase<Engineer>
                 engineerRepairButton.Timer = 0f;
 
                 using var rpc1 = RPCProcedure.SendRPC(CustomRPC.EngineerUsedRepair);
-                RPCProcedure.engineerUsedRepair();
+                rpc1.Write(PlayerControl.LocalPlayer.PlayerId);
+                RPCProcedure.engineerUsedRepair(PlayerControl.LocalPlayer.PlayerId);
 
                 foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator())
                 {

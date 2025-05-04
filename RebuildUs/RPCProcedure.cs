@@ -252,12 +252,13 @@ public static class RPCProcedure
         SubmergedCompatibility.RepairOxygen();
     }
 
-    public static void engineerUsedRepair()
+    public static void engineerUsedRepair(byte playerId)
     {
-        RebuildUs.Engineer.remainingFixes--;
+        var player = Helpers.playerById(playerId);
+        Engineer.getRole(player).remainingFixes--;
         if (Helpers.shouldShowGhostInfo())
         {
-            Helpers.showFlash(RebuildUs.Engineer.color, 0.5f, "Engineer Fix"); ;
+            Helpers.showFlash(Engineer.Color, 0.5f, "Engineer Fix"); ;
         }
     }
 
@@ -855,7 +856,7 @@ public static class RPCProcedure
         PlayerControl target = Helpers.playerById(playerId);
         PlayerControl thief = Thief.thief;
         if (target == null) return;
-        if (target == Sheriff.sheriff) Sheriff.sheriff = thief;
+        if (target.isRole(RoleId.Sheriff)) Sheriff.getRole(target).player = thief;
         if (target == Jackal.jackal)
         {
             Jackal.jackal = thief;
@@ -1037,6 +1038,34 @@ public static class RPCProcedure
     {
         Lovers.addCouple(Helpers.playerById(playerId1), Helpers.playerById(playerId2));
     }
+
+    public static void updateMeeting(byte targetId, bool dead = true)
+    {
+        if (MeetingHud.Instance)
+        {
+            foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
+            {
+                if (pva.TargetPlayerId == targetId && pva.AmDead != dead)
+                {
+                    pva.SetDead(pva.DidReport, dead);
+                    pva.Overlay.gameObject.SetActive(dead);
+                }
+
+                // Give players back their vote if target is shot dead
+                if (Helpers.RefundVotes && dead)
+                {
+                    if (pva.VotedFor != targetId) continue;
+                    pva.UnsetVote();
+                    var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
+                    if (!voteAreaPlayer.AmOwner) continue;
+                    MeetingHud.Instance.ClearVote();
+                }
+            }
+
+            if (AmongUsClient.Instance.AmHost)
+                MeetingHud.Instance.CheckForEndVoting();
+        }
+    }
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -1133,7 +1162,7 @@ class RPCHandlerPatch
                 RPCProcedure.engineerFixSubmergedOxygen();
                 break;
             case (byte)CustomRPC.EngineerUsedRepair:
-                RPCProcedure.engineerUsedRepair();
+                RPCProcedure.engineerUsedRepair(reader.ReadByte());
                 break;
             case (byte)CustomRPC.CleanBody:
                 RPCProcedure.cleanBody(reader.ReadByte(), reader.ReadByte());
