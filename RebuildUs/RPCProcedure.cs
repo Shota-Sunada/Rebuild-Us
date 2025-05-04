@@ -314,9 +314,9 @@ public static class RPCProcedure
     public static void timeMasterRewindTime()
     {
         TimeMaster.shieldActive = false; // Shield is no longer active when rewinding
-        if (TimeMaster.timeMaster != null && TimeMaster.timeMaster == PlayerControl.LocalPlayer)
+        if (TimeMaster.exists && PlayerControl.LocalPlayer.isRole(RoleId.TimeMaster))
         {
-            resetTimeMasterButton();
+            TimeMaster.resetTimeMasterButton();
         }
         FastDestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
         FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
@@ -326,7 +326,7 @@ public static class RPCProcedure
             if (p == 1f) FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = false;
         })));
 
-        if (TimeMaster.timeMaster == null || PlayerControl.LocalPlayer == TimeMaster.timeMaster) return; // Time Master himself does not rewind
+        if (!TimeMaster.exists || PlayerControl.LocalPlayer.isRole(RoleId.TimeMaster)) return; // Time Master himself does not rewind
 
         TimeMaster.isRewinding = true;
 

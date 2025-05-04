@@ -574,7 +574,7 @@ public class CustomOptionHolder
         detectiveReportNameDuration = CustomOption.Create(745, CustomOptionType.Crewmate, "DetectiveReportNameDuration", 0, 0, 60, 2.5f, detectiveSpawnRate, unitType: UnitType.UnitSeconds);
         detectiveReportColorDuration = CustomOption.Create(746, CustomOptionType.Crewmate, "DetectiveReportColorDuration", 20, 0, 120, 2.5f, detectiveSpawnRate, unitType: UnitType.UnitSeconds);
 
-        timeMasterSpawnRate = new CustomRoleOption(750, 751, CustomOptionType.Crewmate, ("TimeMaster", TimeMaster.color), 1);
+        timeMasterSpawnRate = new CustomRoleOption(750, 751, CustomOptionType.Crewmate, ("TimeMaster", TimeMaster.Color), 1);
         timeMasterCooldown = CustomOption.Create(752, CustomOptionType.Crewmate, "TimeMasterCooldown", 30f, 10f, 120f, 2.5f, timeMasterSpawnRate, unitType: UnitType.UnitSeconds);
         timeMasterRewindTime = CustomOption.Create(753, CustomOptionType.Crewmate, "TimeMasterRewindTime", 3f, 1f, 10f, 1f, timeMasterSpawnRate, unitType: UnitType.UnitSeconds);
         timeMasterShieldDuration = CustomOption.Create(754, CustomOptionType.Crewmate, "TimeMasterShieldDuration", 3f, 1f, 20f, 1f, timeMasterSpawnRate, unitType: UnitType.UnitSeconds);

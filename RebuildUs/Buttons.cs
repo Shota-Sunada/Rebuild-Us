@@ -20,7 +20,7 @@ static class HudManagerStartPatch
     // private static CustomButton engineerRepairButton;
     private static CustomButton janitorCleanButton;
     // public static CustomButton sheriffKillButton;
-    private static CustomButton timeMasterShieldButton;
+    // private static CustomButton timeMasterShieldButton;
     private static CustomButton medicShieldButton;
     private static CustomButton shifterShiftButton;
     private static CustomButton morphingButton;
@@ -89,7 +89,7 @@ static class HudManagerStartPatch
         }
         // engineerRepairButton.MaxTimer = 0f;
         janitorCleanButton.MaxTimer = Janitor.cooldown;
-        timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
+        // timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
         medicShieldButton.MaxTimer = 0f;
         shifterShiftButton.MaxTimer = 0f;
         morphingButton.MaxTimer = Morphing.cooldown;
@@ -130,7 +130,7 @@ static class HudManagerStartPatch
         defuseButton.MaxTimer = 0f;
         defuseButton.Timer = 0f;
 
-        timeMasterShieldButton.effectDuration = TimeMaster.shieldDuration;
+        // timeMasterShieldButton.effectDuration = TimeMaster.shieldDuration;
         hackerButton.effectDuration = Hacker.duration;
         hackerVitalsButton.effectDuration = Hacker.duration;
         hackerAdminTableButton.effectDuration = Hacker.duration;
@@ -150,12 +150,12 @@ static class HudManagerStartPatch
         zoomOutButton.MaxTimer = 0f;
     }
 
-    public static void resetTimeMasterButton()
-    {
-        timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
-        timeMasterShieldButton.isEffectActive = false;
-        timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-    }
+    // public static void resetTimeMasterButton()
+    // {
+    //     timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
+    //     timeMasterShieldButton.isEffectActive = false;
+    //     timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+    // }
 
     private static void setButtonTargetDisplay(PlayerControl target, CustomButton button = null, Vector3? offset = null)
     {
@@ -308,32 +308,32 @@ static class HudManagerStartPatch
         );
 
         // Time Master Rewind Time
-        timeMasterShieldButton = new CustomButton(
-            () =>
-            {
-                using var writer = RPCProcedure.SendRPC(CustomRPC.TimeMasterShield);
-                RPCProcedure.timeMasterShield();
-            },
-            () => { return TimeMaster.timeMaster != null && TimeMaster.timeMaster == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return PlayerControl.LocalPlayer.CanMove; },
-            () =>
-            {
-                timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
-                timeMasterShieldButton.isEffectActive = false;
-                timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-            },
-            TimeMaster.getButtonSprite(),
-            ButtonOffset.LowerRight,
-            __instance,
-            __instance.UseButton,
-            KeyCode.F,
-            true,
-            TimeMaster.shieldDuration,
-            () =>
-            {
-                timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
-            }
-        );
+        // timeMasterShieldButton = new CustomButton(
+        //     () =>
+        //     {
+        //         using var writer = RPCProcedure.SendRPC(CustomRPC.TimeMasterShield);
+        //         RPCProcedure.timeMasterShield();
+        //     },
+        //     () => { return TimeMaster.timeMaster != null && TimeMaster.timeMaster == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return PlayerControl.LocalPlayer.CanMove; },
+        //     () =>
+        //     {
+        //         timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
+        //         timeMasterShieldButton.isEffectActive = false;
+        //         timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+        //     },
+        //     TimeMaster.getButtonSprite(),
+        //     ButtonOffset.LowerRight,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.F,
+        //     true,
+        //     TimeMaster.shieldDuration,
+        //     () =>
+        //     {
+        //         timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
+        //     }
+        // );
 
         // Medic Shield
         medicShieldButton = new CustomButton(

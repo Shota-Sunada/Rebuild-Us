@@ -773,10 +773,10 @@ public static class Helpers
         }
 
         // Block Time Master with time shield kill
-        else if (TimeMaster.shieldActive && TimeMaster.timeMaster != null && TimeMaster.timeMaster == target)
+        else if (TimeMaster.shieldActive && target.isRole(RoleId.TimeMaster))
         {
             if (!blockRewind)
-            { // Only rewind the attempt was not called because a meeting startet
+            { // Only rewind the attempt was not called because a meeting started
                 using var writer = RPCProcedure.SendRPC(CustomRPC.TimeMasterRewindTime);
                 RPCProcedure.timeMasterRewindTime();
             }
