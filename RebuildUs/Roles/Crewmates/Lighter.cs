@@ -26,8 +26,8 @@ public class Lighter : RoleBase<Lighter>
     public override void OnKill(PlayerControl target) { }
     public override void OnDeath(PlayerControl killer = null) { }
     public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
-    public override void MakeButtons(HudManager hm)    {    }
-    public override void SetButtonCooldowns()    {    }
+    public override void MakeButtons(HudManager hm) { }
+    public override void SetButtonCooldowns() { }
 
     public override void Clear()
     {
