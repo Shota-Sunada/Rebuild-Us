@@ -550,7 +550,7 @@ public class CustomOptionHolder
         mayorMeetingButton = CustomOption.Create(705, CustomOptionType.Crewmate, "MayorMeetingButton", true, mayorSpawnRate);
         mayorMaxRemoteMeetings = CustomOption.Create(706, CustomOptionType.Crewmate, "MayorMaxRemoteMeetings", 1f, 1f, 5f, 1f, mayorMeetingButton, unitType: UnitType.UnitTimes);
 
-        engineerSpawnRate = new CustomRoleOption(710, 711, CustomOptionType.Crewmate, ("Engineer", Engineer.color), 1);
+        engineerSpawnRate = new CustomRoleOption(710, 711, CustomOptionType.Crewmate, ("Engineer", Engineer.Color), 1);
         engineerNumberOfFixes = CustomOption.Create(712, CustomOptionType.Crewmate, "EngineerNumberOfFixes", 1f, 1f, 3f, 1f, engineerSpawnRate, unitType: UnitType.UnitTimes);
         engineerHighlightForImpostors = CustomOption.Create(713, CustomOptionType.Crewmate, "EngineerHighlightForImpostors", true, engineerSpawnRate);
         engineerHighlightForTeamJackal = CustomOption.Create(714, CustomOptionType.Crewmate, "EngineerHighlightForTeamJackal ", true, engineerSpawnRate);

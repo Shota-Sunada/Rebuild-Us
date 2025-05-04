@@ -258,10 +258,10 @@ public static class RPCProcedure
 
     public static void engineerUsedRepair()
     {
-        Engineer.remainingFixes--;
+        RebuildUs.Engineer.remainingFixes--;
         if (Helpers.shouldShowGhostInfo())
         {
-            Helpers.showFlash(Engineer.color, 0.5f, "Engineer Fix"); ;
+            Helpers.showFlash(RebuildUs.Engineer.color, 0.5f, "Engineer Fix"); ;
         }
     }
 

@@ -200,31 +200,31 @@ public static class RebuildUs
     //     }
     // }
 
-    public static class Engineer
-    {
-        public static PlayerControl engineer;
-        public static Color color = new Color32(0, 40, 245, byte.MaxValue);
-        private static Sprite buttonSprite;
+    // public static class Engineer
+    // {
+    //     public static PlayerControl engineer;
+    //     public static Color color = new Color32(0, 40, 245, byte.MaxValue);
+    //     private static Sprite buttonSprite;
 
-        public static int remainingFixes = 1;
-        public static bool highlightForImpostors = true;
-        public static bool highlightForTeamJackal = true;
+    //     public static int remainingFixes = 1;
+    //     public static bool highlightForImpostors = true;
+    //     public static bool highlightForTeamJackal = true;
 
-        public static Sprite getButtonSprite()
-        {
-            if (buttonSprite) return buttonSprite;
-            buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.RepairButton.png", 115f);
-            return buttonSprite;
-        }
+    //     public static Sprite getButtonSprite()
+    //     {
+    //         if (buttonSprite) return buttonSprite;
+    //         buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.RepairButton.png", 115f);
+    //         return buttonSprite;
+    //     }
 
-        public static void clearAndReload()
-        {
-            engineer = null;
-            remainingFixes = Mathf.RoundToInt(CustomOptionHolder.engineerNumberOfFixes.getFloat());
-            highlightForImpostors = CustomOptionHolder.engineerHighlightForImpostors.getBool();
-            highlightForTeamJackal = CustomOptionHolder.engineerHighlightForTeamJackal.getBool();
-        }
-    }
+    //     public static void clearAndReload()
+    //     {
+    //         engineer = null;
+    //         remainingFixes = Mathf.RoundToInt(CustomOptionHolder.engineerNumberOfFixes.getFloat());
+    //         highlightForImpostors = CustomOptionHolder.engineerHighlightForImpostors.getBool();
+    //         highlightForTeamJackal = CustomOptionHolder.engineerHighlightForTeamJackal.getBool();
+    //     }
+    // }
 
     public static class Godfather
     {
@@ -2206,10 +2206,10 @@ public static class Shifter
             if (repeat) shiftRole(player2, player1, false);
             Portalmaker.portalmaker = player1;
         }
-        else if (Engineer.engineer != null && Engineer.engineer == player2)
+        else if (RebuildUs.Engineer.engineer != null && RebuildUs.Engineer.engineer == player2)
         {
             if (repeat) shiftRole(player2, player1, false);
-            Engineer.engineer = player1;
+            RebuildUs.Engineer.engineer = player1;
         }
         else if (Sheriff.sheriff != null && Sheriff.sheriff == player2)
         {

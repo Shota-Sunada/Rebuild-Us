@@ -664,7 +664,7 @@ public static class Helpers
     public static bool roleCanUseVents(this PlayerControl player)
     {
         bool roleCouldUse = false;
-        if (Engineer.engineer != null && Engineer.engineer == player)
+        if (Engineer.exists && Engineer.allPlayers.Contains(player))
         {
             roleCouldUse = true;
         }

@@ -151,8 +151,8 @@ public static class RoleHelpers
             //     return RebuildUs.Jester.jester == player;
             // case RoleId.Mayor:
             //     return RebuildUs.Mayor.mayor == player;
-            case RoleId.Engineer:
-                return Engineer.engineer == player;
+            // case RoleId.Engineer:
+            //     return RebuildUs.Engineer.engineer == player;
             case RoleId.Godfather:
                 return Godfather.godfather == player;
             case RoleId.Mafioso:
@@ -246,9 +246,9 @@ public static class RoleHelpers
             // case RoleId.Mayor:
             //     RebuildUs.Mayor.mayor = player;
             //     break;
-            case RoleId.Engineer:
-                Engineer.engineer = player;
-                break;
+            // case RoleId.Engineer:
+            //     RebuildUs.Engineer.engineer = player;
+            //     break;
             case RoleId.Godfather:
                 Godfather.godfather = player;
                 break;
@@ -380,7 +380,7 @@ public static class RoleHelpers
         // Crewmate roles
         // if (player == RebuildUs.Mayor.mayor) RebuildUs.Mayor.clearAndReload();
         if (player == Portalmaker.portalmaker) Portalmaker.clearAndReload();
-        if (player == Engineer.engineer) Engineer.clearAndReload();
+        // if (player == RebuildUs.Engineer.engineer) RebuildUs.Engineer.clearAndReload();
         if (player == Lighter.lighter) Lighter.clearAndReload();
         if (player == Detective.detective) Detective.clearAndReload();
         if (player == TimeMaster.timeMaster) TimeMaster.clearAndReload();
@@ -446,7 +446,7 @@ public static class RoleHelpers
         }
 
         // if (player.isRole(RoleId.Mayor)) RebuildUs.Mayor.mayor = target;
-        if (player.isRole(RoleId.Engineer)) Engineer.engineer = target;
+        // if (player.isRole(RoleId.Engineer)) RebuildUs.Engineer.engineer = target;
         if (player.isRole(RoleId.Detective)) Detective.detective = target;
         if (player.isRole(RoleId.TimeMaster)) TimeMaster.timeMaster = target;
         if (player.isRole(RoleId.Medic)) Medic.medic = target;
