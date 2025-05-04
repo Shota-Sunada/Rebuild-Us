@@ -8,6 +8,7 @@ using static RebuildUs.GameHistory;
 using RebuildUs.Objects;
 
 using RebuildUs.Utilities;
+using RebuildUs.Roles;
 using UnityEngine;
 using RebuildUs.CustomGameModes;
 using static UnityEngine.GraphicsBuffer;
@@ -1479,7 +1480,7 @@ public static class ExilePlayerPatch
         if (Lawyer.lawyer != null && __instance == Lawyer.target)
         {
             PlayerControl lawyer = Lawyer.lawyer;
-            if (AmongUsClient.Instance.AmHost && ((Lawyer.target != Jester.jester && !Lawyer.isProsecutor) || Lawyer.targetWasGuessed))
+            if (AmongUsClient.Instance.AmHost && ((Lawyer.target.isRole(RoleId.Jester) && !Lawyer.isProsecutor) || Lawyer.targetWasGuessed))
             {
                 using var writer = RPCProcedure.SendRPC(CustomRPC.LawyerPromotesToPursuer);
                 RPCProcedure.lawyerPromotesToPursuer();

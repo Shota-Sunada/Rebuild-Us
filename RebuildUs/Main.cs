@@ -5,6 +5,7 @@ global using Il2CppInterop.Runtime.InteropTypes.Arrays;
 global using Il2CppInterop.Runtime.Injection;
 
 global using RebuildUs.Enums;
+global using RebuildUs.Roles;
 
 using BepInEx;
 using BepInEx.Configuration;

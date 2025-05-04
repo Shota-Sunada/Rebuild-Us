@@ -75,6 +75,7 @@ public class CustomOptionHolder
     public static CustomOption jesterCanCallEmergency;
     public static CustomOption jesterCanSabotage;
     public static CustomOption jesterHasImpostorVision;
+    public static CustomOption jesterWinEveryone;
 
     public static CustomOption arsonistSpawnRate;
     public static CustomOption arsonistCooldown;
@@ -492,10 +493,11 @@ public class CustomOptionHolder
         // guesserSpawnBothRate = CustomOption.Create(317, CustomOptionType.Neutral, "Both Guesser Spawn Rate", rates, guesserSpawnRate);
         // guesserCantGuessSnitchIfTaksDone = CustomOption.Create(318, CustomOptionType.Neutral, "Guesser Can't Guess Snitch When Tasks Completed", true, guesserSpawnRate);
 
-        jesterSpawnRate = new CustomRoleOption(500, 501, CustomOptionType.Neutral, ("Jester", Jester.color), 1);
+        jesterSpawnRate = new CustomRoleOption(500, 501, CustomOptionType.Neutral, ("Jester", RebuildPalette.JesterPink), 1);
         jesterCanCallEmergency = CustomOption.Create(502, CustomOptionType.Neutral, "JesterCanCallEmergency", true, jesterSpawnRate);
         jesterCanSabotage = CustomOption.Create(503, CustomOptionType.Neutral, "JesterCanSabotage", true, jesterSpawnRate);
         jesterHasImpostorVision = CustomOption.Create(504, CustomOptionType.Neutral, "JesterHasImpostorVision", false, jesterSpawnRate);
+        jesterWinEveryone = CustomOption.Create(505, CustomOptionType.Neutral, "JesterWinEveryone", false, jesterSpawnRate);
 
         arsonistSpawnRate = new CustomRoleOption(510, 511, CustomOptionType.Neutral, ("Arsonist", Arsonist.color), 1);
         arsonistCooldown = CustomOption.Create(512, CustomOptionType.Neutral, "ArsonistCooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate, unitType: UnitType.UnitSeconds);

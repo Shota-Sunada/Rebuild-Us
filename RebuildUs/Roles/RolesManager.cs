@@ -12,7 +12,9 @@ namespace RebuildUs.Roles;
 [HarmonyPatch]
 public static class RoleData
 {
-    public static Dictionary<RoleId, Type> allRoleTypes = [];
+    public static Dictionary<RoleId, Type> allRoleTypes = new() {
+        { RoleId.Jester, typeof(RoleBase< Jester>) }
+    };
 }
 
 public abstract class Role
@@ -145,8 +147,8 @@ public static class RoleHelpers
 
         switch (role)
         {
-            case RoleId.Jester:
-                return Jester.jester == player;
+            // case RoleId.Jester:
+            //     return RebuildUs.Jester.jester == player;
             case RoleId.Mayor:
                 return Mayor.mayor == player;
             case RoleId.Engineer:
@@ -238,9 +240,9 @@ public static class RoleHelpers
 
         switch (role)
         {
-            case RoleId.Jester:
-                Jester.jester = player;
-                break;
+            // case RoleId.Jester:
+            //     RebuildUs.Jester.jester = player;
+            //     break;
             case RoleId.Mayor:
                 Mayor.mayor = player;
                 break;
@@ -411,7 +413,7 @@ public static class RoleHelpers
         if (player == Yoyo.yoyo) Yoyo.clearAndReload();
 
         // Other roles
-        if (player == Jester.jester) Jester.clearAndReload();
+        // if (player == RebuildUs.Jester.jester) RebuildUs.Jester.clearAndReload();
         if (player == Arsonist.arsonist) Arsonist.clearAndReload();
         if (Guesser.isGuesser(player.PlayerId)) Guesser.clear(player.PlayerId);
         if (player == Jackal.jackal)
@@ -471,7 +473,7 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Mini)) Mini.mini = target;
         if (player.isRole(RoleId.EvilGuesser)) Guesser.evilGuesser = target;
         if (player.isRole(RoleId.NiceGuesser)) Guesser.niceGuesser = target;
-        if (player.isRole(RoleId.Jester)) Jester.jester = target;
+        // if (player.isRole(RoleId.Jester)) RebuildUs.Jester.jester = target;
         if (player.isRole(RoleId.Arsonist)) Arsonist.arsonist = target;
         if (player.isRole(RoleId.Jackal)) Jackal.jackal = target;
         if (player.isRole(RoleId.Sidekick)) Sidekick.sidekick = target;

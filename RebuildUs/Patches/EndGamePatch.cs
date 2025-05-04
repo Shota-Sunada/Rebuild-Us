@@ -10,6 +10,7 @@ using System.Text;
 using RebuildUs.Utilities;
 using RebuildUs.CustomGameModes;
 using static RebuildUs.GameHistory;
+using RebuildUs.Roles;
 
 namespace RebuildUs.Patches;
 
@@ -89,9 +90,8 @@ public static class OnGameEndPatch
             });
         }
 
-        // Remove Jester, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
+        // Remove Jester, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be re-added)
         var notWinners = new List<PlayerControl>();
-        if (Jester.jester != null) notWinners.Add(Jester.jester);
         if (Sidekick.sidekick != null) notWinners.Add(Sidekick.sidekick);
         if (Jackal.jackal != null) notWinners.Add(Jackal.jackal);
         if (Arsonist.arsonist != null) notWinners.Add(Arsonist.arsonist);
@@ -102,6 +102,8 @@ public static class OnGameEndPatch
 
         notWinners.AddRange(Jackal.formerJackals);
 
+        notWinners.AddRange(Jester.allPlayers);
+
         var winnersToRemove = new List<CachedPlayerData>();
         foreach (CachedPlayerData winner in EndGameResult.CachedWinners.GetFastEnumerator())
         {
@@ -109,7 +111,7 @@ public static class OnGameEndPatch
         }
         foreach (var winner in winnersToRemove) EndGameResult.CachedWinners.Remove(winner);
 
-        bool jesterWin = Jester.jester != null && gameOverReason == (GameOverReason)CustomGameOverReason.JesterWin;
+        bool jesterWin = Jester.exists && gameOverReason == (GameOverReason)CustomGameOverReason.JesterWin;
         bool arsonistWin = Arsonist.arsonist != null && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
         bool miniLose = Mini.mini != null && gameOverReason == (GameOverReason)CustomGameOverReason.MiniLose;
         bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (GameManager.Instance.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
@@ -134,10 +136,16 @@ public static class OnGameEndPatch
         // Jester win
         else if (jesterWin)
         {
-            EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            var wpd = new CachedPlayerData(Jester.jester.Data);
-            EndGameResult.CachedWinners.Add(wpd);
-            AdditionalTempData.winCondition = WinCondition.JesterWin;
+            foreach (var jester in Jester.players)
+            {
+                EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
+                if (jester.isWin || Jester.jesterWinEveryone)
+                {
+                    var wpd = new CachedPlayerData(jester.player.Data);
+                    EndGameResult.CachedWinners.Add(wpd);
+                }
+                AdditionalTempData.winCondition = WinCondition.JesterWin;
+            }
         }
 
         // Arsonist win
@@ -182,7 +190,7 @@ public static class OnGameEndPatch
                         EndGameResult.CachedWinners.Add(new CachedPlayerData(p.Data));
                     else if (p == Pursuer.pursuer && !Pursuer.pursuer.Data.IsDead)
                         EndGameResult.CachedWinners.Add(new CachedPlayerData(p.Data));
-                    else if (p != Jester.jester && p != Jackal.jackal && p != Sidekick.sidekick && p != Arsonist.arsonist && p != Vulture.vulture && !Jackal.formerJackals.Contains(p) && !p.Data.Role.IsImpostor)
+                    else if (!p.isRole(RoleId.Jester) && p != Jackal.jackal && p != Sidekick.sidekick && p != Arsonist.arsonist && p != Vulture.vulture && !Jackal.formerJackals.Contains(p) && !p.Data.Role.IsImpostor)
                         EndGameResult.CachedWinners.Add(new CachedPlayerData(p.Data));
                 }
             }
@@ -221,7 +229,7 @@ public static class OnGameEndPatch
         }
 
         // Possible Additional winner: Lawyer
-        if (Lawyer.lawyer != null && Lawyer.target != null && (!Lawyer.target.Data.IsDead || Lawyer.target == Jester.jester) && !Pursuer.notAckedExiled && !Lawyer.isProsecutor)
+        if (Lawyer.lawyer != null && Lawyer.target != null && (!Lawyer.target.Data.IsDead || Lawyer.target.isRole(RoleId.Jester)) && !Pursuer.notAckedExiled && !Lawyer.isProsecutor)
         {
             CachedPlayerData winningClient = null;
             foreach (CachedPlayerData winner in EndGameResult.CachedWinners.GetFastEnumerator())
@@ -317,7 +325,7 @@ public class EndGameManagerSetUpPatch
         if (AdditionalTempData.winCondition == WinCondition.JesterWin)
         {
             textRenderer.text = "Jester Wins";
-            textRenderer.color = Jester.color;
+            textRenderer.color = RebuildPalette.JesterPink;
         }
         else if (AdditionalTempData.winCondition == WinCondition.ArsonistWin)
         {

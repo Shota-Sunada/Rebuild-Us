@@ -8,6 +8,7 @@ using System;
 
 using RebuildUs.Utilities;
 using UnityEngine;
+using RebuildUs.Roles;
 
 namespace RebuildUs.Patches;
 
@@ -191,9 +192,14 @@ class ExileControllerWrapUpPatch
             Mini.triggerMiniLose = true;
         }
         // Jester win condition
-        else if (exiled != null && Jester.jester != null && Jester.jester.PlayerId == exiled.PlayerId)
+        else if (exiled != null && Jester.exists && exiled.isRole(RoleId.Jester))
         {
             Jester.triggerJesterWin = true;
+            if (Jester.jesterWinEveryone)
+            {
+                var jester = Jester.players.FirstOrDefault(x => x.player.PlayerId == exiled.PlayerId);
+                jester.isWin = true;
+            }
         }
 
 
@@ -340,7 +346,7 @@ class ExileControllerMessagePatch
                 // Hide number of remaining impostors on Jester win
                 if (id == StringNames.ImpostorsRemainP || id == StringNames.ImpostorsRemainS)
                 {
-                    if (Jester.jester != null && player.PlayerId == Jester.jester.PlayerId) __result = "";
+                    if (Jester.exists && player.isRole(RoleId.Jester)) __result = "";
                 }
                 if (Tiebreaker.isTiebreak) __result += " (Tiebreaker)";
                 Tiebreaker.isTiebreak = false;

@@ -14,7 +14,7 @@ using System.Reflection;
 
 namespace RebuildUs.Roles;
 
-public enum ModifierType
+public enum ModifierId
 {
     Madmate = 0,
     AkujoHonmei,
@@ -27,14 +27,14 @@ public enum ModifierType
 [HarmonyPatch]
 public static class ModifierData
 {
-    public static Dictionary<ModifierType, Type> allModTypes = [];
+    public static Dictionary<ModifierId, Type> allModTypes = [];
 }
 
 public abstract class Modifier
 {
     public static List<Modifier> allModifiers = [];
     public PlayerControl player;
-    public ModifierType modId;
+    public ModifierId modifierId;
 
     public abstract void OnMeetingStart();
     public abstract void OnMeetingEnd();
@@ -42,6 +42,7 @@ public abstract class Modifier
     public abstract void OnKill(PlayerControl target);
     public abstract void OnDeath(PlayerControl killer = null);
     public abstract void HandleDisconnect(PlayerControl player, DisconnectReasons reason);
+    public abstract void Clear();
     public virtual void ResetModifier() { }
 
     public virtual string modifyNameText(string nameText) { return nameText; }
@@ -58,7 +59,7 @@ public abstract class Modifier
 public abstract class ModifierBase<T> : Modifier where T : ModifierBase<T>, new()
 {
     public static List<T> players = [];
-    public static ModifierType ModType;
+    public static ModifierId baseModifierId;
     public static List<RoleId> persistRoleChange = [];
 
     public void Init(PlayerControl player)
@@ -129,7 +130,7 @@ public abstract class ModifierBase<T> : Modifier where T : ModifierBase<T>, new(
 
         foreach (var p in players)
         {
-            if (p.player == player && p.modId == ModType && !persistRoleChange.Contains(newRole))
+            if (p.player == player && p.modifierId == baseModifierId && !persistRoleChange.Contains(newRole))
                 toRemove.Add(p);
         }
         players.RemoveAll(x => toRemove.Contains(x));
@@ -149,7 +150,7 @@ public abstract class ModifierBase<T> : Modifier where T : ModifierBase<T>, new(
 
 public static class ModifierHelpers
 {
-    public static bool hasModifier(this PlayerControl player, ModifierType mod)
+    public static bool hasModifier(this PlayerControl player, ModifierId mod)
     {
         foreach (var t in ModifierData.allModTypes)
         {
@@ -161,7 +162,7 @@ public static class ModifierHelpers
         return false;
     }
 
-    public static void addModifier(this PlayerControl player, ModifierType mod)
+    public static void addModifier(this PlayerControl player, ModifierId mod)
     {
         foreach (var t in ModifierData.allModTypes)
         {
@@ -173,7 +174,7 @@ public static class ModifierHelpers
         }
     }
 
-    public static void eraseModifier(this PlayerControl player, ModifierType mod, RoleId newRole = RoleId.NoRole)
+    public static void eraseModifier(this PlayerControl player, ModifierId mod, RoleId newRole = RoleId.NoRole)
     {
         if (hasModifier(player, mod))
         {
@@ -196,7 +197,7 @@ public static class ModifierHelpers
             t.Value.GetMethod("eraseModifier", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { player, newRole });
         }
 
-        if (player == Lovers.lover1 || player == Lovers.lover2) Lovers.clearAndReload(); // The whole Lover couple is being erased
+        if (player == global::RebuildUs.Lovers.lover1 || player == global::RebuildUs.Lovers.lover2) global::RebuildUs.Lovers.clearAndReload(); // The whole Lover couple is being erased
         if (Bait.bait.Any(x => x.PlayerId == player.PlayerId)) Bait.bait.RemoveAll(x => x.PlayerId == player.PlayerId);
         if (Bloody.bloody.Any(x => x.PlayerId == player.PlayerId)) Bloody.bloody.RemoveAll(x => x.PlayerId == player.PlayerId);
         if (AntiTeleport.antiTeleport.Any(x => x.PlayerId == player.PlayerId)) AntiTeleport.antiTeleport.RemoveAll(x => x.PlayerId == player.PlayerId);

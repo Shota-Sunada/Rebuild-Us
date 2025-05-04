@@ -237,7 +237,7 @@ class EmergencyMinigameUpdatePatch
             statusText = "The Swapper can't start an emergency meeting";
         }
         // Potentially deactivate emergency button for Jester
-        if (Jester.jester != null && Jester.jester == PlayerControl.LocalPlayer && !Jester.canCallEmergency)
+        if (Jester.exists && PlayerControl.LocalPlayer.isRole(RoleId.Jester) && !Jester.canCallEmergency)
         {
             roleCanCallEmergency = false;
             statusText = "The Jester can't start an emergency meeting";

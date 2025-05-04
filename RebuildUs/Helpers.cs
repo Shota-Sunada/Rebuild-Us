@@ -241,7 +241,7 @@ public static class Helpers
 
     public static bool hasFakeTasks(this PlayerControl player)
     {
-        return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player));
+        return player.isRole(RoleId.Jester) || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player);
     }
 
     public static bool canBeErased(this PlayerControl player)
@@ -656,22 +656,19 @@ public static class Helpers
 
     public static bool isNeutral(this PlayerControl player)
     {
-        RoleInfo roleInfo = RoleInfo.getRoleInfoForPlayer(player, false).FirstOrDefault();
-        if (roleInfo != null)
-            return roleInfo.isNeutral;
-        return false;
+        var roleInfo = RoleInfo.getRoleInfoForPlayer(player, false).FirstOrDefault();
+        return roleInfo != null && roleInfo.isNeutral;
     }
 
     public static bool isKiller(PlayerControl player)
     {
         return player.Data.Role.IsImpostor ||
             (isNeutral(player) &&
-            player != Jester.jester &&
+            !player.isRole(RoleId.Jester) &&
             player != Arsonist.arsonist &&
             player != Vulture.vulture &&
             player != Lawyer.lawyer &&
             player != Pursuer.pursuer);
-
     }
 
     public static bool isEvil(PlayerControl player)
@@ -759,7 +756,7 @@ public static class Helpers
             || ((Jackal.jackal != null && Jackal.jackal.PlayerId == player.PlayerId || Jackal.formerJackals.Any(x => x.PlayerId == player.PlayerId)) && Jackal.hasImpostorVision)
             || (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == player.PlayerId && Sidekick.hasImpostorVision)
             || (Spy.spy != null && Spy.spy.PlayerId == player.PlayerId && Spy.hasImpostorVision)
-            || (Jester.jester != null && Jester.jester.PlayerId == player.PlayerId && Jester.hasImpostorVision)
+            || (player.Object.isRole(RoleId.Jester) && Jester.hasImpostorVision)
             || (Thief.thief != null && Thief.thief.PlayerId == player.PlayerId && Thief.hasImpostorVision);
     }
 
