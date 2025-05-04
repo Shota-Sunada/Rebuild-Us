@@ -189,7 +189,7 @@ public static class OnGameEndPatch
         else if (loversWin)
         {
             // Double win for lovers, crewmates also win
-            if (EndGameResult.DidHumansWin(gameOverReason) && !Lovers.separateTeam && Lovers.anyNonKillingCouples())
+            if (GameManager.Instance.DidHumansWin(gameOverReason) && !Lovers.separateTeam && Lovers.anyNonKillingCouples())
             {
                 AdditionalTempData.winCondition = WinCondition.LoversTeamWin;
                 AdditionalTempData.additionalWinConditions.Add(WinCondition.LoversTeamWin);
