@@ -325,7 +325,7 @@ public class EndGameManagerSetUpPatch
         if (AdditionalTempData.winCondition == WinCondition.JesterWin)
         {
             textRenderer.text = "Jester Wins";
-            textRenderer.color = RebuildPalette.JesterPink;
+            textRenderer.color = Jester.Color;
         }
         else if (AdditionalTempData.winCondition == WinCondition.ArsonistWin)
         {

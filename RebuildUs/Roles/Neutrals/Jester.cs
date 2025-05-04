@@ -6,7 +6,7 @@ namespace RebuildUs.Roles;
 [HarmonyPatch]
 public class Jester : RoleBase<Jester>
 {
-    public static Color Color = RebuildPalette.JesterPink;
+    public static Color Color = new Color32(236, 98, 165, byte.MaxValue);
 
     public static bool triggerJesterWin = false;
     public bool isWin = false;

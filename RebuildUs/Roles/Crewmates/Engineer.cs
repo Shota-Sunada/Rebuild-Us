@@ -7,7 +7,7 @@ namespace RebuildUs.Roles;
 [HarmonyPatch]
 public class Engineer : RoleBase<Engineer>
 {
-    public static Color Color = RebuildPalette.EngineerBlue;
+    public static Color Color = new Color32(0, 40, 245, byte.MaxValue);
 
     private static CustomButton engineerRepairButton;
     private static Sprite buttonSprite;

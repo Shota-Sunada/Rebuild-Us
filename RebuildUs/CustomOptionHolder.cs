@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using RebuildUs.Modules;
-using RebuildUs.Roles.Crewmate;
 using UnityEngine;
 using static RebuildUs.RebuildUs;
 
@@ -492,7 +491,7 @@ public class CustomOptionHolder
         // guesserSpawnBothRate = CustomOption.Create(317, CustomOptionType.Neutral, "Both Guesser Spawn Rate", rates, guesserSpawnRate);
         // guesserCantGuessSnitchIfTaksDone = CustomOption.Create(318, CustomOptionType.Neutral, "Guesser Can't Guess Snitch When Tasks Completed", true, guesserSpawnRate);
 
-        jesterSpawnRate = new CustomRoleOption(500, 501, CustomOptionType.Neutral, ("Jester", RebuildPalette.JesterPink), 1);
+        jesterSpawnRate = new CustomRoleOption(500, 501, CustomOptionType.Neutral, ("Jester", Jester.Color), 1);
         jesterCanCallEmergency = CustomOption.Create(502, CustomOptionType.Neutral, "JesterCanCallEmergency", true, jesterSpawnRate);
         jesterCanSabotage = CustomOption.Create(503, CustomOptionType.Neutral, "JesterCanSabotage", true, jesterSpawnRate);
         jesterHasImpostorVision = CustomOption.Create(504, CustomOptionType.Neutral, "JesterHasImpostorVision", false, jesterSpawnRate);
@@ -555,7 +554,7 @@ public class CustomOptionHolder
         engineerHighlightForImpostors = CustomOption.Create(713, CustomOptionType.Crewmate, "EngineerHighlightForImpostors", true, engineerSpawnRate);
         engineerHighlightForTeamJackal = CustomOption.Create(714, CustomOptionType.Crewmate, "EngineerHighlightForTeamJackal ", true, engineerSpawnRate);
 
-        sheriffSpawnRate = new CustomRoleOption(720, 721, CustomOptionType.Crewmate, ("Sheriff", Sheriff.color), 15);
+        sheriffSpawnRate = new CustomRoleOption(720, 721, CustomOptionType.Crewmate, ("Sheriff", Sheriff.Color), 15);
         sheriffCooldown = CustomOption.Create(722, CustomOptionType.Crewmate, "SheriffCooldown", 30f, 10f, 60f, 2.5f, sheriffSpawnRate, unitType: UnitType.UnitSeconds);
         sheriffNumShots = CustomOption.Create(723, CustomOptionType.Crewmate, "SheriffNumShots", 2f, 1f, 15f, 1f, sheriffSpawnRate, unitType: UnitType.UnitTimes);
         sheriffMisfireKillsTarget = CustomOption.Create(724, CustomOptionType.Crewmate, "SheriffMisfireKillsTarget", false, sheriffSpawnRate);

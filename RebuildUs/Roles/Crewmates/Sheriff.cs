@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using RebuildUs.Localization;
 
-namespace RebuildUs.Roles.Crewmate;
+namespace RebuildUs.Roles;
 
 [HarmonyPatch]
 public class Sheriff : RoleBase<Sheriff>
@@ -12,7 +12,7 @@ public class Sheriff : RoleBase<Sheriff>
     private static CustomButton sheriffKillButton;
     public static TMP_Text sheriffNumShotsText;
 
-    public static Color color = RebuildPalette.SheriffYellow;
+    public static Color Color = new Color32(248, 205, 70, byte.MaxValue);
 
     public static float cooldown { get { return CustomOptionHolder.sheriffCooldown.getFloat(); } }
     public static int maxShots { get { return Mathf.RoundToInt(CustomOptionHolder.sheriffNumShots.getFloat()); } }

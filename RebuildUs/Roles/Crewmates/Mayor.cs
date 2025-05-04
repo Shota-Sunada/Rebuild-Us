@@ -7,7 +7,7 @@ namespace RebuildUs.Roles;
 [HarmonyPatch]
 public class Mayor : RoleBase<Mayor>
 {
-    public static Color Color = RebuildPalette.MayorGreen;
+    public static Color Color = new Color32(32, 77, 66, byte.MaxValue);
 
     public static int numVotes { get { return CustomOptionHolder.mayorNumVotes.getInt(); } }
     public static bool canSeeVoteColors { get { return CustomOptionHolder.mayorCanSeeVoteColors.getBool(); } }
