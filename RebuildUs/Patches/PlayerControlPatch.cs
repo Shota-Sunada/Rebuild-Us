@@ -1180,11 +1180,17 @@ public static class MurderPlayerPatch
         }
 
         // Seer show flash and add dead player position
-        if (Seer.seer != null && (PlayerControl.LocalPlayer == Seer.seer || Helpers.shouldShowGhostInfo()) && !Seer.seer.Data.IsDead && Seer.seer != target && Seer.mode <= 1)
+        if (Seer.exists)
         {
-            Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: "Seer Info: Someone Died");
+            foreach (var seer in Seer.players)
+            {
+                if ((PlayerControl.LocalPlayer.isRole(RoleId.Seer) || Helpers.shouldShowGhostInfo()) && !seer.player.isDead() && !target.isRole(RoleId.Seer) && Seer.mode <= 1)
+                {
+                    Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: "Seer Info: Someone Died");
+                }
+            }
+            Seer.deadBodyPositions?.Add(target.transform.position);
         }
-        if (Seer.deadBodyPositions != null) Seer.deadBodyPositions.Add(target.transform.position);
 
         // Tracker store body positions
         if (Tracker.deadBodyPositions != null) Tracker.deadBodyPositions.Add(target.transform.position);

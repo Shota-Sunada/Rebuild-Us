@@ -170,8 +170,8 @@ public static class RoleHelpers
                 return Shifter.shifter == player;
             case RoleId.Swapper:
                 return Swapper.swapper == player;
-            case RoleId.Seer:
-                return Seer.seer == player;
+            // case RoleId.Seer:
+            //     return global::RebuildUs.Seer.seer == player;
             case RoleId.Morphing:
                 return Morphing.morphing == player;
             case RoleId.Camouflager:
@@ -274,9 +274,9 @@ public static class RoleHelpers
             case RoleId.Swapper:
                 Swapper.swapper = player;
                 break;
-            case RoleId.Seer:
-                Seer.seer = player;
-                break;
+            // case RoleId.Seer:
+            //     global::RebuildUs.Seer.seer = player;
+            //     break;
             case RoleId.Morphing:
                 Morphing.morphing = player;
                 break;
@@ -387,7 +387,7 @@ public static class RoleHelpers
         // if (player == TimeMaster.timeMaster) TimeMaster.clearAndReload();
         // if (player == global::RebuildUs.Medic.medic) global::RebuildUs.Medic.clearAndReload();
         if (player.isRole(RoleId.Shifter)) Shifter.clearAndReload();
-        if (player.isRole(RoleId.Seer)) Seer.clearAndReload();
+        // if (player.isRole(RoleId.Seer)) global::RebuildUs.Seer.clearAndReload();
         if (player.isRole(RoleId.Hacker)) Hacker.clearAndReload();
         if (player.isRole(RoleId.Tracker)) Tracker.clearAndReload();
         if (player.isRole(RoleId.Snitch)) Snitch.clearAndReload();
@@ -452,7 +452,7 @@ public static class RoleHelpers
         // if (player.isRole(RoleId.TimeMaster)) TimeMaster.timeMaster = target;
         // if (player.isRole(RoleId.Medic)) global::RebuildUs.Medic.medic = target;
         if (player.isRole(RoleId.Swapper)) Swapper.swapper = target;
-        if (player.isRole(RoleId.Seer)) Seer.seer = target;
+        // if (player.isRole(RoleId.Seer)) global::RebuildUs.Seer.seer = target;
         if (player.isRole(RoleId.Hacker)) Hacker.hacker = target;
         if (player.isRole(RoleId.Tracker)) Tracker.tracker = target;
         if (player.isRole(RoleId.Snitch)) Snitch.snitch = target;

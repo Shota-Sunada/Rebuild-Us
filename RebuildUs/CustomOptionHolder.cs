@@ -590,7 +590,7 @@ public class CustomOptionHolder
         medicSetOrShowShieldAfterMeeting = CustomOption.Create(764, CustomOptionType.Crewmate, "MedicSetOrShowShieldAfterMeeting", ["Instantly", "Instantly, Visible\nAfter Meeting", "After Meeting"], medicSpawnRate);
         medicShowAttemptToMedic = CustomOption.Create(765, CustomOptionType.Crewmate, "MedicShowAttemptToMedic", false, medicSpawnRate);
 
-        seerSpawnRate = new CustomRoleOption(770, 771, CustomOptionType.Crewmate, ("Seer", Seer.color), 1);
+        seerSpawnRate = new CustomRoleOption(770, 771, CustomOptionType.Crewmate, ("Seer", Seer.Color), 1);
         seerMode = CustomOption.Create(772, CustomOptionType.Crewmate, "SeerMode", ["Show Death Flash + Souls", "Show Death Flash", "Show Souls"], seerSpawnRate);
         seerLimitSoulDuration = CustomOption.Create(773, CustomOptionType.Crewmate, "SeerLimitSoulDuration", false, seerSpawnRate);
         seerSoulDuration = CustomOption.Create(774, CustomOptionType.Crewmate, "SeerSoulDuration", 15f, 0f, 120f, 5f, seerLimitSoulDuration, unitType: UnitType.UnitSeconds);

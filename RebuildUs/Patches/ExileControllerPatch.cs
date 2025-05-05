@@ -220,7 +220,7 @@ class ExileControllerWrapUpPatch
         }
 
         // Seer spawn souls
-        if (Seer.deadBodyPositions != null && Seer.seer != null && PlayerControl.LocalPlayer == Seer.seer && (Seer.mode == 0 || Seer.mode == 2))
+        if (Seer.deadBodyPositions != null && Seer.exists && PlayerControl.LocalPlayer.isRole(RoleId.Seer) && (Seer.mode is 0 or 2))
         {
             foreach (Vector3 pos in Seer.deadBodyPositions)
             {
