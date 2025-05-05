@@ -19,10 +19,10 @@ public enum CustomRPC
     SetGameStarting,
     ShareGamemode,
     StopStart,
+    UncheckedSetTasks,
 
     // Role functionality
-
-    EngineerFixLights = 120,
+    EngineerFixLights,
     EngineerFixSubmergedOxygen,
     EngineerUsedRepair,
     CleanBody,

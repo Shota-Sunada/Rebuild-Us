@@ -101,11 +101,10 @@ public static class Helpers
 
         List<byte> taskTypeIds = generateTasks(numCommon, numShort, numLong);
 
-        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedSetTasks, Hazel.SendOption.Reliable, -1);
+        var writer = RPCProcedure.SendRPC(CustomRPC.UncheckedSetTasks);
         writer.Write(player.PlayerId);
         writer.WriteBytesAndSize(taskTypeIds.ToArray());
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
-        RPCProcedure.uncheckedSetTasks(player.PlayerId, taskTypeIds.ToArray());
+        RPCProcedure.uncheckedSetTasks(player.PlayerId, [.. taskTypeIds]);
     }
 
     public static void setSkinWithAnim(PlayerPhysics playerPhysics, string SkinId, int ColorId)

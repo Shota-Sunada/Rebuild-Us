@@ -32,6 +32,7 @@ public class CustomOptionHolder
     public static CustomOption eventKicksPerRound;
     public static CustomOption eventHeavyAge;
     public static CustomOption deadImpsBlockSabotage;
+    public static CustomOption refundVotesOnDeath;
 
     public static CustomRoleOption mafiaSpawnRate;
     public static CustomOption mafiosoCanSabotage;
@@ -388,8 +389,10 @@ public class CustomOptionHolder
         allowParallelMedBayScans = CustomOption.Create(25, CustomOptionType.General, "AllowParallelMedBayScans", false);
         shieldFirstKill = CustomOption.Create(26, CustomOptionType.General, "ShieldLastGameFirstKill", false);
         deadImpsBlockSabotage = CustomOption.Create(27, CustomOptionType.General, "BlockDeadImpostorFromSabotaging", false, null, false);
-        camsNightVision = CustomOption.Create(28, CustomOptionType.General, "CamsSwitchToNightVisionIfLightsAreOff", false, null, true, "NightVisionCams");
-        camsNoNightVisionIfImpVision = CustomOption.Create(39, CustomOptionType.General, "ImpostorVisionIgnoresNightVisionCams", false, camsNightVision, false);
+        refundVotesOnDeath = CustomOption.Create(28, CustomOptionType.General, "RefundVotesOnDeath", false);
+
+        camsNightVision = CustomOption.Create(75, CustomOptionType.General, "CamsSwitchToNightVisionIfLightsAreOff", false, null, true, "NightVisionCams");
+        camsNoNightVisionIfImpVision = CustomOption.Create(76, CustomOptionType.General, "ImpostorVisionIgnoresNightVisionCams", false, camsNightVision, false);
 
         dynamicMap = CustomOption.Create(80, CustomOptionType.General, "PlayOnARandomMap", false, null, true, "Random Maps");
         dynamicMapEnableSkeld = CustomOption.Create(81, CustomOptionType.General, "Skeld", rates, dynamicMap, false);

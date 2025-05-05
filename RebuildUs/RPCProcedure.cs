@@ -1115,6 +1115,14 @@ public static class RPCProcedure
     {
         Shifter.isNeutral = isNeutral;
     }
+
+    public static void uncheckedSetTasks(byte playerId, byte[] taskTypeIds)
+    {
+        var player = Helpers.playerById(playerId);
+        player.clearAllTasks();
+
+        player.Data.SetTasks(taskTypeIds);
+    }
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -1454,5 +1462,10 @@ public class RPCSender(uint netId, CustomRPC callId, int targetId = -1) : IDispo
     public void Write(string value)
     {
         writer.Write(value);
+    }
+
+    public void WriteBytesAndSize(Il2CppStructArray<byte> bytes)
+    {
+        writer.WriteBytesAndSize(bytes);
     }
 }
