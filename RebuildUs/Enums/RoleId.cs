@@ -16,7 +16,7 @@ public enum RoleId : byte
     Medic,
     Swapper,
     Seer,
-    Morphling,
+    Morphing,
     Camouflager,
     Hacker,
     Tracker,

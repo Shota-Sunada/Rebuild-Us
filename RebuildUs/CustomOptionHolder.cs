@@ -331,8 +331,11 @@ public class CustomOptionHolder
 
     public static CustomOption modifierArmored;
 
-    public static CustomOption modifierShifter;
-    public static CustomOption modifierShifterShiftsMedicShield;
+    public static CustomOption shifterSpawnRate;
+    public static CustomOption shifterShiftsMedicShield;
+    public static CustomOption shifterIsNeutralRate;
+    public static CustomOption shifterShiftsModifiers;
+    public static CustomOption shifterPastShifters;
 
     public static CustomOption maxNumberOfMeetings;
     public static CustomOption blockSkippingInEmergencyMeetings;
@@ -648,6 +651,12 @@ public class CustomOptionHolder
         trapperInfoType = CustomOption.Create(867, CustomOptionType.Crewmate, "TrapperInfoType", ["Role", "Good/Evil Role", "Name"], trapperSpawnRate);
         trapperTrapDuration = CustomOption.Create(868, CustomOptionType.Crewmate, "TrapperTrapDuration", 5f, 1f, 15f, 1f, trapperSpawnRate, unitType: UnitType.UnitSeconds);
 
+        shifterSpawnRate = new CustomRoleOption(880, 881, CustomOptionType.Crewmate, ("Shifter", Shifter.Color), 1);
+        shifterShiftsMedicShield = CustomOption.Create(882, CustomOptionType.Crewmate, "ShifterShiftsMedicShield", false, shifterSpawnRate);
+        shifterIsNeutralRate = CustomOption.Create(72, CustomOptionType.Crewmate, "ShifterIsNeutralRate", rates, shifterSpawnRate);
+        shifterShiftsModifiers = CustomOption.Create(71, CustomOptionType.Crewmate, "ShifterShiftsModifiers", false, shifterSpawnRate);
+        shifterPastShifters = CustomOption.Create(73, CustomOptionType.Crewmate, "ShifterPastShifters", false, shifterSpawnRate);
+
         #endregion
 
         #region Modifiers
@@ -700,9 +709,6 @@ public class CustomOptionHolder
         modifierChameleonMinVisibility = CustomOption.Create(1304, CustomOptionType.Modifier, "ModifierChameleonMinVisibility", ["0%", "10%", "20%", "30%", "40%", "50%"], modifierChameleon);
 
         modifierArmored = new CustomRoleOption(1310, 1311, CustomOptionType.Modifier, ("Armored", Color.yellow), 1);
-
-        modifierShifter = new CustomRoleOption(1320, 1321, CustomOptionType.Modifier, ("Shifter", Color.yellow), 1);
-        modifierShifterShiftsMedicShield = CustomOption.Create(1322, CustomOptionType.Modifier, "ModifierShifterShiftsMedicShield", false, modifierShifter);
 
         #endregion
 

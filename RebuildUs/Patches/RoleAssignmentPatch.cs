@@ -131,7 +131,7 @@ class RoleManagerSelectRolesPatch
         Dictionary<byte, int> neutralSettings = [];
         Dictionary<byte, int> crewSettings = [];
 
-        impSettings.Add((byte)RoleId.Morphling, CustomOptionHolder.morphingSpawnRate.getSelection());
+        impSettings.Add((byte)RoleId.Morphing, CustomOptionHolder.morphingSpawnRate.getSelection());
         impSettings.Add((byte)RoleId.Camouflager, CustomOptionHolder.camouflagerSpawnRate.getSelection());
         impSettings.Add((byte)RoleId.Vampire, CustomOptionHolder.vampireSpawnRate.getSelection());
         impSettings.Add((byte)RoleId.Eraser, CustomOptionHolder.eraserSpawnRate.getSelection());
@@ -706,7 +706,7 @@ class RoleManagerSelectRolesPatch
                 selection = CustomOptionHolder.modifierArmored.getSelection();
                 break;
             case RoleId.Shifter:
-                selection = CustomOptionHolder.modifierShifter.getSelection();
+                selection = CustomOptionHolder.shifterSpawnRate.getSelection();
                 break;
         }
 

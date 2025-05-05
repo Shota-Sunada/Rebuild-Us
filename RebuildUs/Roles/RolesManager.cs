@@ -172,7 +172,7 @@ public static class RoleHelpers
                 return Swapper.swapper == player;
             case RoleId.Seer:
                 return Seer.seer == player;
-            case RoleId.Morphling:
+            case RoleId.Morphing:
                 return Morphing.morphing == player;
             case RoleId.Camouflager:
                 return Camouflager.camouflager == player;
@@ -277,7 +277,7 @@ public static class RoleHelpers
             case RoleId.Seer:
                 Seer.seer = player;
                 break;
-            case RoleId.Morphling:
+            case RoleId.Morphing:
                 Morphing.morphing = player;
                 break;
             case RoleId.Camouflager:
@@ -380,38 +380,38 @@ public static class RoleHelpers
 
         // Crewmate roles
         // if (player == RebuildUs.Mayor.mayor) RebuildUs.Mayor.clearAndReload();
-        if (player == Portalmaker.portalmaker) Portalmaker.clearAndReload();
+        if (player.isRole(RoleId.Portalmaker)) Portalmaker.clearAndReload();
         // if (player == RebuildUs.Engineer.engineer) RebuildUs.Engineer.clearAndReload();
         // if (player == RebuildUs.Lighter.lighter) RebuildUs.Lighter.clearAndReload();
         // if (player == RebuildUs.Detective.detective) RebuildUs.Detective.clearAndReload();
         // if (player == TimeMaster.timeMaster) TimeMaster.clearAndReload();
         // if (player == global::RebuildUs.Medic.medic) global::RebuildUs.Medic.clearAndReload();
-        if (player == Shifter.shifter) Shifter.clearAndReload();
-        if (player == Seer.seer) Seer.clearAndReload();
-        if (player == Hacker.hacker) Hacker.clearAndReload();
-        if (player == Tracker.tracker) Tracker.clearAndReload();
-        if (player == Snitch.snitch) Snitch.clearAndReload();
-        if (player == Swapper.swapper) Swapper.clearAndReload();
-        if (player == Spy.spy) Spy.clearAndReload();
-        if (player == SecurityGuard.securityGuard) SecurityGuard.clearAndReload();
-        if (player == Medium.medium) Medium.clearAndReload();
-        if (player == Trapper.trapper) Trapper.clearAndReload();
+        if (player.isRole(RoleId.Shifter)) Shifter.clearAndReload();
+        if (player.isRole(RoleId.Seer)) Seer.clearAndReload();
+        if (player.isRole(RoleId.Hacker)) Hacker.clearAndReload();
+        if (player.isRole(RoleId.Tracker)) Tracker.clearAndReload();
+        if (player.isRole(RoleId.Snitch)) Snitch.clearAndReload();
+        if (player.isRole(RoleId.Swapper)) Swapper.clearAndReload();
+        if (player.isRole(RoleId.Spy)) Spy.clearAndReload();
+        if (player.isRole(RoleId.SecurityGuard)) SecurityGuard.clearAndReload();
+        if (player.isRole(RoleId.Medium)) Medium.clearAndReload();
+        if (player.isRole(RoleId.Trapper)) Trapper.clearAndReload();
 
         // Impostor roles
-        if (player == Morphing.morphing) Morphing.clearAndReload();
-        if (player == Camouflager.camouflager) Camouflager.clearAndReload();
-        if (player == Godfather.godfather) Godfather.clearAndReload();
-        if (player == Mafioso.mafioso) Mafioso.clearAndReload();
-        if (player == Janitor.janitor) Janitor.clearAndReload();
-        if (player == Vampire.vampire) Vampire.clearAndReload();
-        if (player == Eraser.eraser) Eraser.clearAndReload();
-        if (player == Trickster.trickster) Trickster.clearAndReload();
-        if (player == Cleaner.cleaner) Cleaner.clearAndReload();
-        if (player == Warlock.warlock) Warlock.clearAndReload();
-        if (player == Witch.witch) Witch.clearAndReload();
-        if (player == Ninja.ninja) Ninja.clearAndReload();
-        if (player == Bomber.bomber) Bomber.clearAndReload();
-        if (player == Yoyo.yoyo) Yoyo.clearAndReload();
+        if (player.isRole(RoleId.Morphing)) Morphing.clearAndReload();
+        if (player.isRole(RoleId.Camouflager)) Camouflager.clearAndReload();
+        if (player.isRole(RoleId.Godfather)) Godfather.clearAndReload();
+        if (player.isRole(RoleId.Mafioso)) Mafioso.clearAndReload();
+        if (player.isRole(RoleId.Janitor)) Janitor.clearAndReload();
+        if (player.isRole(RoleId.Vampire)) Vampire.clearAndReload();
+        if (player.isRole(RoleId.Eraser)) Eraser.clearAndReload();
+        if (player.isRole(RoleId.Trickster)) Trickster.clearAndReload();
+        if (player.isRole(RoleId.Cleaner)) Cleaner.clearAndReload();
+        if (player.isRole(RoleId.Warlock)) Warlock.clearAndReload();
+        if (player.isRole(RoleId.Witch)) Witch.clearAndReload();
+        if (player.isRole(RoleId.Ninja)) Ninja.clearAndReload();
+        if (player.isRole(RoleId.Bomber)) Bomber.clearAndReload();
+        if (player.isRole(RoleId.Yoyo)) Yoyo.clearAndReload();
 
         // Other roles
         // if (player == RebuildUs.Jester.jester) RebuildUs.Jester.clearAndReload();
@@ -462,7 +462,7 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Godfather)) Godfather.godfather = target;
         if (player.isRole(RoleId.Mafioso)) Mafioso.mafioso = target;
         if (player.isRole(RoleId.Janitor)) Janitor.janitor = target;
-        if (player.isRole(RoleId.Morphling)) Morphing.morphing = target;
+        if (player.isRole(RoleId.Morphing)) Morphing.morphing = target;
         if (player.isRole(RoleId.Camouflager)) Camouflager.camouflager = target;
         if (player.isRole(RoleId.Vampire)) Vampire.vampire = target;
         if (player.isRole(RoleId.Eraser)) Eraser.eraser = target;

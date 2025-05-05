@@ -48,7 +48,7 @@ public class RoleInfo
     public static RoleInfo godfather = new("Godfather", Godfather.color, "Kill all Crewmates", "Kill all Crewmates", RoleId.Godfather);
     public static RoleInfo mafioso = new("Mafioso", Mafioso.color, "Work with the <color=#FF1919FF>Mafia</color> to kill the Crewmates", "Kill all Crewmates", RoleId.Mafioso);
     public static RoleInfo janitor = new("Janitor", Janitor.color, "Work with the <color=#FF1919FF>Mafia</color> by hiding dead bodies", "Hide dead bodies", RoleId.Janitor);
-    public static RoleInfo morphling = new("Morphling", Morphing.color, "Change your look to not get caught", "Change your look", RoleId.Morphling);
+    public static RoleInfo morphling = new("Morphling", Morphing.color, "Change your look to not get caught", "Change your look", RoleId.Morphing);
     public static RoleInfo camouflager = new("Camouflager", Camouflager.color, "Camouflage and kill the Crewmates", "Hide among others", RoleId.Camouflager);
     public static RoleInfo vampire = new("Vampire", Vampire.color, "Kill the Crewmates with your bites", "Bite your enemies", RoleId.Vampire);
     public static RoleInfo eraser = new("Eraser", Eraser.color, "Kill the Crewmates and erase their roles", "Erase the roles of your enemies", RoleId.Eraser);
