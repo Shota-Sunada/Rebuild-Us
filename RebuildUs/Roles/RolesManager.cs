@@ -26,6 +26,7 @@ public abstract class Role
     public abstract void OnMeetingStart();
     public abstract void OnMeetingEnd();
     public abstract void FixedUpdate();
+    public abstract void HudUpdate();
     public abstract void OnKill(PlayerControl target);
     public abstract void OnDeath(PlayerControl killer = null);
     public abstract void HandleDisconnect(PlayerControl player, DisconnectReasons reason);
@@ -96,7 +97,7 @@ public abstract class RoleBase<T> : Role where T : RoleBase<T>, new()
 
     public static T getRole(PlayerControl player = null)
     {
-        player = player ?? PlayerControl.LocalPlayer;
+        player ??= PlayerControl.LocalPlayer;
         return players.FirstOrDefault(x => x.player == player);
     }
 
@@ -163,8 +164,8 @@ public static class RoleHelpers
             //     return RebuildUs.Detective.detective == player;
             // case RoleId.TimeMaster:
             //     return TimeMaster.timeMaster == player;
-            case RoleId.Medic:
-                return Medic.medic == player;
+            // case RoleId.Medic:
+            //     return Medic.medic == player;
             case RoleId.Shifter:
                 return Shifter.shifter == player;
             case RoleId.Swapper:
@@ -264,9 +265,9 @@ public static class RoleHelpers
             // case RoleId.TimeMaster:
             //     TimeMaster.timeMaster = player;
             //     break;
-            case RoleId.Medic:
-                Medic.medic = player;
-                break;
+            // case RoleId.Medic:
+            //     Medic.medic = player;
+            //     break;
             case RoleId.Shifter:
                 Shifter.shifter = player;
                 break;
@@ -384,7 +385,7 @@ public static class RoleHelpers
         // if (player == RebuildUs.Lighter.lighter) RebuildUs.Lighter.clearAndReload();
         // if (player == RebuildUs.Detective.detective) RebuildUs.Detective.clearAndReload();
         // if (player == TimeMaster.timeMaster) TimeMaster.clearAndReload();
-        if (player == Medic.medic) Medic.clearAndReload();
+        // if (player == global::RebuildUs.Medic.medic) global::RebuildUs.Medic.clearAndReload();
         if (player == Shifter.shifter) Shifter.clearAndReload();
         if (player == Seer.seer) Seer.clearAndReload();
         if (player == Hacker.hacker) Hacker.clearAndReload();
@@ -449,7 +450,7 @@ public static class RoleHelpers
         // if (player.isRole(RoleId.Engineer)) RebuildUs.Engineer.engineer = target;
         // if (player.isRole(RoleId.Detective)) RebuildUs.Detective.detective = target;
         // if (player.isRole(RoleId.TimeMaster)) TimeMaster.timeMaster = target;
-        if (player.isRole(RoleId.Medic)) Medic.medic = target;
+        // if (player.isRole(RoleId.Medic)) global::RebuildUs.Medic.medic = target;
         if (player.isRole(RoleId.Swapper)) Swapper.swapper = target;
         if (player.isRole(RoleId.Seer)) Seer.seer = target;
         if (player.isRole(RoleId.Hacker)) Hacker.hacker = target;

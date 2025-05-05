@@ -27,6 +27,7 @@ public class TimeMaster : RoleBase<TimeMaster>
 
     public override void OnMeetingStart() { }
     public override void OnMeetingEnd() { }
+    public override void HudUpdate() {}
     public override void FixedUpdate()
     {
         if (isRewinding)

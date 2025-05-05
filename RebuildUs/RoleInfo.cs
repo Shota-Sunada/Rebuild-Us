@@ -58,7 +58,7 @@ public class RoleInfo
     public static RoleInfo bountyHunter = new("Bounty Hunter", BountyHunter.color, "Hunt your bounty down", "Hunt your bounty down", RoleId.BountyHunter);
     public static RoleInfo detective = new("Detective", Detective.Color, "Find the <color=#FF1919FF>Impostors</color> by examining footprints", "Examine footprints", RoleId.Detective);
     public static RoleInfo timeMaster = new("Time Master", TimeMaster.Color, "Save yourself with your time shield", "Use your time shield", RoleId.TimeMaster);
-    public static RoleInfo medic = new("Medic", Medic.color, "Protect someone with your shield", "Protect other players", RoleId.Medic);
+    public static RoleInfo medic = new("Medic", Medic.Color, "Protect someone with your shield", "Protect other players", RoleId.Medic);
     public static RoleInfo swapper = new("Swapper", Swapper.color, "Swap votes to exile the <color=#FF1919FF>Impostors</color>", "Swap votes", RoleId.Swapper);
     public static RoleInfo seer = new("Seer", Seer.color, "You will see players die", "You will see players die", RoleId.Seer);
     public static RoleInfo hacker = new("Hacker", Hacker.color, "Hack systems to find the <color=#FF1919FF>Impostors</color>", "Hack to find the Impostors", RoleId.Hacker);
@@ -218,7 +218,7 @@ public class RoleInfo
         if (p == Yoyo.yoyo) infos.Add(yoyo);
         if (p.isRole(RoleId.Detective)) infos.Add(detective);
         if (p.isRole(RoleId.TimeMaster)) infos.Add(timeMaster);
-        if (p == Medic.medic) infos.Add(medic);
+        if (p.isRole(RoleId.Medic)) infos.Add(medic);
         if (p == Swapper.swapper) infos.Add(swapper);
         if (p == Seer.seer) infos.Add(seer);
         if (p == Hacker.hacker) infos.Add(hacker);

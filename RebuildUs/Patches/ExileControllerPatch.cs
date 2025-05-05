@@ -18,15 +18,21 @@ class ExileControllerBeginPatch
 {
     public static void Prefix(ExileController __instance, [HarmonyArgument(0)] ref NetworkedPlayerInfo exiled)
     {
-
         // Medic shield
-        if (Medic.medic != null && AmongUsClient.Instance.AmHost && Medic.futureShielded != null && !Medic.medic.Data.IsDead)
-        { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
-            using var writer = RPCProcedure.SendRPC(CustomRPC.MedicSetShielded);
-            writer.Write(Medic.futureShielded.PlayerId);
-            RPCProcedure.medicSetShielded(Medic.futureShielded.PlayerId);
+        if (Medic.exists)
+        {
+            foreach (var medic in Medic.players)
+            {
+                if (medic.player && AmongUsClient.Instance.AmHost && medic.futureShielded != null && !medic.player.Data.IsDead)
+                { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.MedicSetShielded);
+                    writer.Write(medic.player.PlayerId);
+                    writer.Write(medic.futureShielded.PlayerId);
+                    RPCProcedure.medicSetShielded(medic.player.PlayerId, medic.futureShielded.PlayerId);
+                }
+                if (medic.usedShield) medic.meetingAfterShielding = true;  // Has to be after the setting of the shield
+            }
         }
-        if (Medic.usedShield) Medic.meetingAfterShielding = true;  // Has to be after the setting of the shield
 
         // Shifter shift
         if (Shifter.shifter != null && AmongUsClient.Instance.AmHost && Shifter.futureShift != null)

@@ -78,7 +78,7 @@ public static class PlayerControlFixedUpdatePatch
 
             bool isMorphedMorphling = target == Morphing.morphing && Morphing.morphTarget != null && Morphing.morphTimer > 0f;
             bool hasVisibleShield = false;
-            Color color = Medic.shieldedColor;
+            Color color = Medic.ShieldedColor;
             if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && Medic.shieldVisible(target))
                 hasVisibleShield = true;
 
@@ -122,9 +122,6 @@ public static class PlayerControlFixedUpdatePatch
 
     static void medicSetTarget()
     {
-        if (Medic.medic == null || Medic.medic != PlayerControl.LocalPlayer) return;
-        Medic.currentTarget = setTarget();
-        if (!Medic.usedShield) setPlayerOutline(Medic.currentTarget, Medic.shieldedColor);
     }
 
     static void shifterSetTarget()
@@ -1082,7 +1079,7 @@ class BodyReportPatch
     static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] NetworkedPlayerInfo target)
     {
         // Medic or Detective report
-        bool isMedicReport = Medic.medic != null && Medic.medic == PlayerControl.LocalPlayer && __instance.PlayerId == Medic.medic.PlayerId;
+        bool isMedicReport = Medic.exists && PlayerControl.LocalPlayer.isRole(RoleId.Medic) && __instance.isRole(RoleId.Medic);
         bool isDetectiveReport = Detective.exists && PlayerControl.LocalPlayer.isRole(RoleId.Detective) && Detective.allPlayers.Contains(__instance);
         if (isMedicReport || isDetectiveReport)
         {

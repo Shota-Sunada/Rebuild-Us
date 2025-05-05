@@ -164,7 +164,6 @@ public class CustomOptionHolder
     public static CustomOption medicShowAttemptToShielded;
     public static CustomOption medicSetOrShowShieldAfterMeeting;
     public static CustomOption medicShowAttemptToMedic;
-    public static CustomOption medicSetShieldAfterMeeting;
 
     public static CustomOption swapperSpawnRate;
     public static CustomOption swapperCanCallEmergency;
@@ -579,7 +578,7 @@ public class CustomOptionHolder
         timeMasterRewindTime = CustomOption.Create(753, CustomOptionType.Crewmate, "TimeMasterRewindTime", 3f, 1f, 10f, 1f, timeMasterSpawnRate, unitType: UnitType.UnitSeconds);
         timeMasterShieldDuration = CustomOption.Create(754, CustomOptionType.Crewmate, "TimeMasterShieldDuration", 3f, 1f, 20f, 1f, timeMasterSpawnRate, unitType: UnitType.UnitSeconds);
 
-        medicSpawnRate = new CustomRoleOption(760, 761, CustomOptionType.Crewmate, ("Medic", Medic.color), 1);
+        medicSpawnRate = new CustomRoleOption(760, 761, CustomOptionType.Crewmate, ("Medic", Medic.Color), 1);
         medicShowShielded = CustomOption.Create(762, CustomOptionType.Crewmate, "MedicShowShielded", ["Everyone", "Shielded + Medic", "Medic"], medicSpawnRate);
         medicShowAttemptToShielded = CustomOption.Create(763, CustomOptionType.Crewmate, "MedicShowAttemptToShielded", false, medicSpawnRate);
         medicSetOrShowShieldAfterMeeting = CustomOption.Create(764, CustomOptionType.Crewmate, "MedicSetOrShowShieldAfterMeeting", ["Instantly", "Instantly, Visible\nAfter Meeting", "After Meeting"], medicSpawnRate);

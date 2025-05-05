@@ -347,20 +347,26 @@ public static class RPCProcedure
         })));
     }
 
-    public static void medicSetShielded(byte shieldedId)
+    public static void medicSetShielded(byte medicId, byte shieldedId)
     {
-        Medic.usedShield = true;
-        Medic.shielded = Helpers.playerById(shieldedId);
-        Medic.futureShielded = null;
+        var player = Helpers.playerById(medicId);
+        var medic = Medic.getRole(player);
+
+        medic.usedShield = true;
+        medic.shielded = Helpers.playerById(shieldedId);
+        medic.futureShielded = null;
     }
 
-    public static void shieldedMurderAttempt()
+    public static void shieldedMurderAttempt(byte medicId)
     {
-        if (Medic.shielded == null || Medic.medic == null) return;
+        var player = Helpers.playerById(medicId);
+        var medic = Medic.getRole(player);
 
-        bool isShieldedAndShow = Medic.shielded == PlayerControl.LocalPlayer && Medic.showAttemptToShielded;
-        isShieldedAndShow = isShieldedAndShow && (Medic.meetingAfterShielding || !Medic.showShieldAfterMeeting);  // Dont show attempt, if shield is not shown yet
-        bool isMedicAndShow = Medic.medic == PlayerControl.LocalPlayer && Medic.showAttemptToMedic;
+        if (!Medic.exists || medic == null || medic.shielded == null) return;
+
+        bool isShieldedAndShow = medic.shielded == PlayerControl.LocalPlayer && Medic.showAttemptToShielded;
+        isShieldedAndShow = isShieldedAndShow && (medic.meetingAfterShielding || !Medic.showShieldAfterMeeting);  // Dont show attempt, if shield is not shown yet
+        bool isMedicAndShow = PlayerControl.LocalPlayer.isRole(RoleId.Medic) && Medic.showAttemptToMedic;
 
         if (isShieldedAndShow || isMedicAndShow || Helpers.shouldShowGhostInfo()) Helpers.showFlash(Palette.ImpostorRed, duration: 0.5f, "Failed Murder Attempt on Shielded Player");
     }
@@ -533,10 +539,13 @@ public static class RPCProcedure
         Shifter.futureShift = Helpers.playerById(playerId);
     }
 
-    public static void setFutureShielded(byte playerId)
+    public static void setFutureShielded(byte medicId, byte playerId)
     {
-        Medic.futureShielded = Helpers.playerById(playerId);
-        Medic.usedShield = true;
+        var player = Helpers.playerById(medicId);
+        var medic = Medic.getRole(player);
+
+        medic.futureShielded = Helpers.playerById(playerId);
+        medic.usedShield = true;
     }
 
     public static void setFutureSpelled(byte playerId)
@@ -1177,10 +1186,10 @@ class RPCHandlerPatch
                 RPCProcedure.timeMasterShield();
                 break;
             case (byte)CustomRPC.MedicSetShielded:
-                RPCProcedure.medicSetShielded(reader.ReadByte());
+                RPCProcedure.medicSetShielded(reader.ReadByte(), reader.ReadByte());
                 break;
             case (byte)CustomRPC.ShieldedMurderAttempt:
-                RPCProcedure.shieldedMurderAttempt();
+                RPCProcedure.shieldedMurderAttempt(reader.ReadByte());
                 break;
             case (byte)CustomRPC.ShifterShift:
                 RPCProcedure.shifterShift(reader.ReadByte());
@@ -1225,7 +1234,7 @@ class RPCHandlerPatch
                 RPCProcedure.setFutureShifted(reader.ReadByte());
                 break;
             case (byte)CustomRPC.SetFutureShielded:
-                RPCProcedure.setFutureShielded(reader.ReadByte());
+                RPCProcedure.setFutureShielded(reader.ReadByte(), reader.ReadByte());
                 break;
             case (byte)CustomRPC.PlaceNinjaTrace:
                 RPCProcedure.placeNinjaTrace(reader.ReadBytesAndSize());

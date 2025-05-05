@@ -759,15 +759,18 @@ public static class Helpers
         }
 
         // Block impostor shielded kill
-        if (!ignoreMedic && Medic.shielded != null && Medic.shielded == target)
+        foreach (var medic in Medic.players)
         {
-            using var writer = RPCProcedure.SendRPC(CustomRPC.ShieldedMurderAttempt);
-            RPCProcedure.shieldedMurderAttempt();
-            return MurderAttemptResult.SuppressKill;
+            if (!ignoreMedic && medic.shielded != null && medic.shielded == target)
+            {
+                using var writer = RPCProcedure.SendRPC(CustomRPC.ShieldedMurderAttempt);
+                RPCProcedure.shieldedMurderAttempt(medic.player.PlayerId);
+                return MurderAttemptResult.SuppressKill;
+            }
         }
 
         // Block impostor not fully grown mini kill
-        else if (Mini.mini != null && target == Mini.mini && !Mini.isGrownUp())
+        if (Mini.mini != null && target == Mini.mini && !Mini.isGrownUp())
         {
             return MurderAttemptResult.SuppressKill;
         }

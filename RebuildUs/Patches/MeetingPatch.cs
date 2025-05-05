@@ -506,15 +506,18 @@ class MeetingHudPatch
                     PlayerControl focusedTarget = Helpers.playerById((byte)__instance.playerStates[buttonTarget].TargetPlayerId);
                     if (!(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted) || focusedTarget == null || HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId) <= 0) return;
 
-                    if (!HandleGuesser.killsThroughShield && focusedTarget == Medic.shielded)
-                    { // Depending on the options, shooting the shielded player will not allow the guess, notifiy everyone about the kill attempt and close the window
-                        __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
-                        UnityEngine.Object.Destroy(container.gameObject);
+                    foreach (var medic in Medic.players)
+                    {
+                        if (!HandleGuesser.killsThroughShield && focusedTarget == medic.shielded)
+                        { // Depending on the options, shooting the shielded player will not allow the guess, notifiy everyone about the kill attempt and close the window
+                            __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
+                            UnityEngine.Object.Destroy(container.gameObject);
 
-                        using var murderAttemptWriter = RPCProcedure.SendRPC(CustomRPC.ShieldedMurderAttempt);
-                        RPCProcedure.shieldedMurderAttempt();
+                            using var murderAttemptWriter = RPCProcedure.SendRPC(CustomRPC.ShieldedMurderAttempt);
+                            RPCProcedure.shieldedMurderAttempt(medic.player.PlayerId);
 
-                        return;
+                            return;
+                        }
                     }
 
                     var mainRoleInfo = RoleInfo.getRoleInfoForPlayer(focusedTarget, false).FirstOrDefault();

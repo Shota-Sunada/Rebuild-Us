@@ -258,26 +258,26 @@ class HudManagerUpdatePatch
         }
 
         // Add medic shield info:
-        if (MeetingHud.Instance != null && Medic.medic != null && Medic.shielded != null && Medic.shieldVisible(Medic.shielded))
+        if (Medic.exists)
         {
-            foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
-                if (player.TargetPlayerId == Medic.shielded.PlayerId)
+            foreach (var medic in Medic.players)
+            {
+                if (MeetingHud.Instance != null &&  medic.shielded != null && Medic.shieldVisible(medic.shielded))
                 {
-                    player.NameText.text = Helpers.cs(Medic.color, "[") + player.NameText.text + Helpers.cs(Medic.color, "]");
-                    // player.HighlightedFX.color = Medic.color;
-                    // player.HighlightedFX.enabled = true;
+                    foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
+                        if (player.TargetPlayerId == medic.shielded.PlayerId)
+                        {
+                            player.NameText.text = Helpers.cs(Medic.Color, "[") + player.NameText.text + Helpers.cs(Medic.Color, "]");
+                            // player.HighlightedFX.color = Medic.color;
+                            // player.HighlightedFX.enabled = true;
+                        }
                 }
+            }
         }
     }
 
     static void updateShielded()
     {
-        if (Medic.shielded == null) return;
-
-        if (Medic.shielded.Data.IsDead || Medic.medic == null || Medic.medic.Data.IsDead)
-        {
-            Medic.shielded = null;
-        }
     }
 
     static void timerUpdate()

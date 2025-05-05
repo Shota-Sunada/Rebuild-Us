@@ -21,7 +21,7 @@ static class HudManagerStartPatch
     private static CustomButton janitorCleanButton;
     // public static CustomButton sheriffKillButton;
     // private static CustomButton timeMasterShieldButton;
-    private static CustomButton medicShieldButton;
+    // private static CustomButton medicShieldButton;
     private static CustomButton shifterShiftButton;
     private static CustomButton morphingButton;
     private static CustomButton camouflagerButton;
@@ -90,7 +90,7 @@ static class HudManagerStartPatch
         // engineerRepairButton.MaxTimer = 0f;
         janitorCleanButton.MaxTimer = Janitor.cooldown;
         // timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
-        medicShieldButton.MaxTimer = 0f;
+        // medicShieldButton.MaxTimer = 0f;
         shifterShiftButton.MaxTimer = 0f;
         morphingButton.MaxTimer = Morphing.cooldown;
         camouflagerButton.MaxTimer = Camouflager.cooldown;
@@ -336,33 +336,33 @@ static class HudManagerStartPatch
         // );
 
         // Medic Shield
-        medicShieldButton = new CustomButton(
-            () =>
-            {
-                medicShieldButton.Timer = 0f;
+        // medicShieldButton = new CustomButton(
+        //     () =>
+        //     {
+        //         medicShieldButton.Timer = 0f;
 
-                using var writer = RPCProcedure.SendRPC(Medic.setShieldAfterMeeting ? CustomRPC.SetFutureShielded : CustomRPC.MedicSetShielded); ;
-                writer.Write(Medic.currentTarget.PlayerId);
+        //         using var writer = RPCProcedure.SendRPC(Medic.setShieldAfterMeeting ? CustomRPC.SetFutureShielded : CustomRPC.MedicSetShielded); ;
+        //         writer.Write(Medic.currentTarget.PlayerId);
 
-                if (Medic.setShieldAfterMeeting)
-                {
-                    RPCProcedure.setFutureShielded(Medic.currentTarget.PlayerId);
-                }
-                else
-                {
-                    RPCProcedure.medicSetShielded(Medic.currentTarget.PlayerId);
-                }
-                Medic.meetingAfterShielding = false;
-            },
-            () => { return Medic.medic != null && Medic.medic == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return !Medic.usedShield && Medic.currentTarget && PlayerControl.LocalPlayer.CanMove; },
-            () => { },
-            Medic.getButtonSprite(),
-            ButtonOffset.LowerRight,
-            __instance,
-            __instance.UseButton,
-            KeyCode.F
-        );
+        //         if (Medic.setShieldAfterMeeting)
+        //         {
+        //             RPCProcedure.setFutureShielded(Medic.currentTarget.PlayerId);
+        //         }
+        //         else
+        //         {
+        //             RPCProcedure.medicSetShielded(Medic.currentTarget.PlayerId);
+        //         }
+        //         Medic.meetingAfterShielding = false;
+        //     },
+        //     () => { return Medic.medic != null && Medic.medic == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return !Medic.usedShield && Medic.currentTarget && PlayerControl.LocalPlayer.CanMove; },
+        //     () => { },
+        //     Medic.getButtonSprite(),
+        //     ButtonOffset.LowerRight,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.F
+        // );
 
         // Shifter shift
         shifterShiftButton = new CustomButton(
