@@ -72,6 +72,7 @@ public enum CustomRPC
     YoyoBlink,
     BreakArmor,
     SetLovers,
+    SetShifterType,
 
     // Other functionality
     ShareTimer,

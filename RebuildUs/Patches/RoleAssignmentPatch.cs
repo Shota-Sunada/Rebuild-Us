@@ -274,6 +274,23 @@ class RoleManagerSelectRolesPatch
             else data.crewSettings.Add((byte)RoleId.NiceGuesser, CustomOptionHolder.guesserSpawnRate.getSelection());
         }
 
+        // Assign Shifter (chance to be neutral based on setting)
+        bool shifterIsNeutral = false;
+        if (data.crewmates.Count > 0 && data.maxNeutralRoles > 0 && rnd.Next(1, 101) <= CustomOptionHolder.shifterIsNeutralRate.getSelection() * 10)
+        {
+            data.neutralSettings.Add((byte)RoleId.Shifter, (CustomOptionHolder.shifterSpawnRate.getSelection(), 1));
+            shifterIsNeutral = true;
+        }
+        else if (data.crewmates.Count > 0 && data.maxCrewmateRoles > 0)
+        {
+            data.crewSettings.Add((byte)RoleId.Shifter, (CustomOptionHolder.shifterSpawnRate.getSelection(), 1));
+            shifterIsNeutral = false;
+        }
+
+        using var writer = RPCProcedure.SendRPC(CustomRPC.SetShifterType);
+        writer.Write(shifterIsNeutral);
+        RPCProcedure.setShifterType(shifterIsNeutral);
+
         crewValues = data.crewSettings.Values.ToList().Sum();
         impValues = data.impSettings.Values.ToList().Sum();
     }
@@ -541,8 +558,7 @@ class RoleManagerSelectRolesPatch
             RoleId.Vip,
             RoleId.Invert,
             RoleId.Chameleon,
-            RoleId.Armored,
-            RoleId.Shifter
+            RoleId.Armored
         });
 
         foreach (RoleId m in allModifiers)
@@ -628,15 +644,7 @@ class RoleManagerSelectRolesPatch
 
         List<PlayerControl> crewPlayer = new(playerList);
         crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || RoleInfo.getRoleInfoForPlayer(x).Any(r => r.isNeutral));
-        if (modifiers.Contains(RoleId.Shifter))
-        {
-            var crewPlayerShifter = new List<PlayerControl>(crewPlayer);
-            crewPlayerShifter.RemoveAll(x => x == Spy.spy);
-            playerId = setModifierToRandomPlayer((byte)RoleId.Shifter, crewPlayerShifter);
-            crewPlayer.RemoveAll(x => x.PlayerId == playerId);
-            playerList.RemoveAll(x => x.PlayerId == playerId);
-            modifiers.RemoveAll(x => x == RoleId.Shifter);
-        }
+
         if (modifiers.Contains(RoleId.Sunglasses))
         {
             int sunglassesCount = 0;
@@ -704,9 +712,6 @@ class RoleManagerSelectRolesPatch
                 break;
             case RoleId.Armored:
                 selection = CustomOptionHolder.modifierArmored.getSelection();
-                break;
-            case RoleId.Shifter:
-                selection = CustomOptionHolder.shifterSpawnRate.getSelection();
                 break;
         }
 

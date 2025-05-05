@@ -1110,6 +1110,11 @@ public static class RPCProcedure
                 MeetingHud.Instance.CheckForEndVoting();
         }
     }
+
+    public static void setShifterType(bool isNeutral)
+    {
+        Shifter.isNeutral = isNeutral;
+    }
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -1369,6 +1374,9 @@ class RPCHandlerPatch
                 break;
             case (byte)CustomRPC.SetLovers:
                 RPCProcedure.setLovers(reader.ReadByte(), reader.ReadByte());
+                break;
+            case (byte)CustomRPC.SetShifterType:
+                RPCProcedure.setShifterType(reader.ReadBoolean());
                 break;
 
             case (byte)CustomRPC.ShareRoom:
