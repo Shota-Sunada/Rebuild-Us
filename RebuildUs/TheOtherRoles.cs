@@ -50,7 +50,7 @@ public static class RebuildUs
         Cleaner.clearAndReload();
         Warlock.clearAndReload();
         SecurityGuard.clearAndReload();
-        Arsonist.clearAndReload();
+        // Arsonist.clearAndReload();
         BountyHunter.clearAndReload();
         Vulture.clearAndReload();
         Medium.clearAndReload();
@@ -1265,55 +1265,55 @@ public static class SecurityGuard
     }
 }
 
-public static class Arsonist
-{
-    public static PlayerControl arsonist;
-    public static Color color = new Color32(238, 112, 46, byte.MaxValue);
+// public static class Arsonist
+// {
+//     public static PlayerControl arsonist;
+//     public static Color color = new Color32(238, 112, 46, byte.MaxValue);
 
-    public static float cooldown = 30f;
-    public static float duration = 3f;
-    public static bool triggerArsonistWin = false;
+//     public static float cooldown = 30f;
+//     public static float duration = 3f;
+//     public static bool triggerArsonistWin = false;
 
-    public static PlayerControl currentTarget;
-    public static PlayerControl douseTarget;
-    public static List<PlayerControl> dousedPlayers = [];
+//     public static PlayerControl currentTarget;
+//     public static PlayerControl douseTarget;
+//     public static List<PlayerControl> dousedPlayers = [];
 
-    private static Sprite douseSprite;
-    public static Sprite getDouseSprite()
-    {
-        if (douseSprite) return douseSprite;
-        douseSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.DouseButton.png", 115f);
-        return douseSprite;
-    }
+//     private static Sprite douseSprite;
+//     public static Sprite getDouseSprite()
+//     {
+//         if (douseSprite) return douseSprite;
+//         douseSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.DouseButton.png", 115f);
+//         return douseSprite;
+//     }
 
-    private static Sprite igniteSprite;
-    public static Sprite getIgniteSprite()
-    {
-        if (igniteSprite) return igniteSprite;
-        igniteSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.IgniteButton.png", 115f);
-        return igniteSprite;
-    }
+//     private static Sprite igniteSprite;
+//     public static Sprite getIgniteSprite()
+//     {
+//         if (igniteSprite) return igniteSprite;
+//         igniteSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.IgniteButton.png", 115f);
+//         return igniteSprite;
+//     }
 
-    public static bool dousedEveryoneAlive()
-    {
-        return PlayerControl.AllPlayerControls.ToArray().All(x => { return x == Arsonist.arsonist || x.Data.IsDead || x.Data.Disconnected || Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); });
-    }
+//     public static bool dousedEveryoneAlive()
+//     {
+//         return PlayerControl.AllPlayerControls.ToArray().All(x => { return x == Arsonist.arsonist || x.Data.IsDead || x.Data.Disconnected || Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); });
+//     }
 
-    public static void clearAndReload()
-    {
-        arsonist = null;
-        currentTarget = null;
-        douseTarget = null;
-        triggerArsonistWin = false;
-        dousedPlayers = [];
-        foreach (PoolablePlayer p in MapOptions.playerIcons.Values)
-        {
-            if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
-        }
-        cooldown = CustomOptionHolder.arsonistCooldown.getFloat();
-        duration = CustomOptionHolder.arsonistDuration.getFloat();
-    }
-}
+//     public static void clearAndReload()
+//     {
+//         arsonist = null;
+//         currentTarget = null;
+//         douseTarget = null;
+//         triggerArsonistWin = false;
+//         dousedPlayers = [];
+//         foreach (PoolablePlayer p in MapOptions.playerIcons.Values)
+//         {
+//             if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
+//         }
+//         cooldown = CustomOptionHolder.arsonistCooldown.getFloat();
+//         duration = CustomOptionHolder.arsonistDuration.getFloat();
+//     }
+// }
 
 public static class Guesser
 {

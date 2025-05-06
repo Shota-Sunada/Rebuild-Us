@@ -253,7 +253,7 @@ class ExileControllerWrapUpPatch
         Tracker.deadBodyPositions = [];
 
         // Arsonist deactivate dead poolable players
-        if (Arsonist.arsonist != null && Arsonist.arsonist == PlayerControl.LocalPlayer)
+        if (Arsonist.exists && PlayerControl.LocalPlayer.isRole(RoleId.Arsonist))
         {
             int visibleCounter = 0;
             Vector3 newBottomLeft = IntroCutsceneOnDestroyPatch.bottomLeft;

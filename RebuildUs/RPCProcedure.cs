@@ -738,10 +738,10 @@ public static class RPCProcedure
         Arsonist.triggerArsonistWin = true;
         foreach (PlayerControl p in PlayerControl.AllPlayerControls)
         {
-            if (p != Arsonist.arsonist && !p.Data.IsDead)
+            if (!p.isRole(RoleId.Arsonist) && !p.Data.IsDead)
             {
                 p.Exiled();
-                overrideDeathReasonAndKiller(p, CustomDeathReason.Arson, Arsonist.arsonist);
+                overrideDeathReasonAndKiller(p, CustomDeathReason.Arson);
             }
         }
     }

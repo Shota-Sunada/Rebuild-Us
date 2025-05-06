@@ -504,7 +504,7 @@ public class CustomOptionHolder
         jesterHasImpostorVision = CustomOption.Create(504, CustomOptionType.Neutral, "JesterHasImpostorVision", false, jesterSpawnRate);
         jesterWinEveryone = CustomOption.Create(505, CustomOptionType.Neutral, "JesterWinEveryone", false, jesterSpawnRate);
 
-        arsonistSpawnRate = new CustomRoleOption(510, 511, CustomOptionType.Neutral, ("Arsonist", Arsonist.color), 1);
+        arsonistSpawnRate = new CustomRoleOption(510, 511, CustomOptionType.Neutral, ("Arsonist", Arsonist.Color), 1);
         arsonistCooldown = CustomOption.Create(512, CustomOptionType.Neutral, "ArsonistCooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate, unitType: UnitType.UnitSeconds);
         arsonistDuration = CustomOption.Create(513, CustomOptionType.Neutral, "ArsonistDuration", 3f, 0f, 10f, 1f, arsonistSpawnRate, unitType: UnitType.UnitSeconds);
         arsonistCanBeLovers = CustomOption.Create(514, CustomOptionType.Neutral, "ArsonistCanBeLovers", false, arsonistSpawnRate);

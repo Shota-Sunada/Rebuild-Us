@@ -555,22 +555,6 @@ public static class PlayerControlFixedUpdatePatch
 
     public static void arsonistSetTarget()
     {
-        if (Arsonist.arsonist == null || Arsonist.arsonist != PlayerControl.LocalPlayer) return;
-        List<PlayerControl> untargetables;
-        if (Arsonist.douseTarget != null)
-        {
-            untargetables = [];
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId != Arsonist.douseTarget.PlayerId)
-                {
-                    untargetables.Add(player);
-                }
-            }
-        }
-        else untargetables = Arsonist.dousedPlayers;
-        Arsonist.currentTarget = setTarget(untargetablePlayers: untargetables);
-        if (Arsonist.currentTarget != null) setPlayerOutline(Arsonist.currentTarget, Arsonist.color);
     }
 
     static void snitchUpdate()

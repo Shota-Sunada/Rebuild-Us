@@ -68,7 +68,7 @@ public class RoleInfo
     public static RoleInfo sidekick = new("Sidekick", Sidekick.color, "Help your Jackal to kill everyone", "Help your Jackal to kill everyone", RoleId.Sidekick, true);
     public static RoleInfo spy = new("Spy", Spy.color, "Confuse the <color=#FF1919FF>Impostors</color>", "Confuse the Impostors", RoleId.Spy);
     public static RoleInfo securityGuard = new("Security Guard", SecurityGuard.color, "Seal vents and place cameras", "Seal vents and place cameras", RoleId.SecurityGuard);
-    public static RoleInfo arsonist = new("Arsonist", Arsonist.color, "Let them burn", "Let them burn", RoleId.Arsonist, true);
+    public static RoleInfo arsonist = new("Arsonist", Arsonist.Color, "Let them burn", "Let them burn", RoleId.Arsonist, true);
     public static RoleInfo goodGuesser = new("Nice Guesser", Guesser.color, "Guess and shoot", "Guess and shoot", RoleId.NiceGuesser);
     public static RoleInfo badGuesser = new("Evil Guesser", Palette.ImpostorRed, "Guess and shoot", "Guess and shoot", RoleId.EvilGuesser);
     public static RoleInfo vulture = new("Vulture", Vulture.color, "Eat corpses to win", "Eat dead bodies", RoleId.Vulture, true);
@@ -228,7 +228,7 @@ public class RoleInfo
         if (p == Sidekick.sidekick) infos.Add(sidekick);
         if (p == Spy.spy) infos.Add(spy);
         if (p == SecurityGuard.securityGuard) infos.Add(securityGuard);
-        if (p == Arsonist.arsonist) infos.Add(arsonist);
+        if (p.isRole(RoleId.Arsonist)) infos.Add(arsonist);
         if (p == Guesser.niceGuesser) infos.Add(goodGuesser);
         if (p == Guesser.evilGuesser) infos.Add(badGuesser);
         if (p == BountyHunter.bountyHunter) infos.Add(bountyHunter);
@@ -286,9 +286,9 @@ public class RoleInfo
                 if (BountyHunter.bounty == p)
                     roleName = Helpers.cs(BountyHunter.color, "(bounty) ") + roleName;
                 if (Arsonist.dousedPlayers.Contains(p))
-                    roleName = Helpers.cs(Arsonist.color, "♨ ") + roleName;
-                if (p == Arsonist.arsonist)
-                    roleName = roleName + Helpers.cs(Arsonist.color, $" ({PlayerControl.AllPlayerControls.ToArray().Count(x => { return x != Arsonist.arsonist && !x.Data.IsDead && !x.Data.Disconnected && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} left)");
+                    roleName = Helpers.cs(Arsonist.Color, "♨ ") + roleName;
+                if (p.isRole(RoleId.Arsonist))
+                    roleName += Helpers.cs(Arsonist.Color, $" ({PlayerControl.AllPlayerControls.ToArray().Count(x => { return !x.isRole(RoleId.Arsonist) && !x.isDead() && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} left)");
                 if (p == Jackal.fakeSidekick)
                     roleName = Helpers.cs(Sidekick.color, $" (fake SK)") + roleName;
 

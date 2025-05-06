@@ -886,7 +886,7 @@ public static class Helpers
         return player.Data.Role.IsImpostor ||
             (isNeutral(player) &&
             !player.isRole(RoleId.Jester) &&
-            player != Arsonist.arsonist &&
+            !player.isRole(RoleId.Arsonist) &&
             player != Vulture.vulture &&
             player != Lawyer.lawyer &&
             player != Pursuer.pursuer);

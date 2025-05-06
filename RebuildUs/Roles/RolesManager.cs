@@ -202,8 +202,8 @@ public static class RoleHelpers
                 return Warlock.warlock == player;
             case RoleId.SecurityGuard:
                 return SecurityGuard.securityGuard == player;
-            case RoleId.Arsonist:
-                return Arsonist.arsonist == player;
+            // case RoleId.Arsonist:
+            //     return global::RebuildUs.Arsonist.arsonist == player;
             case RoleId.EvilGuesser:
                 return Guesser.evilGuesser == player;
             case RoleId.NiceGuesser:
@@ -322,9 +322,9 @@ public static class RoleHelpers
             case RoleId.SecurityGuard:
                 SecurityGuard.securityGuard = player;
                 break;
-            case RoleId.Arsonist:
-                Arsonist.arsonist = player;
-                break;
+            // case RoleId.Arsonist:
+            //     global::RebuildUs.Arsonist.arsonist = player;
+            //     break;
             case RoleId.EvilGuesser:
                 Guesser.evilGuesser = player;
                 break;
@@ -415,7 +415,7 @@ public static class RoleHelpers
 
         // Other roles
         // if (player == RebuildUs.Jester.jester) RebuildUs.Jester.clearAndReload();
-        if (player == Arsonist.arsonist) Arsonist.clearAndReload();
+        // if (player == global::RebuildUs.Arsonist.arsonist) global::RebuildUs.Arsonist.clearAndReload();
         if (Guesser.isGuesser(player.PlayerId)) Guesser.clear(player.PlayerId);
         if (player == Jackal.jackal)
         { // Promote Sidekick and hence override the the Jackal or erase Jackal
@@ -475,7 +475,7 @@ public static class RoleHelpers
         if (player.isRole(RoleId.EvilGuesser)) Guesser.evilGuesser = target;
         if (player.isRole(RoleId.NiceGuesser)) Guesser.niceGuesser = target;
         // if (player.isRole(RoleId.Jester)) RebuildUs.Jester.jester = target;
-        if (player.isRole(RoleId.Arsonist)) Arsonist.arsonist = target;
+        // if (player.isRole(RoleId.Arsonist)) global::RebuildUs.Arsonist.arsonist = target;
         if (player.isRole(RoleId.Jackal)) Jackal.jackal = target;
         if (player.isRole(RoleId.Sidekick)) Sidekick.sidekick = target;
         if (player.isRole(RoleId.Vulture)) Vulture.vulture = target;

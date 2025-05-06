@@ -43,7 +43,7 @@ class IntroCutsceneOnDestroyPatch
                 MapOptions.playerIcons[p.PlayerId] = player;
                 player.gameObject.SetActive(false);
 
-                if (PlayerControl.LocalPlayer == Arsonist.arsonist && p != Arsonist.arsonist)
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Arsonist) && !p.isRole(RoleId.Arsonist))
                 {
                     player.transform.localPosition = bottomLeft + new Vector3(-0.25f, -0.25f, 0) + Vector3.right * playerCounter++ * 0.35f;
                     player.transform.localScale = Vector3.one * 0.2f;

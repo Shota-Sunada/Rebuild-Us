@@ -95,7 +95,6 @@ public static class OnGameEndPatch
         var notWinners = new List<PlayerControl>();
         if (Sidekick.sidekick != null) notWinners.Add(Sidekick.sidekick);
         if (Jackal.jackal != null) notWinners.Add(Jackal.jackal);
-        if (Arsonist.arsonist != null) notWinners.Add(Arsonist.arsonist);
         if (Vulture.vulture != null) notWinners.Add(Vulture.vulture);
         if (Lawyer.lawyer != null) notWinners.Add(Lawyer.lawyer);
         if (Pursuer.pursuer != null) notWinners.Add(Pursuer.pursuer);
@@ -104,6 +103,7 @@ public static class OnGameEndPatch
         notWinners.AddRange(Jackal.formerJackals);
 
         notWinners.AddRange(Jester.allPlayers);
+        notWinners.AddRange(Arsonist.allPlayers);
 
         if (Lovers.separateTeam)
         {
@@ -122,7 +122,7 @@ public static class OnGameEndPatch
         foreach (var winner in winnersToRemove) EndGameResult.CachedWinners.Remove(winner);
 
         bool jesterWin = Jester.exists && gameOverReason == (GameOverReason)CustomGameOverReason.JesterWin;
-        bool arsonistWin = Arsonist.arsonist != null && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
+        bool arsonistWin = Arsonist.exists && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
         bool miniLose = Mini.mini != null && gameOverReason == (GameOverReason)CustomGameOverReason.MiniLose;
         bool loversWin = Lovers.anyAlive() && !(Lovers.separateTeam && gameOverReason == GameOverReason.CrewmatesByTask);
         bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
@@ -146,24 +146,27 @@ public static class OnGameEndPatch
         // Jester win
         else if (jesterWin)
         {
+            EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
             foreach (var jester in Jester.players)
             {
-                EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 if (jester.isWin || Jester.jesterWinEveryone)
                 {
                     var wpd = new CachedPlayerData(jester.player.Data);
                     EndGameResult.CachedWinners.Add(wpd);
                 }
-                AdditionalTempData.winCondition = WinCondition.JesterWin;
             }
+            AdditionalTempData.winCondition = WinCondition.JesterWin;
         }
 
         // Arsonist win
         else if (arsonistWin)
         {
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            var wpd = new CachedPlayerData(Arsonist.arsonist.Data);
-            EndGameResult.CachedWinners.Add(wpd);
+            foreach (var arsonist in Arsonist.players)
+            {
+                var wpd = new CachedPlayerData(arsonist.player.Data);
+                EndGameResult.CachedWinners.Add(wpd);
+            }
             AdditionalTempData.winCondition = WinCondition.ArsonistWin;
         }
 
@@ -337,7 +340,7 @@ public class EndGameManagerSetUpPatch
         else if (AdditionalTempData.winCondition == WinCondition.ArsonistWin)
         {
             textRenderer.text = "Arsonist Wins";
-            textRenderer.color = Arsonist.color;
+            textRenderer.color = Arsonist.Color;
         }
         else if (AdditionalTempData.winCondition == WinCondition.VultureWin)
         {

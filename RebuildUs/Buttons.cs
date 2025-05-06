@@ -46,7 +46,7 @@ static class HudManagerStartPatch
     public static CustomButton warlockCurseButton;
     public static CustomButton securityGuardButton;
     public static CustomButton securityGuardCamButton;
-    public static CustomButton arsonistButton;
+    // public static CustomButton arsonistButton;
     public static CustomButton vultureEatButton;
     public static CustomButton mediumButton;
     public static CustomButton pursuerButton;
@@ -113,7 +113,7 @@ static class HudManagerStartPatch
         warlockCurseButton.MaxTimer = Warlock.cooldown;
         securityGuardButton.MaxTimer = SecurityGuard.cooldown;
         securityGuardCamButton.MaxTimer = SecurityGuard.cooldown;
-        arsonistButton.MaxTimer = Arsonist.cooldown;
+        // arsonistButton.MaxTimer = Arsonist.cooldown;
         vultureEatButton.MaxTimer = Vulture.cooldown;
         mediumButton.MaxTimer = Medium.cooldown;
         pursuerButton.MaxTimer = Pursuer.cooldown;
@@ -138,7 +138,7 @@ static class HudManagerStartPatch
         camouflagerButton.effectDuration = Camouflager.duration;
         morphingButton.effectDuration = Morphing.duration;
         lightsOutButton.effectDuration = Trickster.lightsOutDuration;
-        arsonistButton.effectDuration = Arsonist.duration;
+        // arsonistButton.effectDuration = Arsonist.duration;
         mediumButton.effectDuration = Medium.duration;
         trackerTrackCorpsesButton.effectDuration = Tracker.corpsesTrackingDuration;
         witchSpellButton.effectDuration = Witch.spellCastingDuration;
@@ -1322,73 +1322,73 @@ static class HudManagerStartPatch
         securityGuardChargesText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
         // Arsonist button
-        arsonistButton = new CustomButton(
-            () =>
-            {
-                bool dousedEveryoneAlive = Arsonist.dousedEveryoneAlive();
-                if (dousedEveryoneAlive)
-                {
-                    using var winWriter = RPCProcedure.SendRPC(CustomRPC.ArsonistWin);
-                    RPCProcedure.arsonistWin();
-                    arsonistButton.hasEffect = false;
-                }
-                else if (Arsonist.currentTarget != null)
-                {
-                    Arsonist.douseTarget = Arsonist.currentTarget;
-                    arsonistButton.hasEffect = true;
-                }
-            },
-            () => { return Arsonist.arsonist != null && Arsonist.arsonist == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () =>
-            {
-                bool dousedEveryoneAlive = Arsonist.dousedEveryoneAlive();
-                if (dousedEveryoneAlive) arsonistButton.actionButton.graphic.sprite = Arsonist.getIgniteSprite();
+        // arsonistButton = new CustomButton(
+        //     () =>
+        //     {
+        //         bool dousedEveryoneAlive = Arsonist.dousedEveryoneAlive();
+        //         if (dousedEveryoneAlive)
+        //         {
+        //             using var winWriter = RPCProcedure.SendRPC(CustomRPC.ArsonistWin);
+        //             RPCProcedure.arsonistWin();
+        //             arsonistButton.hasEffect = false;
+        //         }
+        //         else if (Arsonist.currentTarget != null)
+        //         {
+        //             Arsonist.douseTarget = Arsonist.currentTarget;
+        //             arsonistButton.hasEffect = true;
+        //         }
+        //     },
+        //     () => { return Arsonist.arsonist != null && Arsonist.arsonist == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () =>
+        //     {
+        //         bool dousedEveryoneAlive = Arsonist.dousedEveryoneAlive();
+        //         if (dousedEveryoneAlive) arsonistButton.actionButton.graphic.sprite = Arsonist.getIgniteSprite();
 
-                if (arsonistButton.isEffectActive && Arsonist.douseTarget != Arsonist.currentTarget)
-                {
-                    Arsonist.douseTarget = null;
-                    arsonistButton.Timer = 0f;
-                    arsonistButton.isEffectActive = false;
-                }
+        //         if (arsonistButton.isEffectActive && Arsonist.douseTarget != Arsonist.currentTarget)
+        //         {
+        //             Arsonist.douseTarget = null;
+        //             arsonistButton.Timer = 0f;
+        //             arsonistButton.isEffectActive = false;
+        //         }
 
-                return PlayerControl.LocalPlayer.CanMove && (dousedEveryoneAlive || Arsonist.currentTarget != null);
-            },
-            () =>
-            {
-                arsonistButton.Timer = arsonistButton.MaxTimer;
-                arsonistButton.isEffectActive = false;
-                Arsonist.douseTarget = null;
-            },
-            Arsonist.getDouseSprite(),
-            ButtonOffset.LowerRight,
-            __instance,
-            __instance.KillButton,
-            KeyCode.F,
-            true,
-            Arsonist.duration,
-            () =>
-            {
-                if (Arsonist.douseTarget != null) Arsonist.dousedPlayers.Add(Arsonist.douseTarget);
+        //         return PlayerControl.LocalPlayer.CanMove && (dousedEveryoneAlive || Arsonist.currentTarget != null);
+        //     },
+        //     () =>
+        //     {
+        //         arsonistButton.Timer = arsonistButton.MaxTimer;
+        //         arsonistButton.isEffectActive = false;
+        //         Arsonist.douseTarget = null;
+        //     },
+        //     Arsonist.getDouseSprite(),
+        //     ButtonOffset.LowerRight,
+        //     __instance,
+        //     __instance.KillButton,
+        //     KeyCode.F,
+        //     true,
+        //     Arsonist.duration,
+        //     () =>
+        //     {
+        //         if (Arsonist.douseTarget != null) Arsonist.dousedPlayers.Add(Arsonist.douseTarget);
 
-                arsonistButton.Timer = Arsonist.dousedEveryoneAlive() ? 0 : arsonistButton.MaxTimer;
+        //         arsonistButton.Timer = Arsonist.dousedEveryoneAlive() ? 0 : arsonistButton.MaxTimer;
 
-                foreach (PlayerControl p in Arsonist.dousedPlayers)
-                {
-                    if (MapOptions.playerIcons.ContainsKey(p.PlayerId))
-                    {
-                        MapOptions.playerIcons[p.PlayerId].setSemiTransparent(false);
-                    }
-                }
+        //         foreach (PlayerControl p in Arsonist.dousedPlayers)
+        //         {
+        //             if (MapOptions.playerIcons.ContainsKey(p.PlayerId))
+        //             {
+        //                 MapOptions.playerIcons[p.PlayerId].setSemiTransparent(false);
+        //             }
+        //         }
 
-                // Ghost Info
-                using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write((byte)GhostInfoTypes.ArsonistDouse);
-                writer.Write(Arsonist.douseTarget.PlayerId);
+        //         // Ghost Info
+        //         using var writer = RPCProcedure.SendRPC(CustomRPC.ShareGhostInfo);
+        //         writer.Write(PlayerControl.LocalPlayer.PlayerId);
+        //         writer.Write((byte)GhostInfoTypes.ArsonistDouse);
+        //         writer.Write(Arsonist.douseTarget.PlayerId);
 
-                Arsonist.douseTarget = null;
-            }
-        );
+        //         Arsonist.douseTarget = null;
+        //     }
+        // );
 
         // Vulture Eat
         vultureEatButton = new CustomButton(
