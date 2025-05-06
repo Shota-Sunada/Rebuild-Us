@@ -800,14 +800,6 @@ public static class PlayerControlFixedUpdatePatch
 
     public static void hackerUpdate()
     {
-        if (Hacker.hacker == null || PlayerControl.LocalPlayer != Hacker.hacker || Hacker.hacker.Data.IsDead) return;
-        var (playerCompleted, _) = TasksHandler.taskInfo(Hacker.hacker.Data);
-        if (playerCompleted == Hacker.rechargedTasks)
-        {
-            Hacker.rechargedTasks += Hacker.rechargeTasksNumber;
-            if (Hacker.toolsNumber > Hacker.chargesVitals) Hacker.chargesVitals++;
-            if (Hacker.toolsNumber > Hacker.chargesAdminTable) Hacker.chargesAdminTable++;
-        }
     }
 
     // For swapper swap charges

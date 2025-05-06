@@ -302,7 +302,7 @@ class HudManagerUpdatePatch
     static void timerUpdate()
     {
         var dt = Time.deltaTime;
-        Hacker.hackerTimer -= dt;
+        // Hacker.hackerTimer -= dt;
         Trickster.lightsOutTimer -= dt;
         Tracker.corpsesTrackingTimer -= dt;
         Ninja.invisibleTimer -= dt;

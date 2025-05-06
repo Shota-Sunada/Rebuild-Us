@@ -176,8 +176,8 @@ public static class RoleHelpers
                 return Morphing.morphing == player;
             case RoleId.Camouflager:
                 return Camouflager.camouflager == player;
-            case RoleId.Hacker:
-                return Hacker.hacker == player;
+            // case RoleId.Hacker:
+            //     return global::RebuildUs.Hacker.hacker == player;
             case RoleId.Mini:
                 return Mini.mini == player;
             case RoleId.Tracker:
@@ -283,9 +283,9 @@ public static class RoleHelpers
             case RoleId.Camouflager:
                 Camouflager.camouflager = player;
                 break;
-            case RoleId.Hacker:
-                Hacker.hacker = player;
-                break;
+            // case RoleId.Hacker:
+            //     global::RebuildUs.Hacker.hacker = player;
+            //     break;
             case RoleId.Mini:
                 Mini.mini = player;
                 break;
@@ -388,7 +388,7 @@ public static class RoleHelpers
         // if (player == global::RebuildUs.Medic.medic) global::RebuildUs.Medic.clearAndReload();
         if (player.isRole(RoleId.Shifter)) Shifter.clearAndReload();
         // if (player.isRole(RoleId.Seer)) global::RebuildUs.Seer.clearAndReload();
-        if (player.isRole(RoleId.Hacker)) Hacker.clearAndReload();
+        // if (player.isRole(RoleId.Hacker)) global::RebuildUs.Hacker.clearAndReload();
         if (player.isRole(RoleId.Tracker)) Tracker.clearAndReload();
         if (player.isRole(RoleId.Snitch)) Snitch.clearAndReload();
         if (player.isRole(RoleId.Swapper)) Swapper.clearAndReload();
@@ -453,7 +453,7 @@ public static class RoleHelpers
         // if (player.isRole(RoleId.Medic)) global::RebuildUs.Medic.medic = target;
         if (player.isRole(RoleId.Swapper)) Swapper.swapper = target;
         // if (player.isRole(RoleId.Seer)) global::RebuildUs.Seer.seer = target;
-        if (player.isRole(RoleId.Hacker)) Hacker.hacker = target;
+        // if (player.isRole(RoleId.Hacker)) global::RebuildUs.Hacker.hacker = target;
         if (player.isRole(RoleId.Tracker)) Tracker.tracker = target;
         if (player.isRole(RoleId.Snitch)) Snitch.snitch = target;
         if (player.isRole(RoleId.Spy)) Spy.spy = target;

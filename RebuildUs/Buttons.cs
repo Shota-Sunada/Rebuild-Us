@@ -28,9 +28,9 @@ static class HudManagerStartPatch
     // private static CustomButton portalmakerPlacePortalButton;
     // private static CustomButton usePortalButton;
     // private static CustomButton portalmakerMoveToPortalButton;
-    private static CustomButton hackerButton;
-    public static CustomButton hackerVitalsButton;
-    public static CustomButton hackerAdminTableButton;
+    // private static CustomButton hackerButton;
+    // public static CustomButton hackerVitalsButton;
+    // public static CustomButton hackerAdminTableButton;
     private static CustomButton trackerTrackPlayerButton;
     private static CustomButton trackerTrackCorpsesButton;
     public static CustomButton vampireKillButton;
@@ -67,8 +67,8 @@ static class HudManagerStartPatch
     public static TMPro.TMP_Text securityGuardButtonScrewsText;
     public static TMPro.TMP_Text securityGuardChargesText;
     public static TMPro.TMP_Text pursuerButtonBlanksText;
-    public static TMPro.TMP_Text hackerAdminTableChargesText;
-    public static TMPro.TMP_Text hackerVitalsChargesText;
+    // public static TMPro.TMP_Text hackerAdminTableChargesText;
+    // public static TMPro.TMP_Text hackerVitalsChargesText;
     public static TMPro.TMP_Text trapperChargesText;
     // public static TMPro.TMP_Text portalmakerButtonText1;
     // public static TMPro.TMP_Text portalmakerButtonText2;
@@ -97,9 +97,9 @@ static class HudManagerStartPatch
         // portalmakerPlacePortalButton.MaxTimer = RebuildUs.Portalmaker.cooldown;
         // usePortalButton.MaxTimer = RebuildUs.Portalmaker.usePortalCooldown;
         // portalmakerMoveToPortalButton.MaxTimer = RebuildUs.Portalmaker.usePortalCooldown;
-        hackerButton.MaxTimer = Hacker.cooldown;
-        hackerVitalsButton.MaxTimer = Hacker.cooldown;
-        hackerAdminTableButton.MaxTimer = Hacker.cooldown;
+        // hackerButton.MaxTimer = Hacker.cooldown;
+        // hackerVitalsButton.MaxTimer = Hacker.cooldown;
+        // hackerAdminTableButton.MaxTimer = Hacker.cooldown;
         vampireKillButton.MaxTimer = Vampire.cooldown;
         trackerTrackPlayerButton.MaxTimer = 0f;
         garlicButton.MaxTimer = 0f;
@@ -131,9 +131,9 @@ static class HudManagerStartPatch
         defuseButton.Timer = 0f;
 
         // timeMasterShieldButton.effectDuration = TimeMaster.shieldDuration;
-        hackerButton.effectDuration = Hacker.duration;
-        hackerVitalsButton.effectDuration = Hacker.duration;
-        hackerAdminTableButton.effectDuration = Hacker.duration;
+        // hackerButton.effectDuration = Hacker.duration;
+        // hackerVitalsButton.effectDuration = Hacker.duration;
+        // hackerAdminTableButton.effectDuration = Hacker.duration;
         vampireKillButton.effectDuration = Vampire.delay;
         camouflagerButton.effectDuration = Camouflager.duration;
         morphingButton.effectDuration = Morphing.duration;
@@ -466,152 +466,152 @@ static class HudManagerStartPatch
         );
 
         // Hacker button
-        hackerButton = new CustomButton(
-            () =>
-            {
-                Hacker.hackerTimer = Hacker.duration;
-            },
-            () => { return Hacker.hacker != null && Hacker.hacker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return true; },
-            () =>
-            {
-                hackerButton.Timer = hackerButton.MaxTimer;
-                hackerButton.isEffectActive = false;
-                hackerButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-            },
-            Hacker.getButtonSprite(),
-            ButtonOffset.UpperRight,
-            __instance,
-            __instance.UseButton,
-            KeyCode.F,
-            true,
-            0f,
-            () => { hackerButton.Timer = hackerButton.MaxTimer; }
-        );
+        // hackerButton = new CustomButton(
+        //     () =>
+        //     {
+        //         Hacker.hackerTimer = Hacker.duration;
+        //     },
+        //     () => { return Hacker.hacker != null && Hacker.hacker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return true; },
+        //     () =>
+        //     {
+        //         hackerButton.Timer = hackerButton.MaxTimer;
+        //         hackerButton.isEffectActive = false;
+        //         hackerButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+        //     },
+        //     Hacker.getButtonSprite(),
+        //     ButtonOffset.UpperRight,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.F,
+        //     true,
+        //     0f,
+        //     () => { hackerButton.Timer = hackerButton.MaxTimer; }
+        // );
 
-        hackerAdminTableButton = new CustomButton(
-            () =>
-            {
-                if (!MapBehaviour.Instance || !MapBehaviour.Instance.isActiveAndEnabled)
-                {
-                    HudManager __instance = FastDestroyableSingleton<HudManager>.Instance;
-                    __instance.InitMap();
-                    MapBehaviour.Instance.ShowCountOverlay(allowedToMove: true, showLivePlayerPosition: true, includeDeadBodies: true);
-                }
-                if (Hacker.cantMove) PlayerControl.LocalPlayer.moveable = false;
-                PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
-                Hacker.chargesAdminTable--;
-            },
-            () => { return Hacker.hacker != null && Hacker.hacker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () =>
-            {
-                if (hackerAdminTableChargesText != null) hackerAdminTableChargesText.text = $"{Hacker.chargesAdminTable} / {Hacker.toolsNumber}";
-                return Hacker.chargesAdminTable > 0;
-            },
-            () =>
-            {
-                hackerAdminTableButton.Timer = hackerAdminTableButton.MaxTimer;
-                hackerAdminTableButton.isEffectActive = false;
-                hackerAdminTableButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-            },
-            Hacker.getAdminSprite(),
-            ButtonOffset.LowerRight,
-            __instance,
-            __instance.UseButton,
-            KeyCode.G,
-            true,
-            0f,
-            () =>
-            {
-                hackerAdminTableButton.Timer = hackerAdminTableButton.MaxTimer;
-                if (!hackerVitalsButton.isEffectActive) PlayerControl.LocalPlayer.moveable = true;
-                if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
-            },
-            GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3,
-            "ADMIN"
-        );
+        // hackerAdminTableButton = new CustomButton(
+        //     () =>
+        //     {
+        //         if (!MapBehaviour.Instance || !MapBehaviour.Instance.isActiveAndEnabled)
+        //         {
+        //             HudManager __instance = FastDestroyableSingleton<HudManager>.Instance;
+        //             __instance.InitMap();
+        //             MapBehaviour.Instance.ShowCountOverlay(allowedToMove: true, showLivePlayerPosition: true, includeDeadBodies: true);
+        //         }
+        //         if (Hacker.cantMove) PlayerControl.LocalPlayer.moveable = false;
+        //         PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
+        //         Hacker.chargesAdminTable--;
+        //     },
+        //     () => { return Hacker.hacker != null && Hacker.hacker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () =>
+        //     {
+        //         if (hackerAdminTableChargesText != null) hackerAdminTableChargesText.text = $"{Hacker.chargesAdminTable} / {Hacker.toolsNumber}";
+        //         return Hacker.chargesAdminTable > 0;
+        //     },
+        //     () =>
+        //     {
+        //         hackerAdminTableButton.Timer = hackerAdminTableButton.MaxTimer;
+        //         hackerAdminTableButton.isEffectActive = false;
+        //         hackerAdminTableButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+        //     },
+        //     Hacker.getAdminSprite(),
+        //     ButtonOffset.LowerRight,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.G,
+        //     true,
+        //     0f,
+        //     () =>
+        //     {
+        //         hackerAdminTableButton.Timer = hackerAdminTableButton.MaxTimer;
+        //         if (!hackerVitalsButton.isEffectActive) PlayerControl.LocalPlayer.moveable = true;
+        //         if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
+        //     },
+        //     GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3,
+        //     "ADMIN"
+        // );
 
-        // Hacker Admin Table Charges
-        hackerAdminTableChargesText = GameObject.Instantiate(hackerAdminTableButton.actionButton.cooldownTimerText, hackerAdminTableButton.actionButton.cooldownTimerText.transform.parent);
-        hackerAdminTableChargesText.text = "";
-        hackerAdminTableChargesText.enableWordWrapping = false;
-        hackerAdminTableChargesText.transform.localScale = Vector3.one * 0.5f;
-        hackerAdminTableChargesText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+        // // Hacker Admin Table Charges
+        // hackerAdminTableChargesText = GameObject.Instantiate(hackerAdminTableButton.actionButton.cooldownTimerText, hackerAdminTableButton.actionButton.cooldownTimerText.transform.parent);
+        // hackerAdminTableChargesText.text = "";
+        // hackerAdminTableChargesText.enableWordWrapping = false;
+        // hackerAdminTableChargesText.transform.localScale = Vector3.one * 0.5f;
+        // hackerAdminTableChargesText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
-        hackerVitalsButton = new CustomButton(
-            () =>
-            {
-                if (GameOptionsManager.Instance.currentNormalGameOptions.MapId != 1)
-                {
-                    if (Hacker.vitals == null)
-                    {
-                        var e = UnityEngine.Object.FindObjectsOfType<SystemConsole>().FirstOrDefault(x => x.gameObject.name.Contains("panel_vitals") || x.gameObject.name.Contains("Vitals"));
-                        if (e == null || Camera.main == null) return;
-                        Hacker.vitals = UnityEngine.Object.Instantiate(e.MinigamePrefab, Camera.main.transform, false);
-                    }
-                    Hacker.vitals.transform.SetParent(Camera.main.transform, false);
-                    Hacker.vitals.transform.localPosition = new Vector3(0.0f, 0.0f, -50f);
-                    Hacker.vitals.Begin(null);
-                }
-                else
-                {
-                    if (Hacker.doorLog == null)
-                    {
-                        var e = UnityEngine.Object.FindObjectsOfType<SystemConsole>().FirstOrDefault(x => x.gameObject.name.Contains("SurvLogConsole"));
-                        if (e == null || Camera.main == null) return;
-                        Hacker.doorLog = UnityEngine.Object.Instantiate(e.MinigamePrefab, Camera.main.transform, false);
-                    }
-                    Hacker.doorLog.transform.SetParent(Camera.main.transform, false);
-                    Hacker.doorLog.transform.localPosition = new Vector3(0.0f, 0.0f, -50f);
-                    Hacker.doorLog.Begin(null);
-                }
+        // hackerVitalsButton = new CustomButton(
+        //     () =>
+        //     {
+        //         if (GameOptionsManager.Instance.currentNormalGameOptions.MapId != 1)
+        //         {
+        //             if (Hacker.vitals == null)
+        //             {
+        //                 var e = UnityEngine.Object.FindObjectsOfType<SystemConsole>().FirstOrDefault(x => x.gameObject.name.Contains("panel_vitals") || x.gameObject.name.Contains("Vitals"));
+        //                 if (e == null || Camera.main == null) return;
+        //                 Hacker.vitals = UnityEngine.Object.Instantiate(e.MinigamePrefab, Camera.main.transform, false);
+        //             }
+        //             Hacker.vitals.transform.SetParent(Camera.main.transform, false);
+        //             Hacker.vitals.transform.localPosition = new Vector3(0.0f, 0.0f, -50f);
+        //             Hacker.vitals.Begin(null);
+        //         }
+        //         else
+        //         {
+        //             if (Hacker.doorLog == null)
+        //             {
+        //                 var e = UnityEngine.Object.FindObjectsOfType<SystemConsole>().FirstOrDefault(x => x.gameObject.name.Contains("SurvLogConsole"));
+        //                 if (e == null || Camera.main == null) return;
+        //                 Hacker.doorLog = UnityEngine.Object.Instantiate(e.MinigamePrefab, Camera.main.transform, false);
+        //             }
+        //             Hacker.doorLog.transform.SetParent(Camera.main.transform, false);
+        //             Hacker.doorLog.transform.localPosition = new Vector3(0.0f, 0.0f, -50f);
+        //             Hacker.doorLog.Begin(null);
+        //         }
 
-                if (Hacker.cantMove) PlayerControl.LocalPlayer.moveable = false;
-                PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
+        //         if (Hacker.cantMove) PlayerControl.LocalPlayer.moveable = false;
+        //         PlayerControl.LocalPlayer.NetTransform.Halt(); // Stop current movement
 
-                Hacker.chargesVitals--;
-            },
-            () => { return Hacker.hacker != null && Hacker.hacker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && GameOptionsManager.Instance.currentGameOptions.MapId != 0 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 3; },
-            () =>
-            {
-                if (hackerVitalsChargesText != null) hackerVitalsChargesText.text = $"{Hacker.chargesVitals} / {Hacker.toolsNumber}";
-                hackerVitalsButton.actionButton.graphic.sprite = Helpers.isMira() ? Hacker.getLogSprite() : Hacker.getVitalsSprite();
-                hackerVitalsButton.actionButton.OverrideText(Helpers.isMira() ? "DOORLOG" : "VITALS");
-                return Hacker.chargesVitals > 0;
-            },
-            () =>
-            {
-                hackerVitalsButton.Timer = hackerVitalsButton.MaxTimer;
-                hackerVitalsButton.isEffectActive = false;
-                hackerVitalsButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-            },
-            Hacker.getVitalsSprite(),
-            ButtonOffset.LowerCenter,
-            __instance,
-            __instance.UseButton,
-            KeyCode.H,
-            true,
-            0f,
-            () =>
-            {
-                hackerVitalsButton.Timer = hackerVitalsButton.MaxTimer;
-                if (!hackerAdminTableButton.isEffectActive) PlayerControl.LocalPlayer.moveable = true;
-                if (Minigame.Instance)
-                {
-                    if (Helpers.isMira()) Hacker.doorLog.ForceClose();
-                    else Hacker.vitals.ForceClose();
-                }
-            },
-            false,
-            Helpers.isMira() ? "DOORLOG" : "VITALS"
-        );
+        //         Hacker.chargesVitals--;
+        //     },
+        //     () => { return Hacker.hacker != null && Hacker.hacker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && GameOptionsManager.Instance.currentGameOptions.MapId != 0 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 3; },
+        //     () =>
+        //     {
+        //         if (hackerVitalsChargesText != null) hackerVitalsChargesText.text = $"{Hacker.chargesVitals} / {Hacker.toolsNumber}";
+        //         hackerVitalsButton.actionButton.graphic.sprite = Helpers.isMira() ? Hacker.getLogSprite() : Hacker.getVitalsSprite();
+        //         hackerVitalsButton.actionButton.OverrideText(Helpers.isMira() ? "DOORLOG" : "VITALS");
+        //         return Hacker.chargesVitals > 0;
+        //     },
+        //     () =>
+        //     {
+        //         hackerVitalsButton.Timer = hackerVitalsButton.MaxTimer;
+        //         hackerVitalsButton.isEffectActive = false;
+        //         hackerVitalsButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+        //     },
+        //     Hacker.getVitalsSprite(),
+        //     ButtonOffset.LowerCenter,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.H,
+        //     true,
+        //     0f,
+        //     () =>
+        //     {
+        //         hackerVitalsButton.Timer = hackerVitalsButton.MaxTimer;
+        //         if (!hackerAdminTableButton.isEffectActive) PlayerControl.LocalPlayer.moveable = true;
+        //         if (Minigame.Instance)
+        //         {
+        //             if (Helpers.isMira()) Hacker.doorLog.ForceClose();
+        //             else Hacker.vitals.ForceClose();
+        //         }
+        //     },
+        //     false,
+        //     Helpers.isMira() ? "DOORLOG" : "VITALS"
+        // );
 
-        // Hacker Vitals Charges
-        hackerVitalsChargesText = GameObject.Instantiate(hackerVitalsButton.actionButton.cooldownTimerText, hackerVitalsButton.actionButton.cooldownTimerText.transform.parent);
-        hackerVitalsChargesText.text = "";
-        hackerVitalsChargesText.enableWordWrapping = false;
-        hackerVitalsChargesText.transform.localScale = Vector3.one * 0.5f;
-        hackerVitalsChargesText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+        // // Hacker Vitals Charges
+        // hackerVitalsChargesText = GameObject.Instantiate(hackerVitalsButton.actionButton.cooldownTimerText, hackerVitalsButton.actionButton.cooldownTimerText.transform.parent);
+        // hackerVitalsChargesText.text = "";
+        // hackerVitalsChargesText.enableWordWrapping = false;
+        // hackerVitalsChargesText.transform.localScale = Vector3.one * 0.5f;
+        // hackerVitalsChargesText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
         // Tracker button
         trackerTrackPlayerButton = new CustomButton(

@@ -724,7 +724,7 @@ internal class PlayerStatistics
 
         // In the special case of Mafia being enabled, but only the janitor's left alive,
         // count it as zero impostors alive bc they can't actually do anything.
-        if (Godfather.godfather?.isDead() == true && Mafioso.mafioso?.isDead() == true && Janitor.janitor?.isDead() == false)
+        if (Mafia.Godfather.godfather?.isDead() == true && Mafia.Mafioso.mafioso?.isDead() == true && Mafia.Janitor.janitor?.isDead() == false)
         {
             numImpostorsAlive = 0;
         }

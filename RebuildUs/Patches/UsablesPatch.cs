@@ -327,7 +327,7 @@ class VitalsMinigamePatch
     {
         static void Postfix(VitalsMinigame __instance)
         {
-            if (Hacker.hacker != null && PlayerControl.LocalPlayer == Hacker.hacker)
+            if (Hacker.exists && PlayerControl.LocalPlayer.isRole(RoleId.Hacker))
             {
                 hackerTexts = [];
                 foreach (VitalsPanel panel in __instance.vitals)
@@ -361,7 +361,7 @@ class VitalsMinigamePatch
         {
             // Hacker show time since death
 
-            if (Hacker.hacker != null && Hacker.hacker == PlayerControl.LocalPlayer && Hacker.hackerTimer > 0)
+            if (Hacker.exists && PlayerControl.LocalPlayer.isRole(RoleId.Hacker) && Hacker.getRole().hackerTimer > 0)
             {
                 for (int k = 0; k < __instance.vitals.Length; k++)
                 {
@@ -506,7 +506,7 @@ class AdminPanelPatch
         static void Postfix(CounterArea __instance)
         {
             // Hacker display saved colors on the admin panel
-            bool showHackerInfo = Hacker.hacker != null && Hacker.hacker == PlayerControl.LocalPlayer && Hacker.hackerTimer > 0;
+            bool showHackerInfo = Hacker.exists && PlayerControl.LocalPlayer.isRole(RoleId.Hacker) && Hacker.getRole().hackerTimer > 0;
             if (players.ContainsKey(__instance.RoomType))
             {
                 List<Color> colors = players[__instance.RoomType];

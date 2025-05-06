@@ -8,7 +8,7 @@ namespace RebuildUs;
 public static class TasksHandler
 {
 
-    public static Tuple<int, int> taskInfo(NetworkedPlayerInfo playerInfo)
+    public static (int, int) taskInfo(NetworkedPlayerInfo playerInfo)
     {
         int TotalTasks = 0;
         int CompletedTasks = 0;
@@ -24,7 +24,7 @@ public static class TasksHandler
                 TotalTasks++;
             }
         }
-        return Tuple.Create(CompletedTasks, TotalTasks);
+        return new(CompletedTasks, TotalTasks);
     }
 
     [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]

@@ -595,7 +595,7 @@ public class CustomOptionHolder
         seerLimitSoulDuration = CustomOption.Create(773, CustomOptionType.Crewmate, "SeerLimitSoulDuration", false, seerSpawnRate);
         seerSoulDuration = CustomOption.Create(774, CustomOptionType.Crewmate, "SeerSoulDuration", 15f, 0f, 120f, 5f, seerLimitSoulDuration, unitType: UnitType.UnitSeconds);
 
-        hackerSpawnRate = new CustomRoleOption(780, 781, CustomOptionType.Crewmate, ("Hacker", Hacker.color), 1);
+        hackerSpawnRate = new CustomRoleOption(780, 781, CustomOptionType.Crewmate, ("Hacker", Hacker.Color), 1);
         hackerCooldown = CustomOption.Create(782, CustomOptionType.Crewmate, "HackerCooldown", 30f, 5f, 60f, 5f, hackerSpawnRate, unitType: UnitType.UnitSeconds);
         hackerHackingDuration = CustomOption.Create(783, CustomOptionType.Crewmate, "HackerHackingDuration", 10f, 2.5f, 60f, 2.5f, hackerSpawnRate, unitType: UnitType.UnitSeconds);
         hackerOnlyColorType = CustomOption.Create(784, CustomOptionType.Crewmate, "HackerOnlyColorType", false, hackerSpawnRate);
