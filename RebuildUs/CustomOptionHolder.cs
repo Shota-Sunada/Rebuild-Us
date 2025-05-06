@@ -435,7 +435,7 @@ public class CustomOptionHolder
         eraserCooldownIncrease = CustomOption.Create(153, CustomOptionType.Impostor, "EraserCooldownIncrease", 10f, 0f, 120f, 2.5f, eraserSpawnRate, unitType: UnitType.UnitSeconds);
         eraserCanEraseAnyone = CustomOption.Create(154, CustomOptionType.Impostor, "EraserCanEraseAnyone", false, eraserSpawnRate);
 
-        tricksterSpawnRate = new CustomRoleOption(160, 161, CustomOptionType.Impostor, ("Trickster", Trickster.color), 1);
+        tricksterSpawnRate = new CustomRoleOption(160, 161, CustomOptionType.Impostor, ("Trickster", Trickster.Color), 1);
         tricksterPlaceBoxCooldown = CustomOption.Create(162, CustomOptionType.Impostor, "TricksterPlaceBoxCooldown", 10f, 2.5f, 30f, 2.5f, tricksterSpawnRate, unitType: UnitType.UnitSeconds);
         tricksterLightsOutCooldown = CustomOption.Create(163, CustomOptionType.Impostor, "TricksterLightsOutCooldown", 30f, 5f, 60f, 5f, tricksterSpawnRate, unitType: UnitType.UnitSeconds);
         tricksterLightsOutDuration = CustomOption.Create(164, CustomOptionType.Impostor, "TricksterLightsOutDuration", 15f, 5f, 60f, 2.5f, tricksterSpawnRate, unitType: UnitType.UnitSeconds);
