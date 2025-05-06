@@ -44,7 +44,7 @@ public static class RebuildUs
         Snitch.clearAndReload();
         Jackal.clearAndReload();
         Sidekick.clearAndReload();
-        Eraser.clearAndReload();
+        // Eraser.clearAndReload();
         Spy.clearAndReload();
         Trickster.clearAndReload();
         Cleaner.clearAndReload();
@@ -977,36 +977,36 @@ public static class Sidekick
     }
 }
 
-public static class Eraser
-{
-    public static PlayerControl eraser;
-    public static Color color = Palette.ImpostorRed;
+// public static class Eraser
+// {
+//     public static PlayerControl eraser;
+//     public static Color color = Palette.ImpostorRed;
 
-    public static List<byte> alreadyErased = [];
+//     public static List<byte> alreadyErased = [];
 
-    public static List<PlayerControl> futureErased = [];
-    public static PlayerControl currentTarget;
-    public static float cooldown = 30f;
-    public static bool canEraseAnyone = false;
+//     public static List<PlayerControl> futureErased = [];
+//     public static PlayerControl currentTarget;
+//     public static float cooldown = 30f;
+//     public static bool canEraseAnyone = false;
 
-    private static Sprite buttonSprite;
-    public static Sprite getButtonSprite()
-    {
-        if (buttonSprite) return buttonSprite;
-        buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.EraserButton.png", 115f);
-        return buttonSprite;
-    }
+//     private static Sprite buttonSprite;
+//     public static Sprite getButtonSprite()
+//     {
+//         if (buttonSprite) return buttonSprite;
+//         buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.EraserButton.png", 115f);
+//         return buttonSprite;
+//     }
 
-    public static void clearAndReload()
-    {
-        eraser = null;
-        futureErased = [];
-        currentTarget = null;
-        cooldown = CustomOptionHolder.eraserCooldown.getFloat();
-        canEraseAnyone = CustomOptionHolder.eraserCanEraseAnyone.getBool();
-        alreadyErased = [];
-    }
-}
+//     public static void clearAndReload()
+//     {
+//         eraser = null;
+//         futureErased = [];
+//         currentTarget = null;
+//         cooldown = CustomOptionHolder.eraserCooldown.getFloat();
+//         canEraseAnyone = CustomOptionHolder.eraserCanEraseAnyone.getBool();
+//         alreadyErased = [];
+//     }
+// }
 
 public static class Spy
 {

@@ -44,7 +44,7 @@ class ExileControllerBeginPatch
         Shifter.futureShift = null;
 
         // Eraser erase
-        if (Eraser.eraser != null && AmongUsClient.Instance.AmHost && Eraser.futureErased != null)
+        if (Eraser.exists && AmongUsClient.Instance.AmHost && Eraser.futureErased != null)
         {  // We need to send the RPC from the host here, to make sure that the order of shifting and erasing is correct (for that reason the futureShifted and futureErased are being synced)
             foreach (PlayerControl target in Eraser.futureErased)
             {

@@ -674,7 +674,7 @@ class MeetingHudPatch
             {
                 PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                 if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
-                if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer == Eraser.eraser && Eraser.alreadyErased.Contains(playerVoteArea.TargetPlayerId)) continue;
+                if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.isRole(RoleId.Eraser) && Eraser.alreadyErased.Contains(playerVoteArea.TargetPlayerId)) continue;
                 if (PlayerControl.LocalPlayer != null && !Helpers.isEvil(PlayerControl.LocalPlayer)) continue;
 
                 GameObject template = playerVoteArea.Buttons.transform.Find("CancelButton").gameObject;

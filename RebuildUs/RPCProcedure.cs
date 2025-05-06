@@ -924,7 +924,7 @@ public static class RPCProcedure
         if (target == Morphing.morphing) Morphing.morphing = thief;
         if (target == Camouflager.camouflager) Camouflager.camouflager = thief;
         if (target == Vampire.vampire) Vampire.vampire = thief;
-        if (target == Eraser.eraser) Eraser.eraser = thief;
+        if (target.isRole(RoleId.Eraser)) Eraser.getRole(target).player = thief;
         if (target == Trickster.trickster) Trickster.trickster = thief;
         if (target == Cleaner.cleaner) Cleaner.cleaner = thief;
         if (target == Warlock.warlock) Warlock.warlock = thief;

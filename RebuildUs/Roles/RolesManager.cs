@@ -190,8 +190,8 @@ public static class RoleHelpers
                 return Jackal.jackal == player;
             case RoleId.Sidekick:
                 return Sidekick.sidekick == player;
-            case RoleId.Eraser:
-                return Eraser.eraser == player;
+            // case RoleId.Eraser:
+            //     return global::RebuildUs.Eraser.eraser == player;
             case RoleId.Spy:
                 return Spy.spy == player;
             case RoleId.Trickster:
@@ -304,9 +304,9 @@ public static class RoleHelpers
             case RoleId.Sidekick:
                 Sidekick.sidekick = player;
                 break;
-            case RoleId.Eraser:
-                Eraser.eraser = player;
-                break;
+            // case RoleId.Eraser:
+            //     global::RebuildUs.Eraser.eraser = player;
+            //     break;
             case RoleId.Spy:
                 Spy.spy = player;
                 break;
@@ -404,7 +404,7 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Mafioso)) Mafia.Mafioso.clearAndReload();
         if (player.isRole(RoleId.Janitor)) Mafia.Janitor.clearAndReload();
         if (player.isRole(RoleId.Vampire)) Vampire.clearAndReload();
-        if (player.isRole(RoleId.Eraser)) Eraser.clearAndReload();
+        // if (player.isRole(RoleId.Eraser)) global::RebuildUs.Eraser.clearAndReload();
         if (player.isRole(RoleId.Trickster)) Trickster.clearAndReload();
         if (player.isRole(RoleId.Cleaner)) Cleaner.clearAndReload();
         if (player.isRole(RoleId.Warlock)) Warlock.clearAndReload();
@@ -465,7 +465,7 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Morphing)) Morphing.morphing = target;
         if (player.isRole(RoleId.Camouflager)) Camouflager.camouflager = target;
         if (player.isRole(RoleId.Vampire)) Vampire.vampire = target;
-        if (player.isRole(RoleId.Eraser)) Eraser.eraser = target;
+        // if (player.isRole(RoleId.Eraser)) global::RebuildUs.Eraser.eraser = target;
         if (player.isRole(RoleId.Trickster)) Trickster.trickster = target;
         if (player.isRole(RoleId.Cleaner)) Cleaner.cleaner = target;
         if (player.isRole(RoleId.Warlock)) Warlock.warlock = target;

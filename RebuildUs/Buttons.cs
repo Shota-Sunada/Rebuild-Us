@@ -39,7 +39,7 @@ static class HudManagerStartPatch
     public static CustomButton sidekickKillButton;
     private static CustomButton jackalSidekickButton;
     public static CustomButton jackalAndSidekickSabotageLightsButton;
-    private static CustomButton eraserButton;
+    // private static CustomButton eraserButton;
     private static CustomButton placeJackInTheBoxButton;
     private static CustomButton lightsOutButton;
     public static CustomButton cleanerCleanButton;
@@ -106,7 +106,7 @@ static class HudManagerStartPatch
         jackalKillButton.MaxTimer = Jackal.cooldown;
         sidekickKillButton.MaxTimer = Sidekick.cooldown;
         jackalSidekickButton.MaxTimer = Jackal.createSidekickCooldown;
-        eraserButton.MaxTimer = Eraser.cooldown;
+        // eraserButton.MaxTimer = Eraser.cooldown;
         placeJackInTheBoxButton.MaxTimer = Trickster.placeBoxCooldown;
         lightsOutButton.MaxTimer = Trickster.lightsOutCooldown;
         cleanerCleanButton.MaxTimer = Cleaner.cooldown;
@@ -1012,25 +1012,25 @@ static class HudManagerStartPatch
         );
 
         // Eraser erase button
-        eraserButton = new CustomButton(
-            () =>
-            {
-                eraserButton.MaxTimer += 10;
-                eraserButton.Timer = eraserButton.MaxTimer;
+        // eraserButton = new CustomButton(
+        //     () =>
+        //     {
+        //         eraserButton.MaxTimer += 10;
+        //         eraserButton.Timer = eraserButton.MaxTimer;
 
-                using var writer = RPCProcedure.SendRPC(CustomRPC.SetFutureErased);
-                writer.Write(Eraser.currentTarget.PlayerId);
-                RPCProcedure.setFutureErased(Eraser.currentTarget.PlayerId);
-            },
-            () => { return Eraser.eraser != null && Eraser.eraser == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return PlayerControl.LocalPlayer.CanMove && Eraser.currentTarget != null; },
-            () => { eraserButton.Timer = eraserButton.MaxTimer; },
-            Eraser.getButtonSprite(),
-            ButtonOffset.UpperLeft,
-            __instance,
-            __instance.KillButton,
-            KeyCode.F
-        );
+        //         using var writer = RPCProcedure.SendRPC(CustomRPC.SetFutureErased);
+        //         writer.Write(Eraser.currentTarget.PlayerId);
+        //         RPCProcedure.setFutureErased(Eraser.currentTarget.PlayerId);
+        //     },
+        //     () => { return Eraser.eraser != null && Eraser.eraser == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return PlayerControl.LocalPlayer.CanMove && Eraser.currentTarget != null; },
+        //     () => { eraserButton.Timer = eraserButton.MaxTimer; },
+        //     Eraser.getButtonSprite(),
+        //     ButtonOffset.UpperLeft,
+        //     __instance,
+        //     __instance.KillButton,
+        //     KeyCode.F
+        // );
 
         placeJackInTheBoxButton = new CustomButton(
             () =>

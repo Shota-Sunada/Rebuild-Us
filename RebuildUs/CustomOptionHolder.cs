@@ -430,7 +430,7 @@ public class CustomOptionHolder
         vampireCooldown = CustomOption.Create(143, CustomOptionType.Impostor, "VampireCooldown", 30f, 2.5f, 60f, 2.5f, vampireSpawnRate, unitType: UnitType.UnitSeconds);
         vampireCanKillNearGarlics = CustomOption.Create(144, CustomOptionType.Impostor, "VampireCanKillNearGarlics", true, vampireSpawnRate);
 
-        eraserSpawnRate = new CustomRoleOption(150, 151, CustomOptionType.Impostor, ("Eraser", Eraser.color), 1);
+        eraserSpawnRate = new CustomRoleOption(150, 151, CustomOptionType.Impostor, ("Eraser", Eraser.Color), 1);
         eraserCooldown = CustomOption.Create(152, CustomOptionType.Impostor, "EraserCooldown", 30f, 5f, 120f, 5f, eraserSpawnRate, unitType: UnitType.UnitSeconds);
         eraserCooldownIncrease = CustomOption.Create(153, CustomOptionType.Impostor, "EraserCooldownIncrease", 10f, 0f, 120f, 2.5f, eraserSpawnRate, unitType: UnitType.UnitSeconds);
         eraserCanEraseAnyone = CustomOption.Create(154, CustomOptionType.Impostor, "EraserCanEraseAnyone", false, eraserSpawnRate);
