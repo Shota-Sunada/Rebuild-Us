@@ -18,7 +18,7 @@ static class HudManagerStartPatch
     private static bool initialized = false;
 
     // private static CustomButton engineerRepairButton;
-    private static CustomButton janitorCleanButton;
+    // private static CustomButton janitorCleanButton;
     // public static CustomButton sheriffKillButton;
     // private static CustomButton timeMasterShieldButton;
     // private static CustomButton medicShieldButton;
@@ -88,7 +88,7 @@ static class HudManagerStartPatch
             }
         }
         // engineerRepairButton.MaxTimer = 0f;
-        janitorCleanButton.MaxTimer = Janitor.cooldown;
+        // janitorCleanButton.MaxTimer = Janitor.cooldown;
         // timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
         // medicShieldButton.MaxTimer = 0f;
         shifterShiftButton.MaxTimer = 0f;
@@ -270,42 +270,42 @@ static class HudManagerStartPatch
         // );
 
         // Janitor Clean
-        janitorCleanButton = new CustomButton(
-            () =>
-            {
-                foreach (Collider2D collider2D in Physics2D.OverlapCircleAll(PlayerControl.LocalPlayer.GetTruePosition(), PlayerControl.LocalPlayer.MaxReportDistance, Constants.PlayersOnlyMask))
-                {
-                    if (collider2D.tag == "DeadBody")
-                    {
-                        DeadBody component = collider2D.GetComponent<DeadBody>();
-                        if (component && !component.Reported)
-                        {
-                            Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-                            Vector2 truePosition2 = component.TruePosition;
-                            if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false))
-                            {
-                                NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
+        // janitorCleanButton = new CustomButton(
+        //     () =>
+        //     {
+        //         foreach (Collider2D collider2D in Physics2D.OverlapCircleAll(PlayerControl.LocalPlayer.GetTruePosition(), PlayerControl.LocalPlayer.MaxReportDistance, Constants.PlayersOnlyMask))
+        //         {
+        //             if (collider2D.tag == "DeadBody")
+        //             {
+        //                 DeadBody component = collider2D.GetComponent<DeadBody>();
+        //                 if (component && !component.Reported)
+        //                 {
+        //                     Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+        //                     Vector2 truePosition2 = component.TruePosition;
+        //                     if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false))
+        //                     {
+        //                         NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
 
-                                using var writer = RPCProcedure.SendRPC(CustomRPC.CleanBody);
-                                writer.Write(playerInfo.PlayerId);
-                                writer.Write(Janitor.janitor.PlayerId);
-                                RPCProcedure.cleanBody(playerInfo.PlayerId, Janitor.janitor.PlayerId);
-                                janitorCleanButton.Timer = janitorCleanButton.MaxTimer;
-                                break;
-                            }
-                        }
-                    }
-                }
-            },
-            () => { return Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return __instance.ReportButton.graphic.color == Palette.EnabledColor && PlayerControl.LocalPlayer.CanMove; },
-            () => { janitorCleanButton.Timer = janitorCleanButton.MaxTimer; },
-            Janitor.getButtonSprite(),
-            ButtonOffset.UpperLeft,
-            __instance,
-            __instance.UseButton,
-            KeyCode.F
-        );
+        //                         using var writer = RPCProcedure.SendRPC(CustomRPC.CleanBody);
+        //                         writer.Write(playerInfo.PlayerId);
+        //                         writer.Write(Janitor.janitor.PlayerId);
+        //                         RPCProcedure.cleanBody(playerInfo.PlayerId, Janitor.janitor.PlayerId);
+        //                         janitorCleanButton.Timer = janitorCleanButton.MaxTimer;
+        //                         break;
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     },
+        //     () => { return Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return __instance.ReportButton.graphic.color == Palette.EnabledColor && PlayerControl.LocalPlayer.CanMove; },
+        //     () => { janitorCleanButton.Timer = janitorCleanButton.MaxTimer; },
+        //     Janitor.getButtonSprite(),
+        //     ButtonOffset.UpperLeft,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.F
+        // );
 
         // Time Master Rewind Time
         // timeMasterShieldButton = new CustomButton(

@@ -189,20 +189,39 @@ class HudManagerUpdatePatch
         if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.Role.IsImpostor)
         {
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-                if (Godfather.godfather != null && Godfather.godfather == player)
+            {
+                if (Mafia.Godfather.godfather != null && player.isRole(RoleId.Godfather))
+                {
                     player.cosmetics.nameText.text = player.Data.PlayerName + " (G)";
-                else if (Mafioso.mafioso != null && Mafioso.mafioso == player)
+                }
+                else if (Mafia.Mafioso.mafioso != null && player.isRole(RoleId.Mafioso))
+                {
                     player.cosmetics.nameText.text = player.Data.PlayerName + " (M)";
-                else if (Janitor.janitor != null && Janitor.janitor == player)
+                }
+                else if (Mafia.Janitor.janitor != null && player.isRole(RoleId.Janitor))
+                {
                     player.cosmetics.nameText.text = player.Data.PlayerName + " (J)";
+                }
+            }
+
             if (MeetingHud.Instance != null)
+            {
                 foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
-                    if (Godfather.godfather != null && Godfather.godfather.PlayerId == player.TargetPlayerId)
-                        player.NameText.text = Godfather.godfather.Data.PlayerName + " (G)";
-                    else if (Mafioso.mafioso != null && Mafioso.mafioso.PlayerId == player.TargetPlayerId)
-                        player.NameText.text = Mafioso.mafioso.Data.PlayerName + " (M)";
-                    else if (Janitor.janitor != null && Janitor.janitor.PlayerId == player.TargetPlayerId)
-                        player.NameText.text = Janitor.janitor.Data.PlayerName + " (J)";
+                {
+                    if (Mafia.Godfather.godfather != null && Mafia.Godfather.godfather.PlayerId == player.TargetPlayerId)
+                    {
+                        player.NameText.text = Mafia.Godfather.godfather.Data.PlayerName + " (G)";
+                    }
+                    else if (Mafia.Mafioso.mafioso != null && Mafia.Mafioso.mafioso.PlayerId == player.TargetPlayerId)
+                    {
+                        player.NameText.text = Mafia.Mafioso.mafioso.Data.PlayerName + " (M)";
+                    }
+                    else if (Mafia.Janitor.janitor != null && Mafia.Janitor.janitor.PlayerId == player.TargetPlayerId)
+                    {
+                        player.NameText.text = Mafia.Janitor.janitor.Data.PlayerName + " (J)";
+                    }
+                }
+            }
         }
 
         // Lovers
@@ -262,7 +281,7 @@ class HudManagerUpdatePatch
         {
             foreach (var medic in Medic.players)
             {
-                if (MeetingHud.Instance != null &&  medic.shielded != null && Medic.shieldVisible(medic.shielded))
+                if (MeetingHud.Instance != null && medic.shielded != null && Medic.shieldVisible(medic.shielded))
                 {
                     foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
                         if (player.TargetPlayerId == medic.shielded.PlayerId)
@@ -323,11 +342,17 @@ class HudManagerUpdatePatch
         }
         bool enabled = true;
         if (Vampire.vampire != null && Vampire.vampire == PlayerControl.LocalPlayer)
+        {
             enabled = false;
-        else if (Mafioso.mafioso != null && Mafioso.mafioso == PlayerControl.LocalPlayer && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
+        }
+        else if (Mafia.Mafioso.mafioso != null && PlayerControl.LocalPlayer.isRole(RoleId.Mafioso) && Mafia.Godfather.godfather != null && !Mafia.Godfather.godfather.isDead())
+        {
             enabled = false;
-        else if (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer)
+        }
+        else if (Mafia.Janitor.janitor != null && PlayerControl.LocalPlayer.isRole(RoleId.Janitor))
+        {
             enabled = false;
+        }
 
         if (enabled) __instance.KillButton.Show();
         else __instance.KillButton.Hide();

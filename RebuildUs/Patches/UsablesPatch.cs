@@ -213,8 +213,8 @@ class SabotageButtonRefreshPatch
     static void Postfix()
     {
         // Mafia disable sabotage button for Janitor and sometimes for Mafioso
-        bool blockSabotageJanitor = (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer);
-        bool blockSabotageMafioso = (Mafioso.mafioso != null && Mafioso.mafioso == PlayerControl.LocalPlayer && Godfather.godfather != null && !Godfather.godfather.Data.IsDead);
+        bool blockSabotageJanitor = Mafia.Janitor.janitor != null && PlayerControl.LocalPlayer.isRole(RoleId.Janitor);
+        bool blockSabotageMafioso = Mafia.Mafioso.mafioso != null && PlayerControl.LocalPlayer.isRole(RoleId.Mafioso) && Mafia.Godfather.godfather != null && !Mafia.Godfather.godfather.isDead();
         if (blockSabotageJanitor || blockSabotageMafioso)
         {
             FastDestroyableSingleton<HudManager>.Instance.SabotageButton.SetDisabled();

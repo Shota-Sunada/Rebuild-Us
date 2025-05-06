@@ -26,9 +26,9 @@ public static class RebuildUs
         // Portalmaker.clearAndReload();
         // Engineer.clearAndReload();
         // Lighter.clearAndReload();
-        Godfather.clearAndReload();
-        Mafioso.clearAndReload();
-        Janitor.clearAndReload();
+        // Godfather.clearAndReload();
+        // Mafioso.clearAndReload();
+        // Janitor.clearAndReload();
         // Detective.clearAndReload();
         // TimeMaster.clearAndReload();
         // Medic.clearAndReload();
@@ -226,50 +226,50 @@ public static class RebuildUs
     //     }
     // }
 
-    public static class Godfather
-    {
-        public static PlayerControl godfather;
-        public static Color color = Palette.ImpostorRed;
+    // public static class Godfather
+    // {
+    //     public static PlayerControl godfather;
+    //     public static Color color = Palette.ImpostorRed;
 
-        public static void clearAndReload()
-        {
-            godfather = null;
-        }
-    }
+    //     public static void clearAndReload()
+    //     {
+    //         godfather = null;
+    //     }
+    // }
 
-    public static class Mafioso
-    {
-        public static PlayerControl mafioso;
-        public static Color color = Palette.ImpostorRed;
+    // public static class Mafioso
+    // {
+    //     public static PlayerControl mafioso;
+    //     public static Color color = Palette.ImpostorRed;
 
-        public static void clearAndReload()
-        {
-            mafioso = null;
-        }
-    }
+    //     public static void clearAndReload()
+    //     {
+    //         mafioso = null;
+    //     }
+    // }
 
 
-    public static class Janitor
-    {
-        public static PlayerControl janitor;
-        public static Color color = Palette.ImpostorRed;
+    // public static class Janitor
+    // {
+    //     public static PlayerControl janitor;
+    //     public static Color color = Palette.ImpostorRed;
 
-        public static float cooldown = 30f;
+    //     public static float cooldown = 30f;
 
-        private static Sprite buttonSprite;
-        public static Sprite getButtonSprite()
-        {
-            if (buttonSprite) return buttonSprite;
-            buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.CleanButton.png", 115f);
-            return buttonSprite;
-        }
+    //     private static Sprite buttonSprite;
+    //     public static Sprite getButtonSprite()
+    //     {
+    //         if (buttonSprite) return buttonSprite;
+    //         buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.CleanButton.png", 115f);
+    //         return buttonSprite;
+    //     }
 
-        public static void clearAndReload()
-        {
-            janitor = null;
-            cooldown = CustomOptionHolder.janitorCooldown.getFloat();
-        }
-    }
+    //     public static void clearAndReload()
+    //     {
+    //         janitor = null;
+    //         cooldown = CustomOptionHolder.janitorCooldown.getFloat();
+    //     }
+    // }
 
     // public static class Sheriff
     // {

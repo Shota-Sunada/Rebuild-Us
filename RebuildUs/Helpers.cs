@@ -689,12 +689,18 @@ public static class Helpers
         }
         else if (player.Data?.Role != null && player.Data.Role.CanVent)
         {
-            if (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer)
+            if (Mafia.Janitor.janitor != null && PlayerControl.LocalPlayer.isRole(RoleId.Janitor))
+            {
                 roleCouldUse = false;
-            else if (Mafioso.mafioso != null && Mafioso.mafioso == PlayerControl.LocalPlayer && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
+            }
+            else if (Mafia.Mafioso.mafioso != null && PlayerControl.LocalPlayer.isRole(RoleId.Mafioso) && Mafia.Godfather.godfather != null && !Mafia.Godfather.godfather.Data.IsDead)
+            {
                 roleCouldUse = false;
+            }
             else
+            {
                 roleCouldUse = true;
+            }
         }
         return roleCouldUse;
     }

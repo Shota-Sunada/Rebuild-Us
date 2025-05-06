@@ -155,11 +155,11 @@ public static class RoleHelpers
             // case RoleId.Engineer:
             //     return RebuildUs.Engineer.engineer == player;
             case RoleId.Godfather:
-                return Godfather.godfather == player;
+                return Mafia.Godfather.godfather == player;
             case RoleId.Mafioso:
-                return Mafioso.mafioso == player;
+                return Mafia.Mafioso.mafioso == player;
             case RoleId.Janitor:
-                return Janitor.janitor == player;
+                return Mafia.Janitor.janitor == player;
             // case RoleId.Detective:
             //     return RebuildUs.Detective.detective == player;
             // case RoleId.TimeMaster:
@@ -251,13 +251,13 @@ public static class RoleHelpers
             //     RebuildUs.Engineer.engineer = player;
             //     break;
             case RoleId.Godfather:
-                Godfather.godfather = player;
+                Mafia.Godfather.godfather = player;
                 break;
             case RoleId.Mafioso:
-                Mafioso.mafioso = player;
+                Mafia.Mafioso.mafioso = player;
                 break;
             case RoleId.Janitor:
-                Janitor.janitor = player;
+                Mafia.Janitor.janitor = player;
                 break;
             // case RoleId.Detective:
             //     RebuildUs.Detective.detective = player;
@@ -400,9 +400,9 @@ public static class RoleHelpers
         // Impostor roles
         if (player.isRole(RoleId.Morphing)) Morphing.clearAndReload();
         if (player.isRole(RoleId.Camouflager)) Camouflager.clearAndReload();
-        if (player.isRole(RoleId.Godfather)) Godfather.clearAndReload();
-        if (player.isRole(RoleId.Mafioso)) Mafioso.clearAndReload();
-        if (player.isRole(RoleId.Janitor)) Janitor.clearAndReload();
+        if (player.isRole(RoleId.Godfather)) Mafia.Godfather.clearAndReload();
+        if (player.isRole(RoleId.Mafioso)) Mafia.Mafioso.clearAndReload();
+        if (player.isRole(RoleId.Janitor)) Mafia.Janitor.clearAndReload();
         if (player.isRole(RoleId.Vampire)) Vampire.clearAndReload();
         if (player.isRole(RoleId.Eraser)) Eraser.clearAndReload();
         if (player.isRole(RoleId.Trickster)) Trickster.clearAndReload();
@@ -459,9 +459,9 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Spy)) Spy.spy = target;
         if (player.isRole(RoleId.SecurityGuard)) SecurityGuard.securityGuard = target;
         if (player.isRole(RoleId.Medium)) Medium.medium = target;
-        if (player.isRole(RoleId.Godfather)) Godfather.godfather = target;
-        if (player.isRole(RoleId.Mafioso)) Mafioso.mafioso = target;
-        if (player.isRole(RoleId.Janitor)) Janitor.janitor = target;
+        if (player.isRole(RoleId.Godfather)) Mafia.Godfather.godfather = target;
+        if (player.isRole(RoleId.Mafioso)) Mafia.Mafioso.mafioso = target;
+        if (player.isRole(RoleId.Janitor)) Mafia.Janitor.janitor = target;
         if (player.isRole(RoleId.Morphing)) Morphing.morphing = target;
         if (player.isRole(RoleId.Camouflager)) Camouflager.camouflager = target;
         if (player.isRole(RoleId.Vampire)) Vampire.vampire = target;

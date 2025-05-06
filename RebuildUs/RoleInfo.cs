@@ -45,9 +45,9 @@ public class RoleInfo
     public static RoleInfo engineer = new("Engineer", Engineer.Color, "Maintain important systems on the ship", "Repair the ship", RoleId.Engineer);
     public static RoleInfo sheriff = new("Sheriff", Sheriff.Color, "Shoot the <color=#FF1919FF>Impostors</color>", "Shoot the Impostors", RoleId.Sheriff);
     public static RoleInfo lighter = new("Lighter", Lighter.Color, "Your light never goes out", "Your light never goes out", RoleId.Lighter);
-    public static RoleInfo godfather = new("Godfather", Godfather.color, "Kill all Crewmates", "Kill all Crewmates", RoleId.Godfather);
-    public static RoleInfo mafioso = new("Mafioso", Mafioso.color, "Work with the <color=#FF1919FF>Mafia</color> to kill the Crewmates", "Kill all Crewmates", RoleId.Mafioso);
-    public static RoleInfo janitor = new("Janitor", Janitor.color, "Work with the <color=#FF1919FF>Mafia</color> by hiding dead bodies", "Hide dead bodies", RoleId.Janitor);
+    public static RoleInfo godfather = new("Godfather", Mafia.Color, "Kill all Crewmates", "Kill all Crewmates", RoleId.Godfather);
+    public static RoleInfo mafioso = new("Mafioso", Mafia.Color, "Work with the <color=#FF1919FF>Mafia</color> to kill the Crewmates", "Kill all Crewmates", RoleId.Mafioso);
+    public static RoleInfo janitor = new("Janitor", Mafia.Color, "Work with the <color=#FF1919FF>Mafia</color> by hiding dead bodies", "Hide dead bodies", RoleId.Janitor);
     public static RoleInfo morphling = new("Morphling", Morphing.color, "Change your look to not get caught", "Change your look", RoleId.Morphing);
     public static RoleInfo camouflager = new("Camouflager", Camouflager.color, "Camouflage and kill the Crewmates", "Hide among others", RoleId.Camouflager);
     public static RoleInfo vampire = new("Vampire", Vampire.color, "Kill the Crewmates with your bites", "Bite your enemies", RoleId.Vampire);
@@ -202,9 +202,9 @@ public class RoleInfo
         if (p.isRole(RoleId.Engineer)) infos.Add(engineer);
         if (p.isRole(RoleId.Sheriff)) infos.Add(sheriff);
         if (p.isRole(RoleId.Lighter)) infos.Add(lighter);
-        if (p == Godfather.godfather) infos.Add(godfather);
-        if (p == Mafioso.mafioso) infos.Add(mafioso);
-        if (p == Janitor.janitor) infos.Add(janitor);
+        if (p.isRole(RoleId.Godfather)) infos.Add(godfather);
+        if (p.isRole(RoleId.Mafioso)) infos.Add(mafioso);
+        if (p.isRole(RoleId.Janitor)) infos.Add(janitor);
         if (p == Morphing.morphing) infos.Add(morphling);
         if (p == Camouflager.camouflager) infos.Add(camouflager);
         if (p == Vampire.vampire) infos.Add(vampire);

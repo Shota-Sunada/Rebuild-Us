@@ -912,9 +912,9 @@ public static class RPCProcedure
             Jackal.formerJackals.Add(target);
         }
         if (target == Guesser.evilGuesser) Guesser.evilGuesser = thief;
-        if (target == Godfather.godfather) Godfather.godfather = thief;
-        if (target == Mafioso.mafioso) Mafioso.mafioso = thief;
-        if (target == Janitor.janitor) Janitor.janitor = thief;
+        if (target.isRole(RoleId.Godfather)) Mafia.Godfather.godfather = thief;
+        if (target.isRole(RoleId.Mafioso)) Mafia.Mafioso.mafioso = thief;
+        if (target.isRole(RoleId.Janitor)) Mafia.Janitor.janitor = thief;
         if (target == Morphing.morphing) Morphing.morphing = thief;
         if (target == Camouflager.camouflager) Camouflager.camouflager = thief;
         if (target == Vampire.vampire) Vampire.vampire = thief;

@@ -407,7 +407,7 @@ public class CustomOptionHolder
 
         #region Impostor Roles
 
-        mafiaSpawnRate = new CustomRoleOption(100, 101, CustomOptionType.Impostor, ("Mafia", Janitor.color), 1);
+        mafiaSpawnRate = new CustomRoleOption(100, 101, CustomOptionType.Impostor, ("Mafia", Mafia.Color), 1);
         mafiosoCanSabotage = CustomOption.Create(102, CustomOptionType.Impostor, "MafiosoCanSabotage", false, mafiaSpawnRate);
         mafiosoCanRepair = CustomOption.Create(103, CustomOptionType.Impostor, "MafiosoCanRepair", false, mafiaSpawnRate);
         mafiosoCanVent = CustomOption.Create(104, CustomOptionType.Impostor, "MafiosoCanVent", false, mafiaSpawnRate);
