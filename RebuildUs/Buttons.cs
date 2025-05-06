@@ -31,8 +31,8 @@ static class HudManagerStartPatch
     // private static CustomButton hackerButton;
     // public static CustomButton hackerVitalsButton;
     // public static CustomButton hackerAdminTableButton;
-    private static CustomButton trackerTrackPlayerButton;
-    private static CustomButton trackerTrackCorpsesButton;
+    // private static CustomButton trackerTrackPlayerButton;
+    // private static CustomButton trackerTrackCorpsesButton;
     public static CustomButton vampireKillButton;
     public static CustomButton garlicButton;
     public static CustomButton jackalKillButton;
@@ -101,7 +101,7 @@ static class HudManagerStartPatch
         // hackerVitalsButton.MaxTimer = Hacker.cooldown;
         // hackerAdminTableButton.MaxTimer = Hacker.cooldown;
         vampireKillButton.MaxTimer = Vampire.cooldown;
-        trackerTrackPlayerButton.MaxTimer = 0f;
+        // trackerTrackPlayerButton.MaxTimer = 0f;
         garlicButton.MaxTimer = 0f;
         jackalKillButton.MaxTimer = Jackal.cooldown;
         sidekickKillButton.MaxTimer = Sidekick.cooldown;
@@ -117,7 +117,7 @@ static class HudManagerStartPatch
         vultureEatButton.MaxTimer = Vulture.cooldown;
         mediumButton.MaxTimer = Medium.cooldown;
         pursuerButton.MaxTimer = Pursuer.cooldown;
-        trackerTrackCorpsesButton.MaxTimer = Tracker.corpsesTrackingCooldown;
+        // trackerTrackCorpsesButton.MaxTimer = Tracker.corpsesTrackingCooldown;
         witchSpellButton.MaxTimer = Witch.cooldown;
         ninjaButton.MaxTimer = Ninja.cooldown;
         thiefKillButton.MaxTimer = Thief.cooldown;
@@ -140,7 +140,7 @@ static class HudManagerStartPatch
         lightsOutButton.effectDuration = Trickster.lightsOutDuration;
         // arsonistButton.effectDuration = Arsonist.duration;
         mediumButton.effectDuration = Medium.duration;
-        trackerTrackCorpsesButton.effectDuration = Tracker.corpsesTrackingDuration;
+        // trackerTrackCorpsesButton.effectDuration = Tracker.corpsesTrackingDuration;
         witchSpellButton.effectDuration = Witch.spellCastingDuration;
         securityGuardCamButton.effectDuration = SecurityGuard.duration;
         defuseButton.effectDuration = Bomber.defuseDuration;
@@ -614,52 +614,52 @@ static class HudManagerStartPatch
         // hackerVitalsChargesText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
         // Tracker button
-        trackerTrackPlayerButton = new CustomButton(
-            () =>
-            {
-                using var writer = RPCProcedure.SendRPC(CustomRPC.TrackerUsedTracker);
-                writer.Write(Tracker.currentTarget.PlayerId);
-                RPCProcedure.trackerUsedTracker(Tracker.currentTarget.PlayerId);
-            },
-            () => { return Tracker.tracker != null && Tracker.tracker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return PlayerControl.LocalPlayer.CanMove && Tracker.currentTarget != null && !Tracker.usedTracker; },
-            () =>
-            {
-                if (Tracker.resetTargetAfterMeeting) Tracker.resetTracked();
-                else if (Tracker.currentTarget != null && Tracker.currentTarget.Data.IsDead) Tracker.currentTarget = null;
-            },
-            Tracker.getButtonSprite(),
-            ButtonOffset.LowerRight,
-            __instance,
-            __instance.UseButton,
-            KeyCode.F
-        );
+        // trackerTrackPlayerButton = new CustomButton(
+        //     () =>
+        //     {
+        //         using var writer = RPCProcedure.SendRPC(CustomRPC.TrackerUsedTracker);
+        //         writer.Write(Tracker.currentTarget.PlayerId);
+        //         RPCProcedure.trackerUsedTracker(Tracker.currentTarget.PlayerId);
+        //     },
+        //     () => { return Tracker.tracker != null && Tracker.tracker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return PlayerControl.LocalPlayer.CanMove && Tracker.currentTarget != null && !Tracker.usedTracker; },
+        //     () =>
+        //     {
+        //         if (Tracker.resetTargetAfterMeeting) Tracker.resetTracked();
+        //         else if (Tracker.currentTarget != null && Tracker.currentTarget.Data.IsDead) Tracker.currentTarget = null;
+        //     },
+        //     Tracker.getButtonSprite(),
+        //     ButtonOffset.LowerRight,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.F
+        // );
 
-        trackerTrackCorpsesButton = new CustomButton(
-            () =>
-            {
-                Tracker.corpsesTrackingTimer = Tracker.corpsesTrackingDuration;
-            },
-            () => { return Tracker.tracker != null && Tracker.tracker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && Tracker.canTrackCorpses; },
-            () => { return PlayerControl.LocalPlayer.CanMove; },
-            () =>
-            {
-                trackerTrackCorpsesButton.Timer = trackerTrackCorpsesButton.MaxTimer;
-                trackerTrackCorpsesButton.isEffectActive = false;
-                trackerTrackCorpsesButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-            },
-            Tracker.getTrackCorpsesButtonSprite(),
-            ButtonOffset.LowerCenter,
-            __instance,
-            __instance.UseButton,
-            KeyCode.G,
-            true,
-            Tracker.corpsesTrackingDuration,
-            () =>
-            {
-                trackerTrackCorpsesButton.Timer = trackerTrackCorpsesButton.MaxTimer;
-            }
-        );
+        // trackerTrackCorpsesButton = new CustomButton(
+        //     () =>
+        //     {
+        //         Tracker.corpsesTrackingTimer = Tracker.corpsesTrackingDuration;
+        //     },
+        //     () => { return Tracker.tracker != null && Tracker.tracker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && Tracker.canTrackCorpses; },
+        //     () => { return PlayerControl.LocalPlayer.CanMove; },
+        //     () =>
+        //     {
+        //         trackerTrackCorpsesButton.Timer = trackerTrackCorpsesButton.MaxTimer;
+        //         trackerTrackCorpsesButton.isEffectActive = false;
+        //         trackerTrackCorpsesButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+        //     },
+        //     Tracker.getTrackCorpsesButtonSprite(),
+        //     ButtonOffset.LowerCenter,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.G,
+        //     true,
+        //     Tracker.corpsesTrackingDuration,
+        //     () =>
+        //     {
+        //         trackerTrackCorpsesButton.Timer = trackerTrackCorpsesButton.MaxTimer;
+        //     }
+        // );
 
         vampireKillButton = new CustomButton(
             () =>

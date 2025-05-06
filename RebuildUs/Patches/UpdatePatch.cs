@@ -304,7 +304,7 @@ class HudManagerUpdatePatch
         var dt = Time.deltaTime;
         // Hacker.hackerTimer -= dt;
         Trickster.lightsOutTimer -= dt;
-        Tracker.corpsesTrackingTimer -= dt;
+        // Tracker.corpsesTrackingTimer -= dt;
         Ninja.invisibleTimer -= dt;
     }
 

@@ -603,7 +603,7 @@ public class CustomOptionHolder
         hackerRechargeTasksNumber = CustomOption.Create(786, CustomOptionType.Crewmate, "HackerRechargeTasksNumber", 2f, 1f, 5f, 1f, hackerSpawnRate);
         hackerNoMove = CustomOption.Create(787, CustomOptionType.Crewmate, "HackerNoMove", true, hackerSpawnRate);
 
-        trackerSpawnRate = new CustomRoleOption(790, 791, CustomOptionType.Crewmate, ("Tracker", Tracker.color), 1);
+        trackerSpawnRate = new CustomRoleOption(790, 791, CustomOptionType.Crewmate, ("Tracker", Tracker.Color), 1);
         trackerUpdateInterval = CustomOption.Create(792, CustomOptionType.Crewmate, "TrackerUpdateInterval", 5f, 1f, 30f, 1f, trackerSpawnRate, unitType: UnitType.UnitSeconds);
         trackerResetTargetAfterMeeting = CustomOption.Create(793, CustomOptionType.Crewmate, "TrackerResetTargetAfterMeeting", false, trackerSpawnRate);
         trackerCanTrackCorpses = CustomOption.Create(794, CustomOptionType.Crewmate, "TrackerCanTrackCorpses", true, trackerSpawnRate);

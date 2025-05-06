@@ -58,12 +58,13 @@ public class Hacker : RoleBase<Hacker>
                 if (toolsNumber > chargesVitals) vitalCharge++;
                 if (toolsNumber > chargesAdminTable) adminTableCharge++;
             }
-
-            var dt = Time.deltaTime;
-            hackerTimer -= dt;
         }
     }
-    public override void HudUpdate() { }
+    public override void HudUpdate()
+    {
+        var dt = Time.deltaTime;
+        hackerTimer -= dt;
+    }
     public override void OnKill(PlayerControl target) { }
     public override void OnDeath(PlayerControl killer = null) { }
     public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }

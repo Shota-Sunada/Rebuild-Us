@@ -492,12 +492,18 @@ public static class RPCProcedure
         new Garlic(position);
     }
 
-    public static void trackerUsedTracker(byte targetId)
+    public static void trackerUsedTracker(byte trackerId, byte targetId)
     {
-        Tracker.usedTracker = true;
-        foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            if (player.PlayerId == targetId)
-                Tracker.tracked = player;
+        var player = Helpers.playerById(trackerId);
+        var tracker = Tracker.getRole(player);
+        tracker.usedTracker = true;
+        foreach (var p in PlayerControl.AllPlayerControls)
+        {
+            if (p.PlayerId == targetId)
+            {
+                tracker.tracked = p;
+            }
+        }
     }
 
     public static void jackalCreatesSidekick(byte targetId)
@@ -1262,7 +1268,7 @@ class RPCHandlerPatch
                 RPCProcedure.placeGarlic(reader.ReadBytesAndSize());
                 break;
             case (byte)CustomRPC.TrackerUsedTracker:
-                RPCProcedure.trackerUsedTracker(reader.ReadByte());
+                RPCProcedure.trackerUsedTracker(reader.ReadByte(), reader.ReadByte());
                 break;
             case (byte)CustomRPC.JackalCreatesSidekick:
                 RPCProcedure.jackalCreatesSidekick(reader.ReadByte());

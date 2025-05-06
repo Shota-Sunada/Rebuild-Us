@@ -62,7 +62,7 @@ public class RoleInfo
     public static RoleInfo swapper = new("Swapper", Swapper.color, "Swap votes to exile the <color=#FF1919FF>Impostors</color>", "Swap votes", RoleId.Swapper);
     public static RoleInfo seer = new("Seer", Seer.Color, "You will see players die", "You will see players die", RoleId.Seer);
     public static RoleInfo hacker = new("Hacker", Hacker.Color, "Hack systems to find the <color=#FF1919FF>Impostors</color>", "Hack to find the Impostors", RoleId.Hacker);
-    public static RoleInfo tracker = new("Tracker", Tracker.color, "Track the <color=#FF1919FF>Impostors</color> down", "Track the Impostors down", RoleId.Tracker);
+    public static RoleInfo tracker = new("Tracker", Tracker.Color, "Track the <color=#FF1919FF>Impostors</color> down", "Track the Impostors down", RoleId.Tracker);
     public static RoleInfo snitch = new("Snitch", Snitch.color, "Finish your tasks to find the <color=#FF1919FF>Impostors</color>", "Finish your tasks", RoleId.Snitch);
     public static RoleInfo jackal = new("Jackal", Jackal.color, "Kill all Crewmates and <color=#FF1919FF>Impostors</color> to win", "Kill everyone", RoleId.Jackal, true);
     public static RoleInfo sidekick = new("Sidekick", Sidekick.color, "Help your Jackal to kill everyone", "Help your Jackal to kill everyone", RoleId.Sidekick, true);
@@ -222,7 +222,7 @@ public class RoleInfo
         if (p == Swapper.swapper) infos.Add(swapper);
         if (p.isRole(RoleId.Seer)) infos.Add(seer);
         if (p.isRole(RoleId.Hacker)) infos.Add(hacker);
-        if (p == Tracker.tracker) infos.Add(tracker);
+        if (p.isRole(RoleId.Tracker)) infos.Add(tracker);
         if (p == Snitch.snitch) infos.Add(snitch);
         if (p == Jackal.jackal || (Jackal.formerJackals != null && Jackal.formerJackals.Any(x => x.PlayerId == p.PlayerId))) infos.Add(jackal);
         if (p == Sidekick.sidekick) infos.Add(sidekick);

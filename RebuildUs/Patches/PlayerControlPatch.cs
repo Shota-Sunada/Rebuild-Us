@@ -141,9 +141,6 @@ public static class PlayerControlFixedUpdatePatch
 
     static void trackerSetTarget()
     {
-        if (Tracker.tracker == null || Tracker.tracker != PlayerControl.LocalPlayer) return;
-        Tracker.currentTarget = setTarget();
-        if (!Tracker.usedTracker) setPlayerOutline(Tracker.currentTarget, Tracker.color);
     }
 
     static void vampireSetTarget()
@@ -320,81 +317,7 @@ public static class PlayerControlFixedUpdatePatch
 
     static void trackerUpdate()
     {
-        // Handle player tracking
-        if (Tracker.arrow?.arrow != null)
-        {
-            if (Tracker.tracker == null || PlayerControl.LocalPlayer != Tracker.tracker)
-            {
-                Tracker.arrow.arrow.SetActive(false);
-                if (Tracker.DangerMeterParent) Tracker.DangerMeterParent.SetActive(false);
-                return;
-            }
 
-            if (Tracker.tracked != null && !Tracker.tracker.Data.IsDead)
-            {
-                Tracker.timeUntilUpdate -= Time.fixedDeltaTime;
-
-                if (Tracker.timeUntilUpdate <= 0f)
-                {
-                    bool trackedOnMap = !Tracker.tracked.Data.IsDead;
-                    Vector3 position = Tracker.tracked.transform.position;
-                    if (!trackedOnMap)
-                    { // Check for dead body
-                        DeadBody body = UnityEngine.Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == Tracker.tracked.PlayerId);
-                        if (body != null)
-                        {
-                            trackedOnMap = true;
-                            position = body.transform.position;
-                        }
-                    }
-
-                    if (Tracker.trackingMode == 1 || Tracker.trackingMode == 2) Arrow.UpdateProximity(position);
-                    if (Tracker.trackingMode == 0 || Tracker.trackingMode == 2)
-                    {
-                        Tracker.arrow.Update(position);
-                        Tracker.arrow.arrow.SetActive(trackedOnMap);
-                    }
-                    Tracker.timeUntilUpdate = Tracker.updateIntervall;
-                }
-                else
-                {
-                    if (Tracker.trackingMode == 0 || Tracker.trackingMode == 2) Tracker.arrow.Update();
-                }
-            }
-            else if (Tracker.tracker.Data.IsDead)
-            {
-                Tracker.DangerMeterParent?.SetActive(false);
-                Tracker.Meter?.gameObject.SetActive(false);
-            }
-        }
-
-        // Handle corpses tracking
-        if (Tracker.tracker != null && Tracker.tracker == PlayerControl.LocalPlayer && Tracker.corpsesTrackingTimer >= 0f && !Tracker.tracker.Data.IsDead)
-        {
-            bool arrowsCountChanged = Tracker.localArrows.Count != Tracker.deadBodyPositions.Count();
-            int index = 0;
-
-            if (arrowsCountChanged)
-            {
-                foreach (Arrow arrow in Tracker.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
-                Tracker.localArrows = [];
-            }
-            foreach (Vector3 position in Tracker.deadBodyPositions)
-            {
-                if (arrowsCountChanged)
-                {
-                    Tracker.localArrows.Add(new Arrow(Tracker.color));
-                    Tracker.localArrows[index].arrow.SetActive(true);
-                }
-                if (Tracker.localArrows[index] != null) Tracker.localArrows[index].Update(position);
-                index++;
-            }
-        }
-        else if (Tracker.localArrows.Count > 0)
-        {
-            foreach (Arrow arrow in Tracker.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
-            Tracker.localArrows = [];
-        }
     }
 
     public static void playerSizeUpdate(PlayerControl p)
