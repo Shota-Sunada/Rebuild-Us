@@ -132,6 +132,10 @@ class HudManagerUpdatePatch
                 setPlayerNameColor(Jackal.fakeSidekick, Jackal.color);
             }
         }
+        else if (PlayerControl.LocalPlayer.isRole(RoleId.Swapper))
+        {
+            setPlayerNameColor(PlayerControl.LocalPlayer, Swapper.swapper.Data.Role.IsImpostor ? Palette.ImpostorRed : Swapper.Color);
+        }
         /*else if (Spy.spy != null && Spy.spy == localPlayer) {
             setPlayerNameColor(Spy.spy, Spy.color);
         } else if (SecurityGuard.securityGuard != null && SecurityGuard.securityGuard == localPlayer) {

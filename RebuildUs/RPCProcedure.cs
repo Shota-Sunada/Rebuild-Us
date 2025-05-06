@@ -819,7 +819,6 @@ public static class RPCProcedure
                 {
                     pva.SetDead(pva.DidReport, true);
                     pva.Overlay.gameObject.SetActive(true);
-                    MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, pva.TargetPlayerId);
                 }
 
                 //Give players back their vote if target is shot dead
@@ -1128,6 +1127,11 @@ public static class RPCProcedure
         player.clearAllTasks();
 
         player.Data.SetTasks(taskTypeIds);
+    }
+
+    public static void swapperAnimate()
+    {
+        MeetingHudPatch.animateSwap = true;
     }
 }
 

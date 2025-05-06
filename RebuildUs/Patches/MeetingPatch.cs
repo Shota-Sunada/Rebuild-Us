@@ -27,6 +27,7 @@ class MeetingHudPatch
     private static TMPro.TextMeshPro meetingExtraButtonLabel;
     private static PlayerVoteArea swapped1 = null;
     private static PlayerVoteArea swapped2 = null;
+    public static bool animateSwap = false;
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
     class MeetingCalculateVotesPatch
@@ -49,8 +50,8 @@ class MeetingHudPatch
             // Swapper swap votes
             if (Swapper.swapper != null && !Swapper.swapper.Data.IsDead)
             {
-                swapped1 = null;
-                swapped2 = null;
+                PlayerVoteArea swapped1 = null;
+                PlayerVoteArea swapped2 = null;
                 foreach (PlayerVoteArea playerVoteArea in __instance.playerStates)
                 {
                     if (playerVoteArea.TargetPlayerId == Swapper.playerId1) swapped1 = playerVoteArea;
@@ -64,10 +65,14 @@ class MeetingHudPatch
                     int tmp = dictionary[swapped1.TargetPlayerId];
                     dictionary[swapped1.TargetPlayerId] = dictionary[swapped2.TargetPlayerId];
                     dictionary[swapped2.TargetPlayerId] = tmp;
+
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        using var writer = RPCProcedure.SendRPC(CustomRPC.SwapperAnimate);
+                        RPCProcedure.swapperAnimate();
+                    }
                 }
             }
-
-
 
             return dictionary;
         }
@@ -190,23 +195,23 @@ class MeetingHudPatch
         private static bool Prefix(MeetingHud __instance, Il2CppStructArray<MeetingHud.VoterState> states)
         {
             // Swapper swap
-
             PlayerVoteArea swapped1 = null;
             PlayerVoteArea swapped2 = null;
+
             foreach (PlayerVoteArea playerVoteArea in __instance.playerStates)
             {
                 if (playerVoteArea.TargetPlayerId == Swapper.playerId1) swapped1 = playerVoteArea;
                 if (playerVoteArea.TargetPlayerId == Swapper.playerId2) swapped2 = playerVoteArea;
             }
-            bool doSwap = swapped1 != null && swapped2 != null && Swapper.swapper != null && !Swapper.swapper.Data.IsDead;
+            bool doSwap = animateSwap && swapped1 != null && swapped2 != null && Swapper.swapper != null && !Swapper.swapper.Data.IsDead;
             if (doSwap)
             {
                 __instance.StartCoroutine(Effects.Slide3D(swapped1.transform, swapped1.transform.localPosition, swapped2.transform.localPosition, 1.5f));
                 __instance.StartCoroutine(Effects.Slide3D(swapped2.transform, swapped2.transform.localPosition, swapped1.transform.localPosition, 1.5f));
+                Swapper.numSwaps--;
             }
 
-
-            __instance.TitleText.text = FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingResults, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
+            __instance.TitleText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingResults, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
             int num = 0;
             for (int i = 0; i < __instance.playerStates.Length; i++)
             {
@@ -218,11 +223,15 @@ class MeetingHudPatch
 
                 playerVoteArea.ClearForResults();
                 int num2 = 0;
+                //bool mayorFirstVoteDisplayed = false;
                 var votesApplied = new Dictionary<int, int>();
                 for (int j = 0; j < states.Length; j++)
                 {
                     MeetingHud.VoterState voterState = states[j];
-                    NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
+                    PlayerControl voter = Helpers.playerById(voterState.VoterId);
+                    if (voter == null) continue;
+
+                    var playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
                     if (playerById == null)
                     {
                         Debug.LogError(string.Format("Couldn't find player info for voter: {0}", voterState.VoterId));
@@ -238,10 +247,12 @@ class MeetingHudPatch
                         num2++;
                     }
 
-                    if (!votesApplied.ContainsKey(playerById.PlayerId))
-                        votesApplied[playerById.PlayerId] = 0;
+                    if (!votesApplied.ContainsKey(voter.PlayerId))
+                    {
+                        votesApplied[voter.PlayerId] = 0;
+                    }
 
-                    votesApplied[playerById.PlayerId]++;
+                    votesApplied[voter.PlayerId]++;
 
                     // Major vote, redo this iteration to place a second vote
                     if (Mayor.exists && Mayor.players.Any(x => x.player.PlayerId == voterState.VoterId) && votesApplied[playerById.PlayerId] < Mayor.numVotes)
@@ -291,7 +302,8 @@ class MeetingHudPatch
 
     static void swapperOnClick(int i, MeetingHud __instance)
     {
-        if (__instance.state == MeetingHud.VoteStates.Results || Swapper.charges <= 0) return;
+        if (Swapper.numSwaps <= 0) return;
+        if (__instance.state == MeetingHud.VoteStates.Results) return;
         if (__instance.playerStates[i].AmDead) return;
 
         int selectedCount = selections.Where(b => b).Count();
@@ -299,7 +311,7 @@ class MeetingHudPatch
 
         if (selectedCount == 0)
         {
-            renderer.color = Color.yellow;
+            renderer.color = Color.green;
             selections[i] = true;
         }
         else if (selectedCount == 1)
@@ -312,104 +324,35 @@ class MeetingHudPatch
             else
             {
                 selections[i] = true;
-                renderer.color = Color.yellow;
-                meetingExtraButtonLabel.text = Helpers.cs(Color.yellow, "Confirm Swap");
-            }
-        }
-        else if (selectedCount == 2)
-        {
-            if (selections[i])
-            {
-                renderer.color = Color.red;
-                selections[i] = false;
-                meetingExtraButtonLabel.text = Helpers.cs(Color.red, "Confirm Swap");
-            }
-        }
-    }
+                renderer.color = Color.green;
 
-    static void swapperConfirm(MeetingHud __instance)
-    {
-        __instance.playerStates[0].Cancel();  // This will stop the underlying buttons of the template from showing up
-        if (__instance.state == MeetingHud.VoteStates.Results) return;
-        if (selections.Where(b => b).Count() != 2) return;
-        if (Swapper.charges <= 0 || Swapper.playerId1 != Byte.MaxValue) return;
-
-        PlayerVoteArea firstPlayer = null;
-        PlayerVoteArea secondPlayer = null;
-        for (int A = 0; A < selections.Length; A++)
-        {
-            if (selections[A])
-            {
-                if (firstPlayer == null)
+                PlayerVoteArea firstPlayer = null;
+                PlayerVoteArea secondPlayer = null;
+                for (int A = 0; A < selections.Length; A++)
                 {
-                    firstPlayer = __instance.playerStates[A];
+                    if (selections[A])
+                    {
+                        if (firstPlayer != null)
+                        {
+                            secondPlayer = __instance.playerStates[A];
+                            break;
+                        }
+                        else
+                        {
+                            firstPlayer = __instance.playerStates[A];
+                        }
+                    }
                 }
-                else
+
+                if (firstPlayer != null && secondPlayer != null)
                 {
-                    secondPlayer = __instance.playerStates[A];
+                    using var writer = RPCProcedure.SendRPC(CustomRPC.SwapperSwap);
+                    writer.Write(firstPlayer.TargetPlayerId);
+                    writer.Write(secondPlayer.TargetPlayerId);
+                    RPCProcedure.swapperSwap(firstPlayer.TargetPlayerId, secondPlayer.TargetPlayerId);
                 }
-                renderers[A].color = Color.green;
             }
-            else if (renderers[A] != null)
-            {
-                renderers[A].color = Color.gray;
-            }
-            if (swapperButtonList[A] != null) swapperButtonList[A].OnClick.RemoveAllListeners();  // Swap buttons can't be clicked / changed anymore
         }
-        if (firstPlayer != null && secondPlayer != null)
-        {
-            using var writer = RPCProcedure.SendRPC(CustomRPC.SwapperSwap);
-            writer.Write(firstPlayer.TargetPlayerId);
-            writer.Write(secondPlayer.TargetPlayerId);
-            RPCProcedure.swapperSwap(firstPlayer.TargetPlayerId, secondPlayer.TargetPlayerId);
-
-            meetingExtraButtonLabel.text = Helpers.cs(Color.green, "Swapping!");
-            Swapper.charges--;
-            meetingExtraButtonText.text = $"Swaps: {Swapper.charges}";
-        }
-    }
-
-    public static void swapperCheckAndReturnSwap(MeetingHud __instance, byte dyingPlayerId)
-    {
-        // someone was guessed or dced in the meeting, check if this affects the swapper.
-        if (Swapper.swapper == null || __instance.state == MeetingHud.VoteStates.Results) return;
-
-        // reset swap.
-        bool reset = false;
-        if (dyingPlayerId == Swapper.playerId1 || dyingPlayerId == Swapper.playerId2)
-        {
-            reset = true;
-            Swapper.playerId1 = Swapper.playerId2 = byte.MaxValue;
-        }
-
-
-        // Only for the swapper: Reset all the buttons and charges value to their original state.
-        if (PlayerControl.LocalPlayer != Swapper.swapper) return;
-
-
-        // check if dying player was a selected player (but not confirmed yet)
-        for (int i = 0; i < __instance.playerStates.Count; i++)
-        {
-            reset = reset || selections[i] && __instance.playerStates[i].TargetPlayerId == dyingPlayerId;
-            if (reset) break;
-        }
-
-        if (!reset) return;
-
-
-        for (int i = 0; i < selections.Length; i++)
-        {
-            selections[i] = false;
-            PlayerVoteArea playerVoteArea = __instance.playerStates[i];
-            if (playerVoteArea.AmDead || (playerVoteArea.TargetPlayerId == Swapper.swapper.PlayerId && Swapper.canOnlySwapOthers)) continue;
-            renderers[i].color = Color.red;
-            Swapper.charges++;
-            int copyI = i;
-            swapperButtonList[i].OnClick.RemoveAllListeners();
-            swapperButtonList[i].OnClick.AddListener((System.Action)(() => swapperOnClick(copyI, __instance)));
-        }
-        meetingExtraButtonText.text = $"Swaps: {Swapper.charges}";
-        meetingExtraButtonLabel.text = Helpers.cs(Color.red, "Confirm Swap");
     }
 
     public static GameObject guesserUI;
@@ -494,7 +437,7 @@ class MeetingHudPatch
             int copiedIndex = i;
 
             button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
-            if (!PlayerControl.LocalPlayer.Data.IsDead && !Helpers.playerById((byte)__instance.playerStates[buttonTarget].TargetPlayerId).Data.IsDead) button.GetComponent<PassiveButton>().OnClick.AddListener((System.Action)(() =>
+            if (!PlayerControl.LocalPlayer.Data.IsDead && !Helpers.playerById(__instance.playerStates[buttonTarget].TargetPlayerId).Data.IsDead) button.GetComponent<PassiveButton>().OnClick.AddListener((System.Action)(() =>
             {
                 if (selectedButton != button)
                 {
@@ -503,7 +446,7 @@ class MeetingHudPatch
                 }
                 else
                 {
-                    PlayerControl focusedTarget = Helpers.playerById((byte)__instance.playerStates[buttonTarget].TargetPlayerId);
+                    PlayerControl focusedTarget = Helpers.playerById(__instance.playerStates[buttonTarget].TargetPlayerId);
                     if (!(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted) || focusedTarget == null || HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId) <= 0) return;
 
                     foreach (var medic in Medic.players)
@@ -560,12 +503,10 @@ class MeetingHudPatch
     static void populateButtonsPostfix(MeetingHud __instance)
     {
         // Add Swapper Buttons
-        bool addSwapperButtons = Swapper.swapper != null && PlayerControl.LocalPlayer == Swapper.swapper && !Swapper.swapper.Data.IsDead;
-        if (addSwapperButtons)
+        if (PlayerControl.LocalPlayer.isRole(RoleId.Swapper) && Swapper.numSwaps > 0 && !Swapper.swapper.Data.IsDead)
         {
             selections = new bool[__instance.playerStates.Length];
             renderers = new SpriteRenderer[__instance.playerStates.Length];
-            swapperButtonList = new PassiveButton[__instance.playerStates.Length];
 
             for (int i = 0; i < __instance.playerStates.Length; i++)
             {
@@ -576,74 +517,20 @@ class MeetingHudPatch
                 GameObject checkbox = UnityEngine.Object.Instantiate(template);
                 checkbox.transform.SetParent(playerVoteArea.transform);
                 checkbox.transform.position = template.transform.position;
-                checkbox.transform.localPosition = new Vector3(-0.95f, 0.03f, -1.3f);
+                checkbox.transform.localPosition = new Vector3(-0.95f, 0.03f, -20f);
                 SpriteRenderer renderer = checkbox.GetComponent<SpriteRenderer>();
                 renderer.sprite = Swapper.getCheckSprite();
                 renderer.color = Color.red;
 
-                if (Swapper.charges <= 0) renderer.color = Color.gray;
-
                 PassiveButton button = checkbox.GetComponent<PassiveButton>();
-                swapperButtonList[i] = button;
                 button.OnClick.RemoveAllListeners();
                 int copiedIndex = i;
-                button.OnClick.AddListener((System.Action)(() => swapperOnClick(copiedIndex, __instance)));
+                button.OnClick.AddListener((UnityEngine.Events.UnityAction)(() => swapperOnClick(copiedIndex, __instance)));
 
                 selections[i] = false;
                 renderers[i] = renderer;
             }
         }
-
-        // Add meeting extra button, i.e. Swapper Confirm Button or Mayor Toggle Double Vote Button. Swapper Button uses ExtraButtonText on the Left of the Button. (Future meeting buttons can easily be added here)
-        if (addSwapperButtons)
-        {
-            Transform meetingUI = UnityEngine.Object.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
-
-            var buttonTemplate = __instance.playerStates[0].transform.FindChild("votePlayerBase");
-            var maskTemplate = __instance.playerStates[0].transform.FindChild("MaskArea");
-            var textTemplate = __instance.playerStates[0].NameText;
-            Transform meetingExtraButtonParent = (new GameObject()).transform;
-            meetingExtraButtonParent.SetParent(meetingUI);
-            Transform meetingExtraButton = UnityEngine.Object.Instantiate(buttonTemplate, meetingExtraButtonParent);
-
-            Transform infoTransform = __instance.playerStates[0].NameText.transform.parent.FindChild("Info");
-            TMPro.TextMeshPro meetingInfo = infoTransform != null ? infoTransform.GetComponent<TMPro.TextMeshPro>() : null;
-            meetingExtraButtonText = UnityEngine.Object.Instantiate(__instance.playerStates[0].NameText, meetingExtraButtonParent);
-            meetingExtraButtonText.text = addSwapperButtons ? $"Swaps: {Swapper.charges}" : "";
-            meetingExtraButtonText.enableWordWrapping = false;
-            meetingExtraButtonText.transform.localScale = Vector3.one * 1.7f;
-            meetingExtraButtonText.transform.localPosition = new Vector3(-2.5f, 0f, 0f);
-
-            Transform meetingExtraButtonMask = UnityEngine.Object.Instantiate(maskTemplate, meetingExtraButtonParent);
-            meetingExtraButtonLabel = UnityEngine.Object.Instantiate(textTemplate, meetingExtraButton);
-            meetingExtraButton.GetComponent<SpriteRenderer>().sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
-
-            meetingExtraButtonParent.localPosition = new Vector3(0, -2.225f, -5);
-            meetingExtraButtonParent.localScale = new Vector3(0.55f, 0.55f, 1f);
-            meetingExtraButtonLabel.alignment = TMPro.TextAlignmentOptions.Center;
-            meetingExtraButtonLabel.transform.localPosition = new Vector3(0, 0, meetingExtraButtonLabel.transform.localPosition.z);
-            if (addSwapperButtons)
-            {
-                meetingExtraButtonLabel.transform.localScale *= 1.7f;
-                meetingExtraButtonLabel.text = Helpers.cs(Color.red, "Confirm Swap");
-            }
-            PassiveButton passiveButton = meetingExtraButton.GetComponent<PassiveButton>();
-            passiveButton.OnClick.RemoveAllListeners();
-            if (!PlayerControl.LocalPlayer.Data.IsDead)
-            {
-                if (addSwapperButtons)
-                    passiveButton.OnClick.AddListener((Action)(() => swapperConfirm(__instance)));
-            }
-            meetingExtraButton.parent.gameObject.SetActive(false);
-            __instance.StartCoroutine(Effects.Lerp(7.27f, new Action<float>((p) =>
-            { // Button appears delayed, so that its visible in the voting screen only!
-                if (p == 1f)
-                {
-                    meetingExtraButton.parent.gameObject.SetActive(true);
-                }
-            })));
-        }
-
 
         bool isGuesser = HandleGuesser.isGuesser(PlayerControl.LocalPlayer.PlayerId);
 

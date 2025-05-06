@@ -167,10 +167,10 @@ public class CustomOptionHolder
     public static CustomOption medicShowAttemptToMedic;
 
     public static CustomRoleOption swapperSpawnRate;
+    public static CustomOption swapperIsImpRate;
     public static CustomOption swapperCanCallEmergency;
     public static CustomOption swapperCanOnlySwapOthers;
-    public static CustomOption swapperSwapsNumber;
-    public static CustomOption swapperRechargeTasksNumber;
+    public static CustomOption swapperNumSwaps;
 
     public static CustomRoleOption seerSpawnRate;
     public static CustomOption seerMode;
@@ -656,9 +656,15 @@ public class CustomOptionHolder
 
         shifterSpawnRate = new CustomRoleOption(880, 881, CustomOptionType.Crewmate, ("Shifter", Shifter.Color), 1);
         shifterShiftsMedicShield = CustomOption.Create(882, CustomOptionType.Crewmate, "ShifterShiftsMedicShield", false, shifterSpawnRate);
-        shifterIsNeutralRate = CustomOption.Create(72, CustomOptionType.Crewmate, "ShifterIsNeutralRate", rates, shifterSpawnRate);
-        shifterShiftsModifiers = CustomOption.Create(71, CustomOptionType.Crewmate, "ShifterShiftsModifiers", false, shifterSpawnRate);
-        shifterPastShifters = CustomOption.Create(73, CustomOptionType.Crewmate, "ShifterPastShifters", false, shifterSpawnRate);
+        shifterIsNeutralRate = CustomOption.Create(883, CustomOptionType.Crewmate, "ShifterIsNeutralRate", rates, shifterSpawnRate);
+        shifterShiftsModifiers = CustomOption.Create(884, CustomOptionType.Crewmate, "ShifterShiftsModifiers", false, shifterSpawnRate);
+        shifterPastShifters = CustomOption.Create(885, CustomOptionType.Crewmate, "ShifterPastShifters", false, shifterSpawnRate);
+
+        swapperSpawnRate = new CustomRoleOption(890, 891, CustomOptionType.Crewmate, ("Swapper", Swapper.Color), 1);
+        swapperNumSwaps = CustomOption.Create(892, CustomOptionType.Crewmate, "SwapperNumSwaps", 2f, 1f, 15f, 1f, swapperSpawnRate);
+        swapperIsImpRate = CustomOption.Create(893, CustomOptionType.Crewmate, "SwapperIsImpRate", rates, swapperSpawnRate);
+        swapperCanCallEmergency = CustomOption.Create(894, CustomOptionType.Crewmate, "SwapperCanCallEmergency", false, swapperSpawnRate);
+        swapperCanOnlySwapOthers = CustomOption.Create(895, CustomOptionType.Crewmate, "SwapperCanOnlySwapOthers", false, swapperSpawnRate);
 
         #endregion
 

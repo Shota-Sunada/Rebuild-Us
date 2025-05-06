@@ -404,7 +404,6 @@ public static class PlayerControlFixedUpdatePatch
                 {
                     if (p.Data.IsDead) roleNames = roleText;
                     playerInfoText = $"{roleNames}";
-                    if (p == Swapper.swapper) playerInfoText = $"{roleNames}" + Helpers.cs(Swapper.color, $" ({Swapper.charges})");
                     if (HudManager.Instance.TaskPanel != null)
                     {
                         TMPro.TextMeshPro tabText = HudManager.Instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TMPro.TextMeshPro>();
@@ -704,13 +703,6 @@ public static class PlayerControlFixedUpdatePatch
     // For swapper swap charges
     public static void swapperUpdate()
     {
-        if (Swapper.swapper == null || PlayerControl.LocalPlayer != Swapper.swapper || PlayerControl.LocalPlayer.Data.IsDead) return;
-        var (playerCompleted, _) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
-        if (playerCompleted == Swapper.rechargedTasks)
-        {
-            Swapper.rechargedTasks += Swapper.rechargeTasksNumber;
-            Swapper.charges++;
-        }
     }
 
     static void pursuerSetTarget()
@@ -1321,17 +1313,5 @@ public static class AdjustLight
         __instance.lightSource.SetupLightingForGameplay(hasFlashlight, Lighter.flashlightWidth, __instance.TargetFlashlight.transform);
 
         return false;
-    }
-}
-
-[HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), new[] { typeof(PlayerControl), typeof(DisconnectReasons) })]
-public static class GameDataHandleDisconnectPatch
-{
-    public static void Prefix(GameData __instance, PlayerControl player, DisconnectReasons reason)
-    {
-        if (MeetingHud.Instance)
-        {
-            MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, player.PlayerId);
-        }
     }
 }

@@ -73,6 +73,7 @@ public enum CustomRPC
     BreakArmor,
     SetLovers,
     SetShifterType,
+    SwapperAnimate,
 
     // Other functionality
     ShareTimer,

@@ -59,7 +59,8 @@ public class RoleInfo
     public static RoleInfo detective = new("Detective", Detective.Color, "Find the <color=#FF1919FF>Impostors</color> by examining footprints", "Examine footprints", RoleId.Detective);
     public static RoleInfo timeMaster = new("Time Master", TimeMaster.Color, "Save yourself with your time shield", "Use your time shield", RoleId.TimeMaster);
     public static RoleInfo medic = new("Medic", Medic.Color, "Protect someone with your shield", "Protect other players", RoleId.Medic);
-    public static RoleInfo swapper = new("Swapper", Swapper.color, "Swap votes to exile the <color=#FF1919FF>Impostors</color>", "Swap votes", RoleId.Swapper);
+    public static RoleInfo niceSwapper = new("NiceSwapper", Swapper.Color, "Swap votes to exile the <color=#FF1919FF>Impostors</color>", "Swap votes", RoleId.Swapper);
+    public static RoleInfo evilSwapper = new("EvilSwapper", Palette.ImpostorRed, "Swap votes to exile the <color=#FF1919FF>Impostors</color>", "Swap votes", RoleId.Swapper);
     public static RoleInfo seer = new("Seer", Seer.Color, "You will see players die", "You will see players die", RoleId.Seer);
     public static RoleInfo hacker = new("Hacker", Hacker.Color, "Hack systems to find the <color=#FF1919FF>Impostors</color>", "Hack to find the Impostors", RoleId.Hacker);
     public static RoleInfo tracker = new("Tracker", Tracker.Color, "Track the <color=#FF1919FF>Impostors</color> down", "Track the Impostors down", RoleId.Tracker);
@@ -145,7 +146,8 @@ public class RoleInfo
         detective,
         timeMaster,
         medic,
-        swapper,
+        niceSwapper,
+        evilSwapper,
         seer,
         hacker,
         tracker,
@@ -219,7 +221,7 @@ public class RoleInfo
         if (p.isRole(RoleId.Detective)) infos.Add(detective);
         if (p.isRole(RoleId.TimeMaster)) infos.Add(timeMaster);
         if (p.isRole(RoleId.Medic)) infos.Add(medic);
-        if (p == Swapper.swapper) infos.Add(swapper);
+        if (p.isRole(RoleId.Swapper)) infos.Add(p.isImpostor() ? evilSwapper : niceSwapper);
         if (p.isRole(RoleId.Seer)) infos.Add(seer);
         if (p.isRole(RoleId.Hacker)) infos.Add(hacker);
         if (p.isRole(RoleId.Tracker)) infos.Add(tracker);

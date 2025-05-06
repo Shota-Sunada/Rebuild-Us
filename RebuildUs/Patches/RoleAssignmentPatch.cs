@@ -159,7 +159,6 @@ class RoleManagerSelectRolesPatch
         crewSettings.Add((byte)RoleId.Detective, CustomOptionHolder.detectiveSpawnRate.Data);
         crewSettings.Add((byte)RoleId.TimeMaster, CustomOptionHolder.timeMasterSpawnRate.Data);
         crewSettings.Add((byte)RoleId.Medic, CustomOptionHolder.medicSpawnRate.Data);
-        crewSettings.Add((byte)RoleId.Swapper, CustomOptionHolder.swapperSpawnRate.Data);
         crewSettings.Add((byte)RoleId.Seer, CustomOptionHolder.seerSpawnRate.Data);
         crewSettings.Add((byte)RoleId.Hacker, CustomOptionHolder.hackerSpawnRate.Data);
         crewSettings.Add((byte)RoleId.Tracker, CustomOptionHolder.trackerSpawnRate.Data);
@@ -290,6 +289,16 @@ class RoleManagerSelectRolesPatch
         {
             if (isEvilGuesser) data.impSettings.Add((byte)RoleId.EvilGuesser, (CustomOptionHolder.guesserSpawnRate.getSelection(), 1));
             else data.crewSettings.Add((byte)RoleId.NiceGuesser, (CustomOptionHolder.guesserSpawnRate.getSelection(), 1));
+        }
+
+        // Assign Swapper (chance to be impostor based on setting)
+        if (data.impostors.Count > 0 && data.maxImpostorRoles > 0 && rnd.Next(1, 101) <= CustomOptionHolder.swapperIsImpRate.getSelection() * 10)
+        {
+            data.impSettings.Add((byte)RoleId.Swapper, (CustomOptionHolder.swapperSpawnRate.getSelection(), 1));
+        }
+        else if (data.crewmates.Count > 0 && data.maxCrewmateRoles > 0)
+        {
+            data.crewSettings.Add((byte)RoleId.Swapper, (CustomOptionHolder.swapperSpawnRate.getSelection(), 1));
         }
 
         // Assign Shifter (chance to be neutral based on setting)
