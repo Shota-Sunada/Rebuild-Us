@@ -25,9 +25,9 @@ static class HudManagerStartPatch
     private static CustomButton shifterShiftButton;
     private static CustomButton morphingButton;
     private static CustomButton camouflagerButton;
-    private static CustomButton portalmakerPlacePortalButton;
-    private static CustomButton usePortalButton;
-    private static CustomButton portalmakerMoveToPortalButton;
+    // private static CustomButton portalmakerPlacePortalButton;
+    // private static CustomButton usePortalButton;
+    // private static CustomButton portalmakerMoveToPortalButton;
     private static CustomButton hackerButton;
     public static CustomButton hackerVitalsButton;
     public static CustomButton hackerAdminTableButton;
@@ -70,8 +70,8 @@ static class HudManagerStartPatch
     public static TMPro.TMP_Text hackerAdminTableChargesText;
     public static TMPro.TMP_Text hackerVitalsChargesText;
     public static TMPro.TMP_Text trapperChargesText;
-    public static TMPro.TMP_Text portalmakerButtonText1;
-    public static TMPro.TMP_Text portalmakerButtonText2;
+    // public static TMPro.TMP_Text portalmakerButtonText1;
+    // public static TMPro.TMP_Text portalmakerButtonText2;
 
     public static void setCustomButtonCooldowns()
     {
@@ -94,9 +94,9 @@ static class HudManagerStartPatch
         shifterShiftButton.MaxTimer = 0f;
         morphingButton.MaxTimer = Morphing.cooldown;
         camouflagerButton.MaxTimer = Camouflager.cooldown;
-        portalmakerPlacePortalButton.MaxTimer = Portalmaker.cooldown;
-        usePortalButton.MaxTimer = Portalmaker.usePortalCooldown;
-        portalmakerMoveToPortalButton.MaxTimer = Portalmaker.usePortalCooldown;
+        // portalmakerPlacePortalButton.MaxTimer = RebuildUs.Portalmaker.cooldown;
+        // usePortalButton.MaxTimer = RebuildUs.Portalmaker.usePortalCooldown;
+        // portalmakerMoveToPortalButton.MaxTimer = RebuildUs.Portalmaker.usePortalCooldown;
         hackerButton.MaxTimer = Hacker.cooldown;
         hackerVitalsButton.MaxTimer = Hacker.cooldown;
         hackerAdminTableButton.MaxTimer = Hacker.cooldown;
@@ -787,147 +787,147 @@ static class HudManagerStartPatch
             true
         );
 
-        portalmakerPlacePortalButton = new CustomButton(
-            () =>
-            {
-                portalmakerPlacePortalButton.Timer = portalmakerPlacePortalButton.MaxTimer;
+        // portalmakerPlacePortalButton = new CustomButton(
+        //     () =>
+        //     {
+        //         portalmakerPlacePortalButton.Timer = portalmakerPlacePortalButton.MaxTimer;
 
-                var pos = PlayerControl.LocalPlayer.transform.position;
-                byte[] buff = new byte[sizeof(float) * 2];
-                Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
-                Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
+        //         var pos = PlayerControl.LocalPlayer.transform.position;
+        //         byte[] buff = new byte[sizeof(float) * 2];
+        //         Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
+        //         Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
 
-                MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlacePortal, Hazel.SendOption.Reliable);
-                writer.WriteBytesAndSize(buff);
-                writer.EndMessage();
-                RPCProcedure.placePortal(buff);
-            },
-            () => { return Portalmaker.portalmaker != null && Portalmaker.portalmaker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && Portal.secondPortal == null; },
-            () => { return PlayerControl.LocalPlayer.CanMove && Portal.secondPortal == null; },
-            () => { portalmakerPlacePortalButton.Timer = portalmakerPlacePortalButton.MaxTimer; },
-            Portalmaker.getPlacePortalButtonSprite(),
-            ButtonOffset.LowerRight,
-            __instance,
-            __instance.UseButton,
-            KeyCode.F
-        );
+        //         MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlacePortal, Hazel.SendOption.Reliable);
+        //         writer.WriteBytesAndSize(buff);
+        //         writer.EndMessage();
+        //         RPCProcedure.placePortal(buff);
+        //     },
+        //     () => { return RebuildUs.Portalmaker.portalmaker != null && RebuildUs.Portalmaker.portalmaker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && Portal.secondPortal == null; },
+        //     () => { return PlayerControl.LocalPlayer.CanMove && Portal.secondPortal == null; },
+        //     () => { portalmakerPlacePortalButton.Timer = portalmakerPlacePortalButton.MaxTimer; },
+        //     RebuildUs.Portalmaker.getPlacePortalButtonSprite(),
+        //     ButtonOffset.LowerRight,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.F
+        // );
 
-        usePortalButton = new CustomButton(
-            () =>
-            {
-                bool didTeleport = false;
-                Vector3 exit = Portal.findExit(PlayerControl.LocalPlayer.transform.position);
-                Vector3 entry = Portal.findEntry(PlayerControl.LocalPlayer.transform.position);
+        // usePortalButton = new CustomButton(
+        //     () =>
+        //     {
+        //         bool didTeleport = false;
+        //         Vector3 exit = Portal.findExit(PlayerControl.LocalPlayer.transform.position);
+        //         Vector3 entry = Portal.findEntry(PlayerControl.LocalPlayer.transform.position);
 
-                bool portalMakerSoloTeleport = !Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position);
-                if (portalMakerSoloTeleport)
-                {
-                    exit = Portal.firstPortal.portalGameObject.transform.position;
-                    entry = PlayerControl.LocalPlayer.transform.position;
-                }
+        //         bool portalMakerSoloTeleport = !Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position);
+        //         if (portalMakerSoloTeleport)
+        //         {
+        //             exit = Portal.firstPortal.portalGameObject.transform.position;
+        //             entry = PlayerControl.LocalPlayer.transform.position;
+        //         }
 
-                PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(entry);
+        //         PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(entry);
 
-                if (!PlayerControl.LocalPlayer.Data.IsDead)
-                {  // Ghosts can portal too, but non-blocking and only with a local animation
-                    using var writer = RPCProcedure.SendRPC(CustomRPC.UsePortal);
-                    writer.Write((byte)PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(portalMakerSoloTeleport ? (byte)1 : (byte)0);
-                }
-                RPCProcedure.usePortal(PlayerControl.LocalPlayer.PlayerId, portalMakerSoloTeleport ? (byte)1 : (byte)0);
-                usePortalButton.Timer = usePortalButton.MaxTimer;
-                portalmakerMoveToPortalButton.Timer = usePortalButton.MaxTimer;
-                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Portal.teleportDuration, new Action<float>((p) =>
-                { // Delayed action
-                    PlayerControl.LocalPlayer.moveable = false;
-                    PlayerControl.LocalPlayer.NetTransform.Halt();
-                    if (p >= 0.5f && p <= 0.53f && !didTeleport && !MeetingHud.Instance)
-                    {
-                        if (SubmergedCompatibility.IsSubmerged)
-                        {
-                            SubmergedCompatibility.ChangeFloor(exit.y > -7);
-                        }
-                        PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(exit);
-                        didTeleport = true;
-                    }
-                    if (p == 1f)
-                    {
-                        PlayerControl.LocalPlayer.moveable = true;
-                    }
-                })));
-            },
-            () =>
-            {
-                if (PlayerControl.LocalPlayer == Portalmaker.portalmaker && Portal.bothPlacedAndEnabled)
-                    portalmakerButtonText1.text = Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position) || !Portalmaker.canPortalFromAnywhere ? "" : "1. " + Portal.firstPortal.room;
-                return Portal.bothPlacedAndEnabled;
-            },
-            () => { return PlayerControl.LocalPlayer.CanMove && (Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position) || Portalmaker.canPortalFromAnywhere && PlayerControl.LocalPlayer == Portalmaker.portalmaker) && !Portal.isTeleporting; },
-            () => { usePortalButton.Timer = usePortalButton.MaxTimer; },
-            Portalmaker.getUsePortalButtonSprite(),
-            new Vector3(0.9f, -0.06f, 0),
-            __instance,
-            __instance.UseButton,
-            KeyCode.J,
-            mirror: true
-        );
+        //         if (!PlayerControl.LocalPlayer.Data.IsDead)
+        //         {  // Ghosts can portal too, but non-blocking and only with a local animation
+        //             using var writer = RPCProcedure.SendRPC(CustomRPC.UsePortal);
+        //             writer.Write((byte)PlayerControl.LocalPlayer.PlayerId);
+        //             writer.Write(portalMakerSoloTeleport ? (byte)1 : (byte)0);
+        //         }
+        //         RPCProcedure.usePortal(PlayerControl.LocalPlayer.PlayerId, portalMakerSoloTeleport ? (byte)1 : (byte)0);
+        //         usePortalButton.Timer = usePortalButton.MaxTimer;
+        //         portalmakerMoveToPortalButton.Timer = usePortalButton.MaxTimer;
+        //         FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Portal.teleportDuration, new Action<float>((p) =>
+        //         { // Delayed action
+        //             PlayerControl.LocalPlayer.moveable = false;
+        //             PlayerControl.LocalPlayer.NetTransform.Halt();
+        //             if (p >= 0.5f && p <= 0.53f && !didTeleport && !MeetingHud.Instance)
+        //             {
+        //                 if (SubmergedCompatibility.IsSubmerged)
+        //                 {
+        //                     SubmergedCompatibility.ChangeFloor(exit.y > -7);
+        //                 }
+        //                 PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(exit);
+        //                 didTeleport = true;
+        //             }
+        //             if (p == 1f)
+        //             {
+        //                 PlayerControl.LocalPlayer.moveable = true;
+        //             }
+        //         })));
+        //     },
+        //     () =>
+        //     {
+        //         if (PlayerControl.LocalPlayer == RebuildUs.Portalmaker.portalmaker && Portal.bothPlacedAndEnabled)
+        //             portalmakerButtonText1.text = Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position) || !RebuildUs.Portalmaker.canPortalFromAnywhere ? "" : "1. " + Portal.firstPortal.room;
+        //         return Portal.bothPlacedAndEnabled;
+        //     },
+        //     () => { return PlayerControl.LocalPlayer.CanMove && (Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position) || RebuildUs.Portalmaker.canPortalFromAnywhere && PlayerControl.LocalPlayer == RebuildUs.Portalmaker.portalmaker) && !Portal.isTeleporting; },
+        //     () => { usePortalButton.Timer = usePortalButton.MaxTimer; },
+        //     RebuildUs.Portalmaker.getUsePortalButtonSprite(),
+        //     new Vector3(0.9f, -0.06f, 0),
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.J,
+        //     mirror: true
+        // );
 
-        portalmakerMoveToPortalButton = new CustomButton(
-            () =>
-            {
-                bool didTeleport = false;
-                Vector3 exit = Portal.secondPortal.portalGameObject.transform.position;
+        // portalmakerMoveToPortalButton = new CustomButton(
+        //     () =>
+        //     {
+        //         bool didTeleport = false;
+        //         Vector3 exit = Portal.secondPortal.portalGameObject.transform.position;
 
-                if (!PlayerControl.LocalPlayer.Data.IsDead)
-                {  // Ghosts can portal too, but non-blocking and only with a local animation
-                    using var writer = RPCProcedure.SendRPC(CustomRPC.UsePortal);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write((byte)2);
-                }
-                RPCProcedure.usePortal(PlayerControl.LocalPlayer.PlayerId, 2);
-                usePortalButton.Timer = usePortalButton.MaxTimer;
-                portalmakerMoveToPortalButton.Timer = usePortalButton.MaxTimer;
-                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Portal.teleportDuration, new Action<float>((p) =>
-                { // Delayed action
-                    PlayerControl.LocalPlayer.moveable = false;
-                    PlayerControl.LocalPlayer.NetTransform.Halt();
-                    if (p >= 0.5f && p <= 0.53f && !didTeleport && !MeetingHud.Instance)
-                    {
-                        if (SubmergedCompatibility.IsSubmerged)
-                        {
-                            SubmergedCompatibility.ChangeFloor(exit.y > -7);
-                        }
-                        PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(exit);
-                        didTeleport = true;
-                    }
-                    if (p == 1f)
-                    {
-                        PlayerControl.LocalPlayer.moveable = true;
-                    }
-                })));
-            },
-            () => { return Portalmaker.canPortalFromAnywhere && Portal.bothPlacedAndEnabled && PlayerControl.LocalPlayer == Portalmaker.portalmaker; },
-            () => { return PlayerControl.LocalPlayer.CanMove && !Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position) && !Portal.isTeleporting; },
-            () => { portalmakerMoveToPortalButton.Timer = usePortalButton.MaxTimer; },
-            Portalmaker.getUsePortalButtonSprite(),
-            new Vector3(0.9f, 1f, 0),
-            __instance,
-            __instance.UseButton,
-            KeyCode.G,
-            mirror: true
-        );
+        //         if (!PlayerControl.LocalPlayer.Data.IsDead)
+        //         {  // Ghosts can portal too, but non-blocking and only with a local animation
+        //             using var writer = RPCProcedure.SendRPC(CustomRPC.UsePortal);
+        //             writer.Write(PlayerControl.LocalPlayer.PlayerId);
+        //             writer.Write((byte)2);
+        //         }
+        //         RPCProcedure.usePortal(PlayerControl.LocalPlayer.PlayerId, 2);
+        //         usePortalButton.Timer = usePortalButton.MaxTimer;
+        //         portalmakerMoveToPortalButton.Timer = usePortalButton.MaxTimer;
+        //         FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Portal.teleportDuration, new Action<float>((p) =>
+        //         { // Delayed action
+        //             PlayerControl.LocalPlayer.moveable = false;
+        //             PlayerControl.LocalPlayer.NetTransform.Halt();
+        //             if (p >= 0.5f && p <= 0.53f && !didTeleport && !MeetingHud.Instance)
+        //             {
+        //                 if (SubmergedCompatibility.IsSubmerged)
+        //                 {
+        //                     SubmergedCompatibility.ChangeFloor(exit.y > -7);
+        //                 }
+        //                 PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(exit);
+        //                 didTeleport = true;
+        //             }
+        //             if (p == 1f)
+        //             {
+        //                 PlayerControl.LocalPlayer.moveable = true;
+        //             }
+        //         })));
+        //     },
+        //     () => { return RebuildUs.Portalmaker.canPortalFromAnywhere && Portal.bothPlacedAndEnabled && PlayerControl.LocalPlayer == RebuildUs.Portalmaker.portalmaker; },
+        //     () => { return PlayerControl.LocalPlayer.CanMove && !Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position) && !Portal.isTeleporting; },
+        //     () => { portalmakerMoveToPortalButton.Timer = usePortalButton.MaxTimer; },
+        //     RebuildUs.Portalmaker.getUsePortalButtonSprite(),
+        //     new Vector3(0.9f, 1f, 0),
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.G,
+        //     mirror: true
+        // );
 
-        portalmakerButtonText1 = GameObject.Instantiate(usePortalButton.actionButton.cooldownTimerText, usePortalButton.actionButton.cooldownTimerText.transform.parent);
-        portalmakerButtonText1.text = "";
-        portalmakerButtonText1.enableWordWrapping = false;
-        portalmakerButtonText1.transform.localScale = Vector3.one * 0.5f;
-        portalmakerButtonText1.transform.localPosition += new Vector3(-0.05f, 0.55f, -1f);
+        // portalmakerButtonText1 = GameObject.Instantiate(usePortalButton.actionButton.cooldownTimerText, usePortalButton.actionButton.cooldownTimerText.transform.parent);
+        // portalmakerButtonText1.text = "";
+        // portalmakerButtonText1.enableWordWrapping = false;
+        // portalmakerButtonText1.transform.localScale = Vector3.one * 0.5f;
+        // portalmakerButtonText1.transform.localPosition += new Vector3(-0.05f, 0.55f, -1f);
 
-        portalmakerButtonText2 = GameObject.Instantiate(portalmakerMoveToPortalButton.actionButton.cooldownTimerText, portalmakerMoveToPortalButton.actionButton.cooldownTimerText.transform.parent);
-        portalmakerButtonText2.text = "";
-        portalmakerButtonText2.enableWordWrapping = false;
-        portalmakerButtonText2.transform.localScale = Vector3.one * 0.5f;
-        portalmakerButtonText2.transform.localPosition += new Vector3(-0.05f, 0.55f, -1f);
+        // portalmakerButtonText2 = GameObject.Instantiate(portalmakerMoveToPortalButton.actionButton.cooldownTimerText, portalmakerMoveToPortalButton.actionButton.cooldownTimerText.transform.parent);
+        // portalmakerButtonText2.text = "";
+        // portalmakerButtonText2.enableWordWrapping = false;
+        // portalmakerButtonText2.transform.localScale = Vector3.one * 0.5f;
+        // portalmakerButtonText2.transform.localPosition += new Vector3(-0.05f, 0.55f, -1f);
 
         // Jackal Sidekick Button
         jackalSidekickButton = new CustomButton(

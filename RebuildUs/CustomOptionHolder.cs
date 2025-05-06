@@ -622,7 +622,7 @@ public class CustomOptionHolder
         spyCanEnterVents = CustomOption.Create(814, CustomOptionType.Crewmate, "SpyCanEnterVents", false, spySpawnRate);
         spyHasImpostorVision = CustomOption.Create(815, CustomOptionType.Crewmate, "SpyHasImpostorVision", false, spySpawnRate);
 
-        portalmakerSpawnRate = new CustomRoleOption(820, 821, CustomOptionType.Crewmate, ("Portalmaker", Portalmaker.color), 1);
+        portalmakerSpawnRate = new CustomRoleOption(820, 821, CustomOptionType.Crewmate, ("Portalmaker", Portalmaker.Color), 1);
         portalmakerCooldown = CustomOption.Create(822, CustomOptionType.Crewmate, "PortalmakerCooldown", 30f, 10f, 60f, 2.5f, portalmakerSpawnRate, unitType: UnitType.UnitSeconds);
         portalmakerUsePortalCooldown = CustomOption.Create(823, CustomOptionType.Crewmate, "PortalmakerUsePortalCooldown", 30f, 10f, 60f, 2.5f, portalmakerSpawnRate, unitType: UnitType.UnitSeconds);
         portalmakerLogOnlyColorType = CustomOption.Create(824, CustomOptionType.Crewmate, "PortalmakerLogOnlyColorType", true, portalmakerSpawnRate);

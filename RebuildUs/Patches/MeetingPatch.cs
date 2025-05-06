@@ -764,8 +764,8 @@ class MeetingHudPatch
                     foreach (var entry in Portal.teleportedPlayers)
                     {
                         float timeBeforeMeeting = ((float)(DateTime.UtcNow - entry.time).TotalMilliseconds) / 1000;
-                        msg += Portalmaker.logShowsTime ? $"{(int)timeBeforeMeeting}s ago: " : "";
-                        msg = msg + $"{entry.name} used the teleporter\n";
+                        msg += Portalmaker.logHasTime ? $"{(int)timeBeforeMeeting}s ago: " : "";
+                        msg += $"{entry.name} used the teleporter\n";
                     }
                     FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Portalmaker.portalmaker, $"{msg}");
                 }

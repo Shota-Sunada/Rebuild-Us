@@ -41,7 +41,7 @@ public class RoleInfo
 
     public static RoleInfo jester = new("Jester", Jester.Color, "Get voted out", "Get voted out", RoleId.Jester, true);
     public static RoleInfo mayor = new("Mayor", Mayor.Color, "Your vote counts twice", "Your vote counts twice", RoleId.Mayor);
-    public static RoleInfo portalmaker = new("Portalmaker", Portalmaker.color, "You can create portals", "You can create portals", RoleId.Portalmaker);
+    public static RoleInfo portalmaker = new("Portalmaker", Portalmaker.Color, "You can create portals", "You can create portals", RoleId.Portalmaker);
     public static RoleInfo engineer = new("Engineer", Engineer.Color, "Maintain important systems on the ship", "Repair the ship", RoleId.Engineer);
     public static RoleInfo sheriff = new("Sheriff", Sheriff.Color, "Shoot the <color=#FF1919FF>Impostors</color>", "Shoot the Impostors", RoleId.Sheriff);
     public static RoleInfo lighter = new("Lighter", Lighter.Color, "Your light never goes out", "Your light never goes out", RoleId.Lighter);
@@ -198,7 +198,7 @@ public class RoleInfo
         // Special roles
         if (p.isRole(RoleId.Jester)) infos.Add(jester);
         if (p.isRole(RoleId.Mayor)) infos.Add(mayor);
-        if (p == Portalmaker.portalmaker) infos.Add(portalmaker);
+        if (p.isRole(RoleId.Portalmaker)) infos.Add(portalmaker);
         if (p.isRole(RoleId.Engineer)) infos.Add(engineer);
         if (p.isRole(RoleId.Sheriff)) infos.Add(sheriff);
         if (p.isRole(RoleId.Lighter)) infos.Add(lighter);

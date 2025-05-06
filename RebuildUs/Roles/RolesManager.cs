@@ -380,7 +380,7 @@ public static class RoleHelpers
 
         // Crewmate roles
         // if (player == RebuildUs.Mayor.mayor) RebuildUs.Mayor.clearAndReload();
-        if (player.isRole(RoleId.Portalmaker)) Portalmaker.clearAndReload();
+        // if (player.isRole(RoleId.Portalmaker)) RebuildUs.Portalmaker.clearAndReload();
         // if (player == RebuildUs.Engineer.engineer) RebuildUs.Engineer.clearAndReload();
         // if (player == RebuildUs.Lighter.lighter) RebuildUs.Lighter.clearAndReload();
         // if (player == RebuildUs.Detective.detective) RebuildUs.Detective.clearAndReload();

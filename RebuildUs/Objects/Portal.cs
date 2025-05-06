@@ -2,11 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-using RebuildUs.Utilities;
-using static RebuildUs.RebuildUs;
-
 namespace RebuildUs.Objects;
-
 
 public class Portal
 {
@@ -54,7 +50,7 @@ public class Portal
         firstPortal.animationFgRenderer.flipX = flip;
         secondPortal.animationFgRenderer.flipX = flip;
         if (Morphing.morphing != null && Morphing.morphTimer > 0) playerControl = Morphing.morphTarget;  // Will output info of morph-target instead
-        string playerNameDisplay = Portalmaker.logOnlyHasColors ? "A player (" + (Helpers.isLighterColor(playerControl) ? "L" : "D") + ")" : playerControl.Data.PlayerName;
+        string playerNameDisplay = Portalmaker.logOnlyColorType ? "A player (" + (Helpers.isLighterColor(playerControl) ? "L" : "D") + ")" : playerControl.Data.PlayerName;
 
         int colorId = playerControl.Data.DefaultOutfit.ColorId;
 
@@ -111,7 +107,7 @@ public class Portal
         animationFgRenderer.material = FastDestroyableSingleton<HatManager>.Instance.PlayerMaterial;
 
         // Only render the inactive portals for the Portalmaker
-        bool playerIsPortalmaker = PlayerControl.LocalPlayer == RebuildUs.Portalmaker.portalmaker;
+        bool playerIsPortalmaker = PlayerControl.LocalPlayer.isRole(RoleId.Portalmaker);
         portalGameObject.SetActive(playerIsPortalmaker);
         portalFgAnimationGameObject.SetActive(true);
 
@@ -157,7 +153,7 @@ public class Portal
             firstPortal.portalGameObject.SetActive(true);
             secondPortal.portalGameObject.SetActive(true);
             bothPlacedAndEnabled = true;
-            HudManagerStartPatch.portalmakerButtonText2.text = "2. " + secondPortal.room;
+            Portalmaker.portalmakerButtonText2.text = "2. " + secondPortal.room;
         }
 
         // reset teleported players
