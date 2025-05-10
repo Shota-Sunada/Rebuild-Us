@@ -26,12 +26,12 @@ public static class CredentialsPatch
 
             if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
             {
-                __instance.text.text = $"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n{__instance.text.text}";
+                __instance.text.text = $"{RebuildUs.MOD_NAME} v{RebuildUs.MOD_VERSION}\n{__instance.text.text}";
                 position.DistanceFromEdge = MeetingHud.Instance ? new(1.25f, 0.15f, 0) : new(1.55f, 0.15f, 0);
             }
             else
             {
-                __instance.text.text = $"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n<size=50%>By {RebuildUsPlugin.MOD_DEVELOPER}</size>\n{__instance.text.text}";
+                __instance.text.text = $"{RebuildUs.MOD_NAME} v{RebuildUs.MOD_VERSION}\n<size=50%>By {RebuildUs.MOD_DEVELOPER}</size>\n{__instance.text.text}";
                 position.DistanceFromEdge = new(0f, 0.1f, 0);
             }
 
@@ -61,7 +61,7 @@ public static class CredentialsPatch
 
             var credits = new GameObject("RUModCredits");
             var text = credits.AddComponent<TextMeshPro>();
-            text.SetText($"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n<size=50%>By {RebuildUsPlugin.MOD_DEVELOPER}</size>");
+            text.SetText($"{RebuildUs.MOD_NAME} v{RebuildUs.MOD_VERSION}\n<size=50%>By {RebuildUs.MOD_DEVELOPER}</size>");
             text.alignment = TextAlignmentOptions.Center;
             text.fontSize *= 0.05f;
 

@@ -254,7 +254,7 @@ public static class PlayerControlFixedUpdatePatch
 
     static void ninjaUpdate()
     {
-        if (Ninja.isInvisble && Ninja.invisibleTimer <= 0 && Ninja.ninja == PlayerControl.LocalPlayer)
+        if (Ninja.isInvisible && Ninja.invisibleTimer <= 0 && Ninja.ninja == PlayerControl.LocalPlayer)
         {
             using var invisibleWriter = RPCProcedure.SendRPC(CustomRPC.SetInvisible);
             invisibleWriter.Write(Ninja.ninja.PlayerId);

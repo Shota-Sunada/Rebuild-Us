@@ -49,15 +49,15 @@ static class MapOptions
 
     public static void reloadPluginOptions()
     {
-        ghostsSeeRoles = RebuildUsPlugin.GhostsSeeRoles.Value;
-        ghostsSeeModifier = RebuildUsPlugin.GhostsSeeModifier.Value;
-        ghostsSeeInformation = RebuildUsPlugin.GhostsSeeInformation.Value;
-        ghostsSeeVotes = RebuildUsPlugin.GhostsSeeVotes.Value;
-        showRoleSummary = RebuildUsPlugin.ShowRoleSummary.Value;
-        showLighterDarker = RebuildUsPlugin.ShowLighterDarker.Value;
-        enableHorseMode = RebuildUsPlugin.EnableHorseMode.Value;
-        ShowVentsOnMap = RebuildUsPlugin.ShowVentsOnMap.Value;
-        ShowChatNotifications = RebuildUsPlugin.ShowChatNotifications.Value;
+        ghostsSeeRoles = RebuildUs.GhostsSeeRoles.Value;
+        ghostsSeeModifier = RebuildUs.GhostsSeeModifier.Value;
+        ghostsSeeInformation = RebuildUs.GhostsSeeInformation.Value;
+        ghostsSeeVotes = RebuildUs.GhostsSeeVotes.Value;
+        showRoleSummary = RebuildUs.ShowRoleSummary.Value;
+        showLighterDarker = RebuildUs.ShowLighterDarker.Value;
+        enableHorseMode = RebuildUs.EnableHorseMode.Value;
+        ShowVentsOnMap = RebuildUs.ShowVentsOnMap.Value;
+        ShowChatNotifications = RebuildUs.ShowChatNotifications.Value;
 
         //Patches.ShouldAlwaysHorseAround.isHorseMode = RebuildUsPlugin.EnableHorseMode.Value;
     }

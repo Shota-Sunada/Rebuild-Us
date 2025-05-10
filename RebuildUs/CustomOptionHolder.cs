@@ -361,7 +361,7 @@ public class CustomOptionHolder
 
     public static void Load()
     {
-        CustomOption.vanillaSettings = RebuildUsPlugin.Instance.Config.Bind("Preset0", "VanillaOptions", "");
+        CustomOption.vanillaSettings = RebuildUs.Instance.Config.Bind("Preset0", "VanillaOptions", "");
 
         // Role Options
         activateRoles = CustomOption.Create(1, CustomOptionType.General, "IsRolesEnabled", true, null, true);

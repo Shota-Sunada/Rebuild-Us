@@ -91,11 +91,11 @@ public static class RegionMenuOpenPatch
             ipField.characterLimit = 30;
             ipField.AllowSymbols = true;
             ipField.ForceUppercase = false;
-            ipField.SetText(RebuildUsPlugin.Ip.Value);
+            ipField.SetText(RebuildUs.Ip.Value);
             __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>((p) =>
             {
-                ipField.outputText.SetText(RebuildUsPlugin.Ip.Value);
-                ipField.SetText(RebuildUsPlugin.Ip.Value);
+                ipField.outputText.SetText(RebuildUs.Ip.Value);
+                ipField.SetText(RebuildUs.Ip.Value);
             })));
 
             ipField.ClearOnFocus = false;
@@ -107,12 +107,12 @@ public static class RegionMenuOpenPatch
 
             void onEnterOrIpChange()
             {
-                RebuildUsPlugin.Ip.Value = ipField.text;
+                RebuildUs.Ip.Value = ipField.text;
             }
 
             void onFocusLost()
             {
-                RebuildUsPlugin.UpdateRegions();
+                RebuildUs.UpdateRegions();
             }
         }
 
@@ -126,11 +126,11 @@ public static class RegionMenuOpenPatch
 
             portField.transform.localPosition = new Vector3(3.225f, -1.55f, -100f);
             portField.characterLimit = 5;
-            portField.SetText(RebuildUsPlugin.Port.Value.ToString());
+            portField.SetText(RebuildUs.Port.Value.ToString());
             __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>((p) =>
             {
-                portField.outputText.SetText(RebuildUsPlugin.Port.Value.ToString());
-                portField.SetText(RebuildUsPlugin.Port.Value.ToString());
+                portField.outputText.SetText(RebuildUs.Port.Value.ToString());
+                portField.SetText(RebuildUs.Port.Value.ToString());
             })));
 
 
@@ -146,7 +146,7 @@ public static class RegionMenuOpenPatch
                 ushort port = 0;
                 if (ushort.TryParse(portField.text, out port))
                 {
-                    RebuildUsPlugin.Port.Value = port;
+                    RebuildUs.Port.Value = port;
                     portField.outputText.color = Color.white;
                 }
                 else
@@ -157,7 +157,7 @@ public static class RegionMenuOpenPatch
 
             void onFocusLost()
             {
-                RebuildUsPlugin.UpdateRegions();
+                RebuildUs.UpdateRegions();
             }
         }
 

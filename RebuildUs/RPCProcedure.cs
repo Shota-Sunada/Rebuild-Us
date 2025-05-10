@@ -70,7 +70,7 @@ public static class RPCProcedure
         }
         catch (Exception e)
         {
-            RebuildUsPlugin.Instance.Logger.LogError("Error while deserializing options: " + e.Message);
+            RebuildUs.Instance.Logger.LogError("Error while deserializing options: " + e.Message);
         }
     }
 
@@ -123,7 +123,7 @@ public static class RPCProcedure
             }
             catch (Exception e)
             {
-                RebuildUsPlugin.Instance.Logger.LogError("Error while deserializing roles: " + e.Message);
+                RebuildUs.Instance.Logger.LogError("Error while deserializing roles: " + e.Message);
             }
         }
 
@@ -621,7 +621,7 @@ public static class RPCProcedure
             target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(1f);
 
             if (Camouflager.camouflageTimer <= 0 && !Helpers.MushroomSabotageActive()) target.setDefaultLook();
-            Ninja.isInvisble = false;
+            Ninja.isInvisible = false;
             return;
         }
 
@@ -633,7 +633,7 @@ public static class RPCProcedure
         target.cosmetics.colorBlindText.gameObject.SetActive(false);
         target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(canSee ? 0.1f : 0f);
         Ninja.invisibleTimer = Ninja.invisibleDuration;
-        Ninja.isInvisble = true;
+        Ninja.isInvisible = true;
     }
 
     public static void placePortal(byte[] buff)

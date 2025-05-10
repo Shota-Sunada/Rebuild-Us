@@ -31,14 +31,14 @@ namespace RebuildUs;
 
 [BepInPlugin(MOD_ID, MOD_NAME, MOD_VERSION)]
 [BepInProcess("Among Us.exe")]
-public class RebuildUsPlugin : BasePlugin
+public class RebuildUs : BasePlugin
 {
     public const string MOD_ID = "com.shota-sunada.rebuild-us";
     public const string MOD_NAME = "Rebuild Us";
     public const string MOD_VERSION = "1.0.0";
     public const string MOD_DEVELOPER = "Shota Sunada";
 
-    public static RebuildUsPlugin Instance;
+    public static RebuildUs Instance;
     public Harmony Harmony { get; } = new(MOD_ID);
     public Version Version { get; } = Version.Parse(MOD_VERSION);
     public ManualLogSource Logger;
@@ -136,6 +136,68 @@ public class RebuildUsPlugin : BasePlugin
         Logger.LogMessage("\"Rebuild Us\" was completely loaded! Enjoy the modifications!");
     }
 
+    public static System.Random rnd = new((int)DateTime.Now.Ticks);
+
+    public static void clearAndReloadRoles()
+    {
+        // Jester.clearAndReload();
+        // Mayor.clearAndReload();
+        // Portalmaker.clearAndReload();
+        // Engineer.clearAndReload();
+        // Lighter.clearAndReload();
+        // Godfather.clearAndReload();
+        // Mafioso.clearAndReload();
+        // Janitor.clearAndReload();
+        // Detective.clearAndReload();
+        // TimeMaster.clearAndReload();
+        // Medic.clearAndReload();
+        Shifter.clearAndReload();
+        Swapper.clearAndReload();
+        // Lovers.clearAndReload();
+        // Seer.clearAndReload();
+        Morphing.clearAndReload();
+        Camouflager.clearAndReload();
+        // Hacker.clearAndReload();
+        // Tracker.clearAndReload();
+        Vampire.clearAndReload();
+        Snitch.clearAndReload();
+        // Jackal.clearAndReload();
+        // Sidekick.clearAndReload();
+        // Eraser.clearAndReload();
+        Spy.clearAndReload();
+        Trickster.clearAndReload();
+        Cleaner.clearAndReload();
+        Warlock.clearAndReload();
+        SecurityGuard.clearAndReload();
+        // Arsonist.clearAndReload();
+        BountyHunter.clearAndReload();
+        Vulture.clearAndReload();
+        Medium.clearAndReload();
+        Lawyer.clearAndReload();
+        Pursuer.clearAndReload();
+        Witch.clearAndReload();
+        Ninja.clearAndReload();
+        Thief.clearAndReload();
+        Trapper.clearAndReload();
+        Bomber.clearAndReload();
+        Yoyo.clearAndReload();
+
+        // Modifier
+        Bait.clearAndReload();
+        Bloody.clearAndReload();
+        AntiTeleport.clearAndReload();
+        Tiebreaker.clearAndReload();
+        Sunglasses.clearAndReload();
+        Mini.clearAndReload();
+        Vip.clearAndReload();
+        Invert.clearAndReload();
+        Chameleon.clearAndReload();
+        Armored.clearAndReload();
+
+        // Gamemodes
+        HandleGuesser.clearAndReload();
+    }
+
     // Deactivate bans, since I always leave my local testing game and ban myself
     [HarmonyPatch(typeof(PlayerBanData), nameof(PlayerBanData.IsBanned), MethodType.Getter)]
     public static class IsBannedPatch
@@ -170,7 +232,7 @@ public class RebuildUsPlugin : BasePlugin
             // Check if debug mode is active.
             StringBuilder builder = new();
             SHA256 sha = SHA256Managed.Create();
-            Byte[] hashed = sha.ComputeHash(Encoding.UTF8.GetBytes(RebuildUsPlugin.DebugMode.Value));
+            Byte[] hashed = sha.ComputeHash(Encoding.UTF8.GetBytes(RebuildUs.DebugMode.Value));
             foreach (var b in hashed)
             {
                 builder.Append(b.ToString("x2"));

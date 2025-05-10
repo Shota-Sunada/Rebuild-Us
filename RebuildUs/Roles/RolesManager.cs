@@ -238,7 +238,7 @@ public static class RoleHelpers
             case RoleId.Pursuer:
                 return Pursuer.pursuer == player;
             default:
-                RebuildUsPlugin.Instance.Logger.LogError($"isRole: no method found for role type {role}");
+                RebuildUs.Instance.Logger.LogError($"isRole: no method found for role type {role}");
                 break;
         }
 
@@ -367,7 +367,7 @@ public static class RoleHelpers
                 Pursuer.pursuer = player;
                 break;
             default:
-                RebuildUsPlugin.Instance.Logger.LogError($"setRole: no method found for role type {role}");
+                RebuildUs.Instance.Logger.LogError($"setRole: no method found for role type {role}");
                 return;
         }
     }
@@ -384,7 +384,7 @@ public static class RoleHelpers
                     return;
                 }
             }
-            RebuildUsPlugin.Instance.Logger.LogError($"eraseRole: no method found for role type {role}");
+            RebuildUs.Instance.Logger.LogError($"eraseRole: no method found for role type {role}");
         }
     }
 

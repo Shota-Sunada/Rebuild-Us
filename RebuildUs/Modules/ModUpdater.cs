@@ -151,7 +151,7 @@ public class ModUpdater : MonoBehaviour
     [HideFromIl2Cpp]
     private static bool FilterLatestRelease(GithubRelease release)
     {
-        return release.IsNewer(RebuildUsPlugin.Instance.Version) && release.Assets.Any(FilterPluginAsset);
+        return release.IsNewer(RebuildUs.Instance.Version) && release.Assets.Any(FilterPluginAsset);
     }
 
     [HideFromIl2Cpp]
@@ -172,7 +172,7 @@ public class ModUpdater : MonoBehaviour
     {
         if (_busy || scene.name != "MainMenu") return;
         var latestRelease = Releases.FirstOrDefault();
-        if (latestRelease == null || latestRelease.Version <= RebuildUsPlugin.Instance.Version)
+        if (latestRelease == null || latestRelease.Version <= RebuildUs.Instance.Version)
             return;
 
         var template = GameObject.Find("ExitGameButton");
@@ -210,7 +210,7 @@ public class ModUpdater : MonoBehaviour
         var popUpTemplate = UnityEngine.Object.FindObjectOfType<AnnouncementPopUp>(true);
         if (popUpTemplate == null)
         {
-            RebuildUsPlugin.Instance.Logger.LogError("couldnt show credits, popUp is null");
+            RebuildUs.Instance.Logger.LogError("couldnt show credits, popUp is null");
             yield return null;
         }
         var popUp = UnityEngine.Object.Instantiate(popUpTemplate);

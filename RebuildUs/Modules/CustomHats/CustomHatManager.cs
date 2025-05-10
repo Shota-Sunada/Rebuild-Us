@@ -40,7 +40,7 @@ public static class CustomHatManager
 
     static CustomHatManager()
     {
-        Loader = RebuildUsPlugin.Instance.AddComponent<HatsLoader>();
+        Loader = RebuildUs.Instance.AddComponent<HatsLoader>();
     }
 
     internal static void LoadHats()

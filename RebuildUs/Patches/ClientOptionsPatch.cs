@@ -14,14 +14,14 @@ namespace RebuildUs.Patches;
 public static class ClientOptionsPatch
 {
     private static readonly SelectionBehaviour[] AllOptions = {
-        new("Ghosts See Tasks & Other Info", () => MapOptions.ghostsSeeInformation = RebuildUsPlugin.GhostsSeeInformation.Value = !RebuildUsPlugin.GhostsSeeInformation.Value, RebuildUsPlugin.GhostsSeeInformation.Value),
-        new("Ghosts Can See Votes", () => MapOptions.ghostsSeeVotes = RebuildUsPlugin.GhostsSeeVotes.Value = !RebuildUsPlugin.GhostsSeeVotes.Value, RebuildUsPlugin.GhostsSeeVotes.Value),
-        new("Ghosts Can See Roles", () => MapOptions.ghostsSeeRoles = RebuildUsPlugin.GhostsSeeRoles.Value = !RebuildUsPlugin.GhostsSeeRoles.Value, RebuildUsPlugin.GhostsSeeRoles.Value),
-        new("Ghosts Can Additionally See Modifier", () => MapOptions.ghostsSeeModifier = RebuildUsPlugin.GhostsSeeModifier.Value = !RebuildUsPlugin.GhostsSeeModifier.Value, RebuildUsPlugin.GhostsSeeModifier.Value),
-        new("Show Role Summary", () => MapOptions.showRoleSummary = RebuildUsPlugin.ShowRoleSummary.Value = !RebuildUsPlugin.ShowRoleSummary.Value, RebuildUsPlugin.ShowRoleSummary.Value),
-        new("Show Lighter / Darker", () => MapOptions.showLighterDarker = RebuildUsPlugin.ShowLighterDarker.Value = !RebuildUsPlugin.ShowLighterDarker.Value, RebuildUsPlugin.ShowLighterDarker.Value),
-        new("Show Vents On Map", () => MapOptions.ShowVentsOnMap = RebuildUsPlugin.ShowVentsOnMap.Value = !RebuildUsPlugin.ShowVentsOnMap.Value, RebuildUsPlugin.ShowVentsOnMap.Value),
-        new("Show Chat Notifications", () => MapOptions.ShowChatNotifications = RebuildUsPlugin.ShowChatNotifications.Value = !RebuildUsPlugin.ShowChatNotifications.Value, RebuildUsPlugin.ShowChatNotifications.Value),
+        new("Ghosts See Tasks & Other Info", () => MapOptions.ghostsSeeInformation = RebuildUs.GhostsSeeInformation.Value = !RebuildUs.GhostsSeeInformation.Value, RebuildUs.GhostsSeeInformation.Value),
+        new("Ghosts Can See Votes", () => MapOptions.ghostsSeeVotes = RebuildUs.GhostsSeeVotes.Value = !RebuildUs.GhostsSeeVotes.Value, RebuildUs.GhostsSeeVotes.Value),
+        new("Ghosts Can See Roles", () => MapOptions.ghostsSeeRoles = RebuildUs.GhostsSeeRoles.Value = !RebuildUs.GhostsSeeRoles.Value, RebuildUs.GhostsSeeRoles.Value),
+        new("Ghosts Can Additionally See Modifier", () => MapOptions.ghostsSeeModifier = RebuildUs.GhostsSeeModifier.Value = !RebuildUs.GhostsSeeModifier.Value, RebuildUs.GhostsSeeModifier.Value),
+        new("Show Role Summary", () => MapOptions.showRoleSummary = RebuildUs.ShowRoleSummary.Value = !RebuildUs.ShowRoleSummary.Value, RebuildUs.ShowRoleSummary.Value),
+        new("Show Lighter / Darker", () => MapOptions.showLighterDarker = RebuildUs.ShowLighterDarker.Value = !RebuildUs.ShowLighterDarker.Value, RebuildUs.ShowLighterDarker.Value),
+        new("Show Vents On Map", () => MapOptions.ShowVentsOnMap = RebuildUs.ShowVentsOnMap.Value = !RebuildUs.ShowVentsOnMap.Value, RebuildUs.ShowVentsOnMap.Value),
+        new("Show Chat Notifications", () => MapOptions.ShowChatNotifications = RebuildUs.ShowChatNotifications.Value = !RebuildUs.ShowChatNotifications.Value, RebuildUs.ShowChatNotifications.Value),
     };
 
     private static GameObject popUp;

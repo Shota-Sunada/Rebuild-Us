@@ -25,7 +25,7 @@ public class HatsLoader : MonoBehaviour
         isRunning = true;
         var www = new UnityWebRequest();
         www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
-        RebuildUsPlugin.Instance.Logger.LogMessage($"Download manifest at: {RepositoryUrl}/{ManifestFileName}");
+        RebuildUs.Instance.Logger.LogMessage($"Download manifest at: {RepositoryUrl}/{ManifestFileName}");
         www.SetUrl($"{RepositoryUrl}/{ManifestFileName}");
         www.downloadHandler = new DownloadHandlerBuffer();
         var operation = www.SendWebRequest();
@@ -37,7 +37,7 @@ public class HatsLoader : MonoBehaviour
 
         if (www.isNetworkError || www.isHttpError)
         {
-            RebuildUsPlugin.Instance.Logger.LogError(www.error);
+            RebuildUs.Instance.Logger.LogError(www.error);
             yield break;
         }
 
@@ -54,7 +54,7 @@ public class HatsLoader : MonoBehaviour
         var toDownload = GenerateDownloadList(UnregisteredHats);
         if (EventUtility.isEnabled) UnregisteredHats.AddRange(CustomHatManager.loadHorseHats());
 
-        RebuildUsPlugin.Instance.Logger.LogMessage($"I'll download {toDownload.Count} hat files");
+        RebuildUs.Instance.Logger.LogMessage($"I'll download {toDownload.Count} hat files");
 
         foreach (var fileName in toDownload)
         {
@@ -69,7 +69,7 @@ public class HatsLoader : MonoBehaviour
         var www = new UnityWebRequest();
         www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
         fileName = fileName.Replace(" ", "%20");
-        RebuildUsPlugin.Instance.Logger.LogMessage($"downloading hat: {fileName}");
+        RebuildUs.Instance.Logger.LogMessage($"downloading hat: {fileName}");
         www.SetUrl($"{RepositoryUrl}/hats/{fileName}");
         www.downloadHandler = new DownloadHandlerBuffer();
         var operation = www.SendWebRequest();
@@ -81,7 +81,7 @@ public class HatsLoader : MonoBehaviour
 
         if (www.isNetworkError || www.isHttpError)
         {
-            RebuildUsPlugin.Instance.Logger.LogError(www.error);
+            RebuildUs.Instance.Logger.LogError(www.error);
             yield break;
         }
 
@@ -92,7 +92,7 @@ public class HatsLoader : MonoBehaviour
         {
             if (persistTask.Exception != null)
             {
-                RebuildUsPlugin.Instance.Logger.LogError(persistTask.Exception.Message);
+                RebuildUs.Instance.Logger.LogError(persistTask.Exception.Message);
                 break;
             }
 

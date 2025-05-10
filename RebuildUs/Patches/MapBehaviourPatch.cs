@@ -157,7 +157,7 @@ static class MapBehaviourPatch
         {
             if ((vent.name.StartsWith("JackInThe") && !(PlayerControl.LocalPlayer == Trickster.trickster || PlayerControl.LocalPlayer.Data.IsDead))) continue; //for trickster vents
 
-            if (!RebuildUsPlugin.ShowVentsOnMap.Value)
+            if (!RebuildUs.ShowVentsOnMap.Value)
             {
                 if (mapIcons.Count > 0)
                 {

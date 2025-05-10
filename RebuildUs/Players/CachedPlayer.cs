@@ -84,7 +84,7 @@ public static class CachedPlayerPatches
         {
             if (!cachedPlayer.PlayerControl || !cachedPlayer.PlayerPhysics || !cachedPlayer.NetTransform || !cachedPlayer.transform)
             {
-                RebuildUsPlugin.Instance.Logger.LogError($"CachedPlayer {cachedPlayer.PlayerControl.name} has null fields");
+                RebuildUs.Instance.Logger.LogError($"CachedPlayer {cachedPlayer.PlayerControl.name} has null fields");
             }
         }
 #endif

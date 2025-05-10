@@ -67,8 +67,8 @@ public class CustomOption
 
         if (options.ContainsKey(id))
         {
-            RebuildUsPlugin.Instance.Logger.LogWarning($"The custom option id ({id}) is already exists!");
-            RebuildUsPlugin.Instance.Logger.LogWarning("The old one will be replaced by the new!");
+            RebuildUs.Instance.Logger.LogWarning($"The custom option id ({id}) is already exists!");
+            RebuildUs.Instance.Logger.LogWarning("The old one will be replaced by the new!");
         }
 
         options[id] = this;
@@ -174,13 +174,13 @@ public class CustomOption
     {
         saveVanillaOptions();
         CustomOption.preset = newPreset;
-        vanillaSettings = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", "GameOptions", "");
+        vanillaSettings = RebuildUs.Instance.Config.Bind($"Preset{preset}", "GameOptions", "");
         loadVanillaOptions();
         foreach (var (id, option) in CustomOption.options)
         {
             if (id == 0) continue;
 
-            option.entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", id.ToString(), option.defaultSelection);
+            option.entry = RebuildUs.Instance.Config.Bind($"Preset{preset}", id.ToString(), option.defaultSelection);
             option.selection = Mathf.Clamp(option.entry.Value, 0, option.selections.Length - 1);
             if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOption)
             {
@@ -216,7 +216,7 @@ public class CustomOption
         IGameOptions gameOptions = GameOptionsManager.Instance.gameOptionsFactory.FromBytes(Convert.FromBase64String(optionsString));
         if (gameOptions.Version < 8)
         {
-            RebuildUsPlugin.Instance.Logger.LogMessage("tried to paste old settings, not doing this!");
+            RebuildUs.Instance.Logger.LogMessage("tried to paste old settings, not doing this!");
             return false;
         }
         GameOptionsManager.Instance.GameHostOptions = gameOptions;
@@ -411,7 +411,7 @@ public class CustomOption
                 if (id == CustomOptionHolder.PRESET_OPTION_ID) continue;
                 lastId = id;
                 var option = options.First(option => option.Key == id);
-                option.Value.entry = RebuildUsPlugin.Instance.Config.Bind($"Preset{preset}", option.Key.ToString(), option.Value.defaultSelection);
+                option.Value.entry = RebuildUs.Instance.Config.Bind($"Preset{preset}", option.Key.ToString(), option.Value.defaultSelection);
                 option.Value.selection = selection;
                 if (option.Value.optionBehaviour != null && option.Value.optionBehaviour is StringOption stringOption)
                 {
@@ -422,7 +422,7 @@ public class CustomOption
             }
             catch (Exception e)
             {
-                RebuildUsPlugin.Instance.Logger.LogWarning($"id:{lastId}:{e}: while deserializing - tried to paste invalid settings!");
+                RebuildUs.Instance.Logger.LogWarning($"id:{lastId}:{e}: while deserializing - tried to paste invalid settings!");
                 errors++;
             }
         }
@@ -432,7 +432,7 @@ public class CustomOption
     // Copy to or paste from clipboard (as string)
     public static void copyToClipboard()
     {
-        GUIUtility.systemCopyBuffer = $"{RebuildUsPlugin.MOD_VERSION}!{Convert.ToBase64String(serializeOptions())}!{vanillaSettings.Value}";
+        GUIUtility.systemCopyBuffer = $"{RebuildUs.MOD_VERSION}!{Convert.ToBase64String(serializeOptions())}!{vanillaSettings.Value}";
     }
 
     public static int pasteFromClipboard()
@@ -448,7 +448,7 @@ public class CustomOption
             string vanillaSettingsSub = settingsSplit[2];
             ruOptionsFine = deserializeOptions(Convert.FromBase64String(torSettings));
             ShareOptionSelections();
-            if (RebuildUsPlugin.Instance.Version > versionInfo && versionInfo < Version.Parse("4.6.0"))
+            if (RebuildUs.Instance.Version > versionInfo && versionInfo < Version.Parse("4.6.0"))
             {
                 vanillaOptionsFine = false;
                 FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Host Info: Pasting vanilla settings failed, RU Options applied!");
@@ -461,7 +461,7 @@ public class CustomOption
         }
         catch (Exception e)
         {
-            RebuildUsPlugin.Instance.Logger.LogWarning($"{e}: tried to paste invalid settings!\n{allSettings}");
+            RebuildUs.Instance.Logger.LogWarning($"{e}: tried to paste invalid settings!\n{allSettings}");
             string errorStr = allSettings.Length > 2 ? allSettings.Substring(0, 3) : "(empty clipboard) ";
             FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"Host Info: You tried to paste invalid settings: \"{errorStr}...\"");
         }
@@ -1313,7 +1313,7 @@ class GameOptionsDataPatch
     {
         if (vanillaSettings == "")
             vanillaSettings = GameOptionsManager.Instance.CurrentGameOptions.ToHudString(PlayerControl.AllPlayerControls.Count);
-        int counter = RebuildUsPlugin.optionsPage;
+        int counter = RebuildUs.optionsPage;
         string hudString = counter != 0 && !hideExtras ? Helpers.cs(DateTime.Now.Second % 2 == 0 ? Color.white : Color.red, "(Use scroll wheel if necessary)\n\n") : "";
 
         maxPage = 7;
@@ -1464,44 +1464,44 @@ public static class GameOptionsNextPagePatch
 {
     public static void Postfix(KeyboardJoystick __instance)
     {
-        int page = RebuildUsPlugin.optionsPage;
+        int page = RebuildUs.optionsPage;
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            RebuildUsPlugin.optionsPage = (RebuildUsPlugin.optionsPage + 1) % 7;
+            RebuildUs.optionsPage = (RebuildUs.optionsPage + 1) % 7;
         }
         if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
         {
-            RebuildUsPlugin.optionsPage = 0;
+            RebuildUs.optionsPage = 0;
         }
         if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
         {
-            RebuildUsPlugin.optionsPage = 1;
+            RebuildUs.optionsPage = 1;
         }
         if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
         {
-            RebuildUsPlugin.optionsPage = 2;
+            RebuildUs.optionsPage = 2;
         }
         if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
         {
-            RebuildUsPlugin.optionsPage = 3;
+            RebuildUs.optionsPage = 3;
         }
         if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
         {
-            RebuildUsPlugin.optionsPage = 4;
+            RebuildUs.optionsPage = 4;
         }
         if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
         {
-            RebuildUsPlugin.optionsPage = 5;
+            RebuildUs.optionsPage = 5;
         }
         if (Input.GetKeyDown(KeyCode.Alpha7) || Input.GetKeyDown(KeyCode.Keypad7))
         {
-            RebuildUsPlugin.optionsPage = 6;
+            RebuildUs.optionsPage = 6;
         }
         if (Input.GetKeyDown(KeyCode.F1))
             HudManagerUpdate.ToggleSettings(HudManager.Instance);
         if (Input.GetKeyDown(KeyCode.F2) && LobbyBehaviour.Instance)
             HudManagerUpdate.ToggleSummary(HudManager.Instance);
-        if (RebuildUsPlugin.optionsPage >= GameOptionsDataPatch.maxPage) RebuildUsPlugin.optionsPage = 0;
+        if (RebuildUs.optionsPage >= GameOptionsDataPatch.maxPage) RebuildUs.optionsPage = 0;
     }
 }
 

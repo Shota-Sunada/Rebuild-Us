@@ -90,7 +90,7 @@ public class GameStartManagerPatch
                 else
                 {
                     PlayerVersion PV = playerVersions[client.Id];
-                    int diff = RebuildUsPlugin.Instance.Version.CompareTo(PV.version);
+                    int diff = RebuildUs.Instance.Version.CompareTo(PV.version);
                     if (diff > 0)
                     {
                         message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has an older version of Rebuild Us (v{playerVersions[client.Id].version.ToString()})\n</color>";
@@ -173,7 +173,7 @@ public class GameStartManagerPatch
             // Client update with handshake infos
             else
             {
-                if (!playerVersions.ContainsKey(AmongUsClient.Instance.HostId) || RebuildUsPlugin.Instance.Version.CompareTo(playerVersions[AmongUsClient.Instance.HostId].version) != 0)
+                if (!playerVersions.ContainsKey(AmongUsClient.Instance.HostId) || RebuildUs.Instance.Version.CompareTo(playerVersions[AmongUsClient.Instance.HostId].version) != 0)
                 {
                     kickingTimer += Time.deltaTime;
                     if (kickingTimer > 10)
@@ -291,7 +291,7 @@ public class GameStartManagerPatch
                     }
 
                     PlayerVersion PV = playerVersions[client.Id];
-                    int diff = RebuildUsPlugin.Instance.Version.CompareTo(PV.version);
+                    int diff = RebuildUs.Instance.Version.CompareTo(PV.version);
                     if (diff != 0 || !PV.GuidMatches())
                     {
                         continueStart = false;

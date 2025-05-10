@@ -204,7 +204,7 @@ public static class Helpers
         }
         catch
         {
-            RebuildUsPlugin.Instance.Logger.LogError("Error loading texture from disk: " + path);
+            RebuildUs.Instance.Logger.LogError("Error loading texture from disk: " + path);
         }
         return null;
     }
@@ -570,7 +570,7 @@ public static class Helpers
         if (target.isDead()) return true;
         if (Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive()) return true;
         if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
-        if (Ninja.isInvisble && Ninja.ninja == target) return true;
+        if (Ninja.isInvisible && Ninja.ninja == target) return true;
         if (!MapOptions.hidePlayerNames) return false; // All names are visible
         if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target.isRole(RoleId.Sidekick) && TeamJackal.Sidekick.wasTeamRed || target.isRole(RoleId.Jackal) && TeamJackal.Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
         if (source.isLovers() && target.isLovers()) return false; // Members of team Lovers see the names of each other
@@ -857,15 +857,15 @@ public static class Helpers
     public static void shareGameVersion()
     {
         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VersionHandshake, Hazel.SendOption.Reliable, -1);
-        writer.Write((byte)RebuildUsPlugin.Instance.Version.Major);
-        writer.Write((byte)RebuildUsPlugin.Instance.Version.Minor);
-        writer.Write((byte)RebuildUsPlugin.Instance.Version.Build);
+        writer.Write((byte)RebuildUs.Instance.Version.Major);
+        writer.Write((byte)RebuildUs.Instance.Version.Minor);
+        writer.Write((byte)RebuildUs.Instance.Version.Build);
         writer.Write(AmongUsClient.Instance.AmHost ? Patches.GameStartManagerPatch.timer : -1f);
         writer.WritePacked(AmongUsClient.Instance.ClientId);
-        writer.Write((byte)(RebuildUsPlugin.Instance.Version.Revision < 0 ? 0xFF : RebuildUsPlugin.Instance.Version.Revision));
+        writer.Write((byte)(RebuildUs.Instance.Version.Revision < 0 ? 0xFF : RebuildUs.Instance.Version.Revision));
         writer.Write(Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.ToByteArray());
         AmongUsClient.Instance.FinishRpcImmediately(writer);
-        RPCProcedure.versionHandshake(RebuildUsPlugin.Instance.Version.Major, RebuildUsPlugin.Instance.Version.Minor, RebuildUsPlugin.Instance.Version.Build, RebuildUsPlugin.Instance.Version.Revision, Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
+        RPCProcedure.versionHandshake(RebuildUs.Instance.Version.Major, RebuildUs.Instance.Version.Minor, RebuildUs.Instance.Version.Build, RebuildUs.Instance.Version.Revision, Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
     }
 
     public static List<PlayerControl> getKillerTeamMembers(PlayerControl player)

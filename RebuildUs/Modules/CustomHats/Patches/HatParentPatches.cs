@@ -258,7 +258,7 @@ internal static class HatParentPatches
         }
         catch (Exception err)
         {
-            RebuildUsPlugin.Instance.Logger.LogWarning($"Unable to create test hat \n{err}");
+            RebuildUs.Instance.Logger.LogWarning($"Unable to create test hat \n{err}");
             return true;
         }
 

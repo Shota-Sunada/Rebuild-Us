@@ -186,7 +186,7 @@ public static class ModifierHelpers
                     return;
                 }
             }
-            RebuildUsPlugin.Instance.Logger.LogError($"eraseRole: no method found for role type {mod}");
+            RebuildUs.Instance.Logger.LogError($"eraseRole: no method found for role type {mod}");
         }
     }
 

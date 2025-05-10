@@ -314,7 +314,7 @@ class HudManagerUpdatePatch
 
     public static void miniUpdate()
     {
-        if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == Morphing.morphing && Morphing.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.isInvisble || SurveillanceMinigamePatch.nightVisionIsActive) return;
+        if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == Morphing.morphing && Morphing.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.isInvisible || SurveillanceMinigamePatch.nightVisionIsActive) return;
 
         float growingProgress = Mini.growingProgress();
         float scale = growingProgress * 0.35f + 0.35f;

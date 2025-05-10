@@ -59,7 +59,7 @@ static class HudManagerStartPatch
             }
             catch
             {
-                RebuildUsPlugin.Instance.Logger.LogWarning("Button cooldowns not set, either the gamemode does not require them or there's something wrong.");
+                RebuildUs.Instance.Logger.LogWarning("Button cooldowns not set, either the gamemode does not require them or there's something wrong.");
                 return;
             }
         }
