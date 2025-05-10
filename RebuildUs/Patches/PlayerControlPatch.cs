@@ -148,7 +148,7 @@ public static class PlayerControlFixedUpdatePatch
         if (Vampire.vampire == null || Vampire.vampire != PlayerControl.LocalPlayer) return;
 
         PlayerControl target = null;
-        if (Spy.spy != null || Sidekick.wasSpy || Jackal.wasSpy)
+        if (Spy.spy != null || TeamJackal.Sidekick.wasSpy || TeamJackal.Jackal.wasSpy)
         {
             if (Spy.impostorsCanKillAnyone)
             {
@@ -156,12 +156,12 @@ public static class PlayerControlFixedUpdatePatch
             }
             else
             {
-                target = setTarget(true, true, [Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null]);
+                target = setTarget(true, true, [Spy.spy, TeamJackal.Sidekick.wasTeamRed ? TeamJackal.Sidekick.sidekick : null, TeamJackal.Jackal.wasTeamRed ? TeamJackal.Jackal.jackal : null]);
             }
         }
         else
         {
-            target = setTarget(true, true, [Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null]);
+            target = setTarget(true, true, [TeamJackal.Sidekick.wasImpostor ? TeamJackal.Sidekick.sidekick : null, TeamJackal.Jackal.wasImpostor ? TeamJackal.Jackal.jackal : null]);
         }
 
         bool targetNearGarlic = false;
@@ -182,34 +182,34 @@ public static class PlayerControlFixedUpdatePatch
 
     static void jackalSetTarget()
     {
-        if (Jackal.jackal == null || Jackal.jackal != PlayerControl.LocalPlayer) return;
+        if (TeamJackal.Jackal.jackal == null || TeamJackal.Jackal.jackal != PlayerControl.LocalPlayer) return;
         var untargetablePlayers = new List<PlayerControl>();
-        if (Jackal.canCreateSidekickFromImpostor)
+        if (TeamJackal.Jackal.canCreateSidekickFromImpostor)
         {
             // Only exclude sidekick from beeing targeted if the jackal can create sidekicks from impostors
-            if (Sidekick.sidekick != null) untargetablePlayers.Add(Sidekick.sidekick);
+            if (TeamJackal.Sidekick.sidekick != null) untargetablePlayers.Add(TeamJackal.Sidekick.sidekick);
         }
         if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Jackal from targeting the Mini unless it has grown up
-        Jackal.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
-        setPlayerOutline(Jackal.currentTarget, Palette.ImpostorRed);
+        TeamJackal.Jackal.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+        setPlayerOutline(TeamJackal.Jackal.currentTarget, Palette.ImpostorRed);
     }
 
     static void sidekickSetTarget()
     {
-        if (Sidekick.sidekick == null || Sidekick.sidekick != PlayerControl.LocalPlayer) return;
+        if (TeamJackal.Sidekick.sidekick == null || TeamJackal.Sidekick.sidekick != PlayerControl.LocalPlayer) return;
         var untargetablePlayers = new List<PlayerControl>();
-        if (Jackal.jackal != null) untargetablePlayers.Add(Jackal.jackal);
+        if (TeamJackal.Jackal.jackal != null) untargetablePlayers.Add(TeamJackal.Jackal.jackal);
         if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Sidekick from targeting the Mini unless it has grown up
-        Sidekick.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
-        if (Sidekick.canKill) setPlayerOutline(Sidekick.currentTarget, Palette.ImpostorRed);
+        TeamJackal.Sidekick.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+        if (TeamJackal.Sidekick.canKill) setPlayerOutline(TeamJackal.Sidekick.currentTarget, Palette.ImpostorRed);
     }
 
     static void sidekickCheckPromotion()
     {
         // If LocalPlayer is Sidekick, the Jackal is disconnected and Sidekick promotion is enabled, then trigger promotion
-        if (Sidekick.sidekick == null || Sidekick.sidekick != PlayerControl.LocalPlayer) return;
-        if (Sidekick.sidekick.Data.IsDead == true || !Sidekick.promotesToJackal) return;
-        if (Jackal.jackal == null || Jackal.jackal?.Data?.Disconnected == true)
+        if (TeamJackal.Sidekick.sidekick == null || TeamJackal.Sidekick.sidekick != PlayerControl.LocalPlayer) return;
+        if (TeamJackal.Sidekick.sidekick.Data.IsDead == true || !TeamJackal.Sidekick.promotesToJackal) return;
+        if (TeamJackal.Jackal.jackal == null || TeamJackal.Jackal.jackal?.Data?.Disconnected == true)
         {
             using var writer = RPCProcedure.SendRPC(CustomRPC.SidekickPromotes);
             RPCProcedure.sidekickPromotes();
@@ -229,7 +229,7 @@ public static class PlayerControlFixedUpdatePatch
         }
 
         PlayerControl target = null;
-        if (Spy.spy != null || Sidekick.wasSpy || Jackal.wasSpy)
+        if (Spy.spy != null || TeamJackal.Sidekick.wasSpy || TeamJackal.Jackal.wasSpy)
         {
             if (Spy.impostorsCanKillAnyone)
             {
@@ -237,12 +237,12 @@ public static class PlayerControlFixedUpdatePatch
             }
             else
             {
-                target = setTarget(true, true, [Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null]);
+                target = setTarget(true, true, [Spy.spy, TeamJackal.Sidekick.wasTeamRed ? TeamJackal.Sidekick.sidekick : null, TeamJackal.Jackal.wasTeamRed ? TeamJackal.Jackal.jackal : null]);
             }
         }
         else
         {
-            target = setTarget(true, true, [Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null]);
+            target = setTarget(true, true, [TeamJackal.Sidekick.wasImpostor ? TeamJackal.Sidekick.sidekick : null, TeamJackal.Jackal.wasImpostor ? TeamJackal.Jackal.jackal : null]);
         }
 
         FastDestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(target); // Includes setPlayerOutline(target, Palette.ImpstorRed);
@@ -307,9 +307,38 @@ public static class PlayerControlFixedUpdatePatch
         }
     }
 
-    static void trackerUpdate()
+    static void engineerUpdate()
     {
-
+        if (Engineer.exists)
+        {
+            bool jackalHighlight = Engineer.highlightForTeamJackal && (PlayerControl.LocalPlayer.isRole(RoleId.Jackal) || PlayerControl.LocalPlayer.isRole(RoleId.Sidekick));
+            bool impostorHighlight = Engineer.highlightForImpostors && PlayerControl.LocalPlayer.Data.Role.IsImpostor;
+            if ((jackalHighlight || impostorHighlight) && MapUtilities.CachedShipStatus?.AllVents != null)
+            {
+                foreach (Vent vent in MapUtilities.CachedShipStatus.AllVents)
+                {
+                    try
+                    {
+                        if (vent?.myRend?.material != null)
+                        {
+                            foreach (var player in Engineer.allPlayers)
+                            {
+                                if (player.inVent)
+                                {
+                                    vent.myRend.material.SetFloat("_Outline", 1f);
+                                    vent.myRend.material.SetColor("_OutlineColor", Engineer.Color);
+                                }
+                                else if (vent.myRend.material.GetColor("_AddColor") != Color.red)
+                                {
+                                    vent.myRend.material.SetFloat("_Outline", 0);
+                                }
+                            }
+                        }
+                    }
+                    catch { }
+                }
+            }
+        }
     }
 
     public static void playerSizeUpdate(PlayerControl p)
@@ -541,7 +570,7 @@ public static class PlayerControlFixedUpdatePatch
             var possibleTargets = new List<PlayerControl>();
             foreach (PlayerControl p in PlayerControl.AllPlayerControls)
             {
-                if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && p != Spy.spy && (p != Sidekick.sidekick || !Sidekick.wasTeamRed) && (p != Jackal.jackal || !Jackal.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) && (Lovers.getPartner(BountyHunter.bountyHunter) == null || p != Lovers.getPartner(BountyHunter.bountyHunter))) possibleTargets.Add(p);
+                if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && p != Spy.spy && (p != TeamJackal.Sidekick.sidekick || !TeamJackal.Sidekick.wasTeamRed) && (p != TeamJackal.Jackal.jackal || !TeamJackal.Jackal.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) && (Lovers.getPartner(BountyHunter.bountyHunter) == null || p != Lovers.getPartner(BountyHunter.bountyHunter))) possibleTargets.Add(p);
             }
             BountyHunter.bounty = possibleTargets[RebuildUs.rnd.Next(0, possibleTargets.Count)];
             if (BountyHunter.bounty == null) return;
@@ -722,8 +751,8 @@ public static class PlayerControlFixedUpdatePatch
         {
             untargetables = []; // Also target players that have already been spelled, to hide spells that were blanks/blocked by shields
             if (Spy.spy != null && !Witch.canSpellAnyone) untargetables.Add(Spy.spy);
-            if (Sidekick.wasTeamRed && !Witch.canSpellAnyone) untargetables.Add(Sidekick.sidekick);
-            if (Jackal.wasTeamRed && !Witch.canSpellAnyone) untargetables.Add(Jackal.jackal);
+            if (TeamJackal.Sidekick.wasTeamRed && !Witch.canSpellAnyone) untargetables.Add(TeamJackal.Sidekick.sidekick);
+            if (TeamJackal.Jackal.wasTeamRed && !Witch.canSpellAnyone) untargetables.Add(TeamJackal.Jackal.jackal);
         }
         Witch.currentTarget = setTarget(onlyCrewmates: !Witch.canSpellAnyone, untargetablePlayers: untargetables);
         setPlayerOutline(Witch.currentTarget, Witch.color);
@@ -735,8 +764,8 @@ public static class PlayerControlFixedUpdatePatch
         List<PlayerControl> untargetables = [];
         if (Spy.spy != null && !Spy.impostorsCanKillAnyone) untargetables.Add(Spy.spy);
         if (Mini.mini != null && !Mini.isGrownUp()) untargetables.Add(Mini.mini);
-        if (Sidekick.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(Sidekick.sidekick);
-        if (Jackal.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(Jackal.jackal);
+        if (TeamJackal.Sidekick.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(TeamJackal.Sidekick.sidekick);
+        if (TeamJackal.Jackal.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(TeamJackal.Jackal.jackal);
         Ninja.currentTarget = setTarget(onlyCrewmates: Spy.spy == null || !Spy.impostorsCanKillAnyone, untargetablePlayers: untargetables);
         setPlayerOutline(Ninja.currentTarget, Ninja.color);
     }
@@ -803,8 +832,8 @@ public static class PlayerControlFixedUpdatePatch
             var multiplier = Mini.isGrownUp() ? 0.66f : 2f;
             Sheriff.sheriffKillButton.MaxTimer = Sheriff.cooldown * multiplier;
             HudManagerStartPatch.vampireKillButton.MaxTimer = Vampire.cooldown * multiplier;
-            HudManagerStartPatch.jackalKillButton.MaxTimer = Jackal.cooldown * multiplier;
-            HudManagerStartPatch.sidekickKillButton.MaxTimer = Sidekick.cooldown * multiplier;
+            TeamJackal.jackalKillButton.MaxTimer = TeamJackal.Jackal.cooldown * multiplier;
+            TeamJackal.sidekickKillButton.MaxTimer = TeamJackal.Sidekick.cooldown * multiplier;
             HudManagerStartPatch.warlockCurseButton.MaxTimer = Warlock.cooldown * multiplier;
             HudManagerStartPatch.cleanerCleanButton.MaxTimer = Cleaner.cooldown * multiplier;
             HudManagerStartPatch.witchSpellButton.MaxTimer = (Witch.cooldown + Witch.currentCooldownAddition) * multiplier;
@@ -868,7 +897,7 @@ public static class PlayerControlFixedUpdatePatch
             // Eraser
             eraserSetTarget();
             // Tracker
-            trackerUpdate();
+            engineerUpdate();
             // Jackal
             jackalSetTarget();
             // Sidekick
@@ -1049,7 +1078,7 @@ public static class MurderPlayerPatch
         if (MapOptions.firstKillName == "") MapOptions.firstKillName = target.Data.PlayerName;
 
         // Sidekick promotion trigger on murder
-        if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && target == Jackal.jackal && Jackal.jackal == PlayerControl.LocalPlayer)
+        if (TeamJackal.Sidekick.promotesToJackal && TeamJackal.Sidekick.sidekick != null && !TeamJackal.Sidekick.sidekick.Data.IsDead && target == TeamJackal.Jackal.jackal && TeamJackal.Jackal.jackal == PlayerControl.LocalPlayer)
         {
             using var writer = RPCProcedure.SendRPC(CustomRPC.SidekickPromotes);
             RPCProcedure.sidekickPromotes();
@@ -1233,7 +1262,7 @@ public static class ExilePlayerPatch
             __instance.clearAllTasks();
 
         // Sidekick promotion trigger on exile
-        if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && __instance == Jackal.jackal && Jackal.jackal == PlayerControl.LocalPlayer)
+        if (TeamJackal.Sidekick.promotesToJackal && TeamJackal.Sidekick.sidekick != null && !TeamJackal.Sidekick.sidekick.Data.IsDead && __instance == TeamJackal.Jackal.jackal && TeamJackal.Jackal.jackal == PlayerControl.LocalPlayer)
         {
             using var writer = RPCProcedure.SendRPC(CustomRPC.SidekickPromotes);
             RPCProcedure.sidekickPromotes();

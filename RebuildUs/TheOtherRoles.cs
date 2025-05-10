@@ -42,8 +42,8 @@ public static class RebuildUs
         // Tracker.clearAndReload();
         Vampire.clearAndReload();
         Snitch.clearAndReload();
-        Jackal.clearAndReload();
-        Sidekick.clearAndReload();
+        // Jackal.clearAndReload();
+        // Sidekick.clearAndReload();
         // Eraser.clearAndReload();
         Spy.clearAndReload();
         Trickster.clearAndReload();
@@ -888,94 +888,94 @@ public static class Snitch
     }
 }
 
-public static class Jackal
-{
-    public static PlayerControl jackal;
-    public static Color color = new Color32(0, 180, 235, byte.MaxValue);
-    public static PlayerControl fakeSidekick;
-    public static PlayerControl currentTarget;
-    public static List<PlayerControl> formerJackals = [];
+// public static class Jackal
+// {
+//     public static PlayerControl jackal;
+//     public static Color color = new Color32(0, 180, 235, byte.MaxValue);
+//     public static PlayerControl fakeSidekick;
+//     public static PlayerControl currentTarget;
+//     public static List<PlayerControl> formerJackals = [];
 
-    public static float cooldown = 30f;
-    public static float createSidekickCooldown = 30f;
-    public static bool canUseVents = true;
-    public static bool canCreateSidekick = true;
-    public static Sprite buttonSprite;
-    public static bool jackalPromotedFromSidekickCanCreateSidekick = true;
-    public static bool canCreateSidekickFromImpostor = true;
-    public static bool hasImpostorVision = false;
-    public static bool wasTeamRed;
-    public static bool wasImpostor;
-    public static bool wasSpy;
-    public static bool canSabotageLights;
+//     public static float cooldown = 30f;
+//     public static float createSidekickCooldown = 30f;
+//     public static bool canUseVents = true;
+//     public static bool canCreateSidekick = true;
+//     public static Sprite buttonSprite;
+//     public static bool jackalPromotedFromSidekickCanCreateSidekick = true;
+//     public static bool canCreateSidekickFromImpostor = true;
+//     public static bool hasImpostorVision = false;
+//     public static bool wasTeamRed;
+//     public static bool wasImpostor;
+//     public static bool wasSpy;
+//     public static bool canSabotageLights;
 
-    public static Sprite getSidekickButtonSprite()
-    {
-        if (buttonSprite) return buttonSprite;
-        buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.SidekickButton.png", 115f);
-        return buttonSprite;
-    }
+//     public static Sprite getSidekickButtonSprite()
+//     {
+//         if (buttonSprite) return buttonSprite;
+//         buttonSprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.SidekickButton.png", 115f);
+//         return buttonSprite;
+//     }
 
-    public static void removeCurrentJackal()
-    {
-        if (!formerJackals.Any(x => x.PlayerId == jackal.PlayerId)) formerJackals.Add(jackal);
-        jackal = null;
-        currentTarget = null;
-        fakeSidekick = null;
-        cooldown = CustomOptionHolder.jackalKillCooldown.getFloat();
-        createSidekickCooldown = CustomOptionHolder.jackalCreateSidekickCooldown.getFloat();
-    }
+//     public static void removeCurrentJackal()
+//     {
+//         if (!formerJackals.Any(x => x.PlayerId == jackal.PlayerId)) formerJackals.Add(jackal);
+//         jackal = null;
+//         currentTarget = null;
+//         fakeSidekick = null;
+//         cooldown = CustomOptionHolder.jackalKillCooldown.getFloat();
+//         createSidekickCooldown = CustomOptionHolder.jackalCreateSidekickCooldown.getFloat();
+//     }
 
-    public static void clearAndReload()
-    {
-        jackal = null;
-        currentTarget = null;
-        fakeSidekick = null;
-        cooldown = CustomOptionHolder.jackalKillCooldown.getFloat();
-        createSidekickCooldown = CustomOptionHolder.jackalCreateSidekickCooldown.getFloat();
-        canUseVents = CustomOptionHolder.jackalCanUseVents.getBool();
-        canCreateSidekick = CustomOptionHolder.jackalCanCreateSidekick.getBool();
-        jackalPromotedFromSidekickCanCreateSidekick = CustomOptionHolder.jackalPromotedFromSidekickCanCreateSidekick.getBool();
-        canCreateSidekickFromImpostor = CustomOptionHolder.jackalCanCreateSidekickFromImpostor.getBool();
-        formerJackals.Clear();
-        hasImpostorVision = CustomOptionHolder.teamJackalHaveImpostorVision.getBool();
-        wasTeamRed = wasImpostor = wasSpy = false;
-        canSabotageLights = CustomOptionHolder.jackalCanSabotageLights.getBool();
-    }
+//     public static void clearAndReload()
+//     {
+//         jackal = null;
+//         currentTarget = null;
+//         fakeSidekick = null;
+//         cooldown = CustomOptionHolder.jackalKillCooldown.getFloat();
+//         createSidekickCooldown = CustomOptionHolder.jackalCreateSidekickCooldown.getFloat();
+//         canUseVents = CustomOptionHolder.jackalCanUseVents.getBool();
+//         canCreateSidekick = CustomOptionHolder.jackalCanCreateSidekick.getBool();
+//         jackalPromotedFromSidekickCanCreateSidekick = CustomOptionHolder.jackalPromotedFromSidekickCanCreateSidekick.getBool();
+//         canCreateSidekickFromImpostor = CustomOptionHolder.jackalCanCreateSidekickFromImpostor.getBool();
+//         formerJackals.Clear();
+//         hasImpostorVision = CustomOptionHolder.teamJackalHaveImpostorVision.getBool();
+//         wasTeamRed = wasImpostor = wasSpy = false;
+//         canSabotageLights = CustomOptionHolder.jackalCanSabotageLights.getBool();
+//     }
 
-}
+// }
 
-public static class Sidekick
-{
-    public static PlayerControl sidekick;
-    public static Color color = new Color32(0, 180, 235, byte.MaxValue);
+// public static class Sidekick
+// {
+//     public static PlayerControl sidekick;
+//     public static Color color = new Color32(0, 180, 235, byte.MaxValue);
 
-    public static PlayerControl currentTarget;
+//     public static PlayerControl currentTarget;
 
-    public static bool wasTeamRed;
-    public static bool wasImpostor;
-    public static bool wasSpy;
+//     public static bool wasTeamRed;
+//     public static bool wasImpostor;
+//     public static bool wasSpy;
 
-    public static float cooldown = 30f;
-    public static bool canUseVents = true;
-    public static bool canKill = true;
-    public static bool promotesToJackal = true;
-    public static bool hasImpostorVision = false;
-    public static bool canSabotageLights;
+//     public static float cooldown = 30f;
+//     public static bool canUseVents = true;
+//     public static bool canKill = true;
+//     public static bool promotesToJackal = true;
+//     public static bool hasImpostorVision = false;
+//     public static bool canSabotageLights;
 
-    public static void clearAndReload()
-    {
-        sidekick = null;
-        currentTarget = null;
-        cooldown = CustomOptionHolder.jackalKillCooldown.getFloat();
-        canUseVents = CustomOptionHolder.sidekickCanUseVents.getBool();
-        canKill = CustomOptionHolder.sidekickCanKill.getBool();
-        promotesToJackal = CustomOptionHolder.sidekickPromotesToJackal.getBool();
-        hasImpostorVision = CustomOptionHolder.teamJackalHaveImpostorVision.getBool();
-        wasTeamRed = wasImpostor = wasSpy = false;
-        canSabotageLights = CustomOptionHolder.sidekickCanSabotageLights.getBool();
-    }
-}
+//     public static void clearAndReload()
+//     {
+//         sidekick = null;
+//         currentTarget = null;
+//         cooldown = CustomOptionHolder.jackalKillCooldown.getFloat();
+//         canUseVents = CustomOptionHolder.sidekickCanUseVents.getBool();
+//         canKill = CustomOptionHolder.sidekickCanKill.getBool();
+//         promotesToJackal = CustomOptionHolder.sidekickPromotesToJackal.getBool();
+//         hasImpostorVision = CustomOptionHolder.teamJackalHaveImpostorVision.getBool();
+//         wasTeamRed = wasImpostor = wasSpy = false;
+//         canSabotageLights = CustomOptionHolder.sidekickCanSabotageLights.getBool();
+//     }
+// }
 
 // public static class Eraser
 // {
@@ -1508,7 +1508,7 @@ public static class Medium
             if (target.isLovers()) infos.Add(SpecialMediumInfo.ActiveLoverDies);
             if (target.Data.Role.IsImpostor && killer.Data.Role.IsImpostor && Thief.formerThief != killer) infos.Add(SpecialMediumInfo.ImpostorTeamkill);
         }
-        if (target == Sidekick.sidekick && (killer == Jackal.jackal || Jackal.formerJackals.Any(x => x.PlayerId == killer.PlayerId))) infos.Add(SpecialMediumInfo.JackalKillsSidekick);
+        if (target.isRole(RoleId.Sidekick) && (killer.isRole(RoleId.Jackal) || TeamJackal.formerJackals.Any(x => x.PlayerId == killer.PlayerId))) infos.Add(SpecialMediumInfo.JackalKillsSidekick);
         if (target == Lawyer.lawyer && killer == Lawyer.target) infos.Add(SpecialMediumInfo.LawyerKilledByClient);
         if (Medium.target.wasCleaned) infos.Add(SpecialMediumInfo.BodyCleaned);
 
@@ -1580,7 +1580,7 @@ public static class Medium
                     condition = "player" + (count == 1 ? "" : "s") + " who can use vents";
                     break;
                 case 2:
-                    count = alivePlayersList.Where(pc => Helpers.isNeutral(pc) && pc != Jackal.jackal && pc != Sidekick.sidekick && pc != Thief.thief).Count();
+                    count = alivePlayersList.Where(pc => Helpers.isNeutral(pc) && !pc.isRole(RoleId.Jackal) && !pc.isRole(RoleId.Sidekick) && pc != Thief.thief).Count();
                     condition = "player" + (count == 1 ? "" : "s") + " who " + (count == 1 ? "is" : "are") + " neutral but cannot kill";
                     break;
                 case 3:

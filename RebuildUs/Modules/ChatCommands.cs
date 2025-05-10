@@ -136,7 +136,7 @@ public static class ChatCommands
         public static void Postfix(ChatBubble __instance, [HarmonyArgument(0)] string playerName)
         {
             PlayerControl sourcePlayer = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data != null && x.Data.PlayerName.Equals(playerName));
-            if (sourcePlayer != null && PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data?.Role?.IsImpostor == true && (Spy.spy != null && sourcePlayer.PlayerId == Spy.spy.PlayerId || Sidekick.sidekick != null && Sidekick.wasTeamRed && sourcePlayer.PlayerId == Sidekick.sidekick.PlayerId || Jackal.jackal != null && Jackal.wasTeamRed && sourcePlayer.PlayerId == Jackal.jackal.PlayerId) && __instance != null) __instance.NameText.color = Palette.ImpostorRed;
+            if (sourcePlayer != null && PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data?.Role?.IsImpostor == true && (Spy.spy != null && sourcePlayer.PlayerId == Spy.spy.PlayerId || TeamJackal.Sidekick.sidekick != null && TeamJackal.Sidekick.wasTeamRed && sourcePlayer.PlayerId == TeamJackal.Sidekick.sidekick.PlayerId || TeamJackal.Jackal.jackal != null && TeamJackal.Jackal.wasTeamRed && sourcePlayer.PlayerId == TeamJackal.Jackal.jackal.PlayerId) && __instance != null) __instance.NameText.color = Palette.ImpostorRed;
         }
     }
 

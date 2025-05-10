@@ -119,17 +119,17 @@ class HudManagerUpdatePatch
             setPlayerNameColor(Tracker.tracker, Tracker.color);
         else if (Snitch.snitch != null && Snitch.snitch == localPlayer)
             setPlayerNameColor(Snitch.snitch, Snitch.color);*/
-        if (Jackal.jackal != null && Jackal.jackal == localPlayer)
+        if (TeamJackal.Jackal.jackal != null && TeamJackal.Jackal.jackal == localPlayer)
         {
             // Jackal can see his sidekick
-            setPlayerNameColor(Jackal.jackal, Jackal.color);
-            if (Sidekick.sidekick != null)
+            setPlayerNameColor(TeamJackal.Jackal.jackal, TeamJackal.Color);
+            if (TeamJackal.Sidekick.sidekick != null)
             {
-                setPlayerNameColor(Sidekick.sidekick, Jackal.color);
+                setPlayerNameColor(TeamJackal.Sidekick.sidekick, TeamJackal.Color);
             }
-            if (Jackal.fakeSidekick != null)
+            if (TeamJackal.Jackal.fakeSidekick != null)
             {
-                setPlayerNameColor(Jackal.fakeSidekick, Jackal.color);
+                setPlayerNameColor(TeamJackal.Jackal.fakeSidekick, TeamJackal.Color);
             }
         }
         else if (PlayerControl.LocalPlayer.isRole(RoleId.Swapper))
@@ -159,13 +159,13 @@ class HudManagerUpdatePatch
         }*/
 
         // No else if here, as a Lover of team Jackal needs the colors
-        if (Sidekick.sidekick != null && Sidekick.sidekick == localPlayer)
+        if (TeamJackal.Sidekick.sidekick != null && TeamJackal.Sidekick.sidekick == localPlayer)
         {
             // Sidekick can see the jackal
-            setPlayerNameColor(Sidekick.sidekick, Sidekick.color);
-            if (Jackal.jackal != null)
+            setPlayerNameColor(TeamJackal.Sidekick.sidekick, TeamJackal.Color);
+            if (TeamJackal.Jackal.jackal != null)
             {
-                setPlayerNameColor(Jackal.jackal, Jackal.color);
+                setPlayerNameColor(TeamJackal.Jackal.jackal, TeamJackal.Color);
             }
         }
 
@@ -174,13 +174,13 @@ class HudManagerUpdatePatch
         {
             setPlayerNameColor(Spy.spy, Spy.color);
         }
-        if (Sidekick.sidekick != null && Sidekick.wasTeamRed && localPlayer.Data.Role.IsImpostor)
+        if (TeamJackal.Sidekick.sidekick != null && TeamJackal.Sidekick.wasTeamRed && localPlayer.Data.Role.IsImpostor)
         {
-            setPlayerNameColor(Sidekick.sidekick, Spy.color);
+            setPlayerNameColor(TeamJackal.Sidekick.sidekick, Spy.color);
         }
-        if (Jackal.jackal != null && Jackal.wasTeamRed && localPlayer.Data.Role.IsImpostor)
+        if (TeamJackal.Jackal.jackal != null && TeamJackal.Jackal.wasTeamRed && localPlayer.Data.Role.IsImpostor)
         {
-            setPlayerNameColor(Jackal.jackal, Spy.color);
+            setPlayerNameColor(TeamJackal.Jackal.jackal, Spy.color);
         }
 
         // Crewmate roles with no changes: Mini

@@ -1225,7 +1225,7 @@ class GameOptionsDataPatch
             else if (option.parent.getSelection() > 0)
             {
                 if (id == 224) //Sidekick
-                    sb.AppendLine($"- {Helpers.cs(Sidekick.color, "Sidekick")}: {option.selections[option.selection].ToString()}");
+                    sb.AppendLine($"- {Helpers.cs(TeamJackal.Color, "Sidekick")}: {option.selections[option.selection].ToString()}");
                 else if (id == 358) //Prosecutor
                     sb.AppendLine($"- {Helpers.cs(Lawyer.color, "Prosecutor")}: {option.selections[option.selection].ToString()}");
             }

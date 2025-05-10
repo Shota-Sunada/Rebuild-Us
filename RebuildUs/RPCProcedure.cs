@@ -512,9 +512,9 @@ public static class RPCProcedure
         if (player == null) return;
         if (Lawyer.target == player && Lawyer.isProsecutor && Lawyer.lawyer != null && !Lawyer.lawyer.Data.IsDead) Lawyer.isProsecutor = false;
 
-        if (!Jackal.canCreateSidekickFromImpostor && player.Data.Role.IsImpostor)
+        if (!TeamJackal.Jackal.canCreateSidekickFromImpostor && player.Data.Role.IsImpostor)
         {
-            Jackal.fakeSidekick = player;
+            TeamJackal.Jackal.fakeSidekick = player;
         }
         else
         {
@@ -528,24 +528,24 @@ public static class RPCProcedure
                 if (playerInfo != null) playerInfo.text = "";
             }
             erasePlayerRoles(player.PlayerId, RoleId.Sidekick, true);
-            Sidekick.sidekick = player;
+            TeamJackal.Sidekick.sidekick = player;
             if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId) PlayerControl.LocalPlayer.moveable = true;
-            if (wasSpy || wasImpostor) Sidekick.wasTeamRed = true;
-            Sidekick.wasSpy = wasSpy;
-            Sidekick.wasImpostor = wasImpostor;
+            if (wasSpy || wasImpostor) TeamJackal.Sidekick.wasTeamRed = true;
+            TeamJackal.Sidekick.wasSpy = wasSpy;
+            TeamJackal.Sidekick.wasImpostor = wasImpostor;
         }
-        Jackal.canCreateSidekick = false;
+        TeamJackal.Jackal.canCreateSidekick = false;
     }
 
     public static void sidekickPromotes()
     {
-        Jackal.removeCurrentJackal();
-        Jackal.jackal = Sidekick.sidekick;
-        Jackal.canCreateSidekick = Jackal.jackalPromotedFromSidekickCanCreateSidekick;
-        Jackal.wasTeamRed = Sidekick.wasTeamRed;
-        Jackal.wasSpy = Sidekick.wasSpy;
-        Jackal.wasImpostor = Sidekick.wasImpostor;
-        Sidekick.clearAndReload();
+        TeamJackal.Jackal.removeCurrentJackal();
+        TeamJackal.Jackal.jackal = TeamJackal.Sidekick.sidekick;
+        TeamJackal.Jackal.canCreateSidekick = TeamJackal.Jackal.jackalPromotedFromSidekickCanCreateSidekick;
+        TeamJackal.Jackal.wasTeamRed = TeamJackal.Sidekick.wasTeamRed;
+        TeamJackal.Jackal.wasSpy = TeamJackal.Sidekick.wasSpy;
+        TeamJackal.Jackal.wasImpostor = TeamJackal.Sidekick.wasImpostor;
+        TeamJackal.Sidekick.ClearAndReload();
         return;
     }
 
@@ -906,15 +906,15 @@ public static class RPCProcedure
         PlayerControl thief = Thief.thief;
         if (target == null) return;
         if (target.isRole(RoleId.Sheriff)) Sheriff.getRole(target).player = thief;
-        if (target == Jackal.jackal)
+        if (target.isRole(RoleId.Jackal))
         {
-            Jackal.jackal = thief;
-            Jackal.formerJackals.Add(target);
+            TeamJackal.Jackal.jackal = thief;
+            TeamJackal.formerJackals.Add(target);
         }
-        if (target == Sidekick.sidekick)
+        if (target.isRole(RoleId.Sidekick))
         {
-            Sidekick.sidekick = thief;
-            Jackal.formerJackals.Add(target);
+            TeamJackal.Sidekick.sidekick = thief;
+            TeamJackal.formerJackals.Add(target);
         }
         if (target == Guesser.evilGuesser) Guesser.evilGuesser = thief;
         if (target.isRole(RoleId.Godfather)) Mafia.Godfather.godfather = thief;

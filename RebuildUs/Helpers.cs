@@ -338,7 +338,7 @@ public static class Helpers
     {
         if (roleInfo.name == "Jackal")
         {
-            var getSidekickText = Jackal.canCreateSidekick ? " and recruit a Sidekick" : "";
+            var getSidekickText = TeamJackal.Jackal.canCreateSidekick ? " and recruit a Sidekick" : "";
             return cs(roleInfo.color, $"{roleInfo.name}: Kill everyone{getSidekickText}");
         }
 
@@ -422,7 +422,7 @@ public static class Helpers
 
     public static bool canBeErased(this PlayerControl player)
     {
-        return player != Jackal.jackal && player != Sidekick.sidekick && !Jackal.formerJackals.Any(x => x == player);
+        return !player.isRole(RoleId.Jackal) && !player.isRole(RoleId.Sidekick) && !TeamJackal.formerJackals.Any(x => x == player);
     }
 
     public static void clearAllTasks(this PlayerControl player)
@@ -572,9 +572,9 @@ public static class Helpers
         if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
         if (Ninja.isInvisble && Ninja.ninja == target) return true;
         if (!MapOptions.hidePlayerNames) return false; // All names are visible
-        if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target == Sidekick.sidekick && Sidekick.wasTeamRed || target == Jackal.jackal && Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
+        if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target.isRole(RoleId.Sidekick) && TeamJackal.Sidekick.wasTeamRed || target.isRole(RoleId.Jackal) && TeamJackal.Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
         if (source.isLovers() && target.isLovers()) return false; // Members of team Lovers see the names of each other
-        if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
+        if ((source.isRole(RoleId.Jackal) || source.isRole(RoleId.Sidekick)) && (target.isRole(RoleId.Jackal) || target.isRole(RoleId.Sidekick) || target == TeamJackal.Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
         return true;
     }
 
@@ -667,11 +667,11 @@ public static class Helpers
         {
             roleCouldUse = true;
         }
-        else if (Jackal.canUseVents && Jackal.jackal != null && Jackal.jackal == player)
+        else if (TeamJackal.Jackal.canUseVents && player.isRole(RoleId.Jackal))
         {
             roleCouldUse = true;
         }
-        else if (Sidekick.canUseVents && Sidekick.sidekick != null && Sidekick.sidekick == player)
+        else if (TeamJackal.Sidekick.canUseVents && player.isRole(RoleId.Sidekick))
         {
             roleCouldUse = true;
         }
@@ -871,11 +871,11 @@ public static class Helpers
     public static List<PlayerControl> getKillerTeamMembers(PlayerControl player)
     {
         List<PlayerControl> team = [];
-        foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+        foreach (var p in PlayerControl.AllPlayerControls)
         {
             if (player.Data.Role.IsImpostor && p.Data.Role.IsImpostor && player.PlayerId != p.PlayerId && team.All(x => x.PlayerId != p.PlayerId)) team.Add(p);
-            else if (player == Jackal.jackal && p == Sidekick.sidekick) team.Add(p);
-            else if (player == Sidekick.sidekick && p == Jackal.jackal) team.Add(p);
+            else if (player.isRole(RoleId.Jackal) && p.isRole(RoleId.Sidekick)) team.Add(p);
+            else if (player.isRole(RoleId.Sidekick) && p.isRole(RoleId.Jackal)) team.Add(p);
         }
 
         return team;
@@ -979,8 +979,8 @@ public static class Helpers
     public static bool hasImpVision(NetworkedPlayerInfo player)
     {
         return player.Role.IsImpostor
-            || ((Jackal.jackal != null && Jackal.jackal.PlayerId == player.PlayerId || Jackal.formerJackals.Any(x => x.PlayerId == player.PlayerId)) && Jackal.hasImpostorVision)
-            || (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == player.PlayerId && Sidekick.hasImpostorVision)
+            || ((player.Object.isRole(RoleId.Jackal) || TeamJackal.formerJackals.Any(x => x.PlayerId == player.PlayerId)) && TeamJackal.Jackal.hasImpostorVision)
+            || (player.Object.isRole(RoleId.Sidekick) && TeamJackal.Sidekick.hasImpostorVision)
             || (Spy.spy != null && Spy.spy.PlayerId == player.PlayerId && Spy.hasImpostorVision)
             || (player.Object.isRole(RoleId.Jester) && Jester.hasImpostorVision)
             || (Thief.thief != null && Thief.thief.PlayerId == player.PlayerId && Thief.hasImpostorVision);

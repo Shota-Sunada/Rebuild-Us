@@ -26,33 +26,7 @@ public class Engineer : RoleBase<Engineer>
 
     public override void OnMeetingStart() { }
     public override void OnMeetingEnd() { }
-    public override void FixedUpdate()
-    {
-        bool jackalHighlight = highlightForTeamJackal && (PlayerControl.LocalPlayer == Jackal.jackal || PlayerControl.LocalPlayer == Sidekick.sidekick);
-        bool impostorHighlight = highlightForImpostors && PlayerControl.LocalPlayer.Data.Role.IsImpostor;
-        if ((jackalHighlight || impostorHighlight) && MapUtilities.CachedShipStatus?.AllVents != null)
-        {
-            foreach (Vent vent in MapUtilities.CachedShipStatus.AllVents)
-            {
-                try
-                {
-                    if (vent?.myRend?.material != null)
-                    {
-                        if (player.inVent)
-                        {
-                            vent.myRend.material.SetFloat("_Outline", 1f);
-                            vent.myRend.material.SetColor("_OutlineColor", Color);
-                        }
-                        else if (vent.myRend.material.GetColor("_AddColor") != Color.red)
-                        {
-                            vent.myRend.material.SetFloat("_Outline", 0);
-                        }
-                    }
-                }
-                catch { }
-            }
-        }
-    }
+    public override void FixedUpdate() { }
     public override void HudUpdate() { }
     public override void OnKill(PlayerControl target) { }
     public override void OnDeath(PlayerControl killer = null) { }

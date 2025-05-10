@@ -35,10 +35,10 @@ static class HudManagerStartPatch
     // private static CustomButton trackerTrackCorpsesButton;
     public static CustomButton vampireKillButton;
     public static CustomButton garlicButton;
-    public static CustomButton jackalKillButton;
-    public static CustomButton sidekickKillButton;
-    private static CustomButton jackalSidekickButton;
-    public static CustomButton jackalAndSidekickSabotageLightsButton;
+    // public static CustomButton jackalKillButton;
+    // public static CustomButton sidekickKillButton;
+    // private static CustomButton jackalSidekickButton;
+    // public static CustomButton jackalAndSidekickSabotageLightsButton;
     // private static CustomButton eraserButton;
     private static CustomButton placeJackInTheBoxButton;
     private static CustomButton lightsOutButton;
@@ -103,9 +103,6 @@ static class HudManagerStartPatch
         vampireKillButton.MaxTimer = Vampire.cooldown;
         // trackerTrackPlayerButton.MaxTimer = 0f;
         garlicButton.MaxTimer = 0f;
-        jackalKillButton.MaxTimer = Jackal.cooldown;
-        sidekickKillButton.MaxTimer = Sidekick.cooldown;
-        jackalSidekickButton.MaxTimer = Jackal.createSidekickCooldown;
         // eraserButton.MaxTimer = Eraser.cooldown;
         placeJackInTheBoxButton.MaxTimer = Trickster.placeBoxCooldown;
         lightsOutButton.MaxTimer = Trickster.lightsOutCooldown;
@@ -929,87 +926,87 @@ static class HudManagerStartPatch
         // portalmakerButtonText2.transform.localScale = Vector3.one * 0.5f;
         // portalmakerButtonText2.transform.localPosition += new Vector3(-0.05f, 0.55f, -1f);
 
-        // Jackal Sidekick Button
-        jackalSidekickButton = new CustomButton(
-            () =>
-            {
-                using var writer = RPCProcedure.SendRPC(CustomRPC.JackalCreatesSidekick);
-                writer.Write(Jackal.currentTarget.PlayerId);
-                RPCProcedure.jackalCreatesSidekick(Jackal.currentTarget.PlayerId);
-            },
-            () => { return Jackal.canCreateSidekick && Jackal.jackal != null && Jackal.jackal == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return Jackal.canCreateSidekick && Jackal.currentTarget != null && PlayerControl.LocalPlayer.CanMove; },
-            () => { jackalSidekickButton.Timer = jackalSidekickButton.MaxTimer; },
-            Jackal.getSidekickButtonSprite(),
-            ButtonOffset.LowerCenter,
-            __instance,
-            __instance.UseButton,
-            KeyCode.F
-        );
+        // // Jackal Sidekick Button
+        // jackalSidekickButton = new CustomButton(
+        //     () =>
+        //     {
+        //         using var writer = RPCProcedure.SendRPC(CustomRPC.JackalCreatesSidekick);
+        //         writer.Write(Jackal.currentTarget.PlayerId);
+        //         RPCProcedure.jackalCreatesSidekick(Jackal.currentTarget.PlayerId);
+        //     },
+        //     () => { return Jackal.canCreateSidekick && Jackal.jackal != null && Jackal.jackal == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return Jackal.canCreateSidekick && Jackal.currentTarget != null && PlayerControl.LocalPlayer.CanMove; },
+        //     () => { jackalSidekickButton.Timer = jackalSidekickButton.MaxTimer; },
+        //     Jackal.getSidekickButtonSprite(),
+        //     ButtonOffset.LowerCenter,
+        //     __instance,
+        //     __instance.UseButton,
+        //     KeyCode.F
+        // );
 
-        // Jackal Kill
-        jackalKillButton = new CustomButton(
-            () =>
-            {
-                if (Helpers.checkMurderAttemptAndKill(Jackal.jackal, Jackal.currentTarget) == MurderAttemptResult.SuppressKill) return;
+        // // Jackal Kill
+        // jackalKillButton = new CustomButton(
+        //     () =>
+        //     {
+        //         if (Helpers.checkMurderAttemptAndKill(Jackal.jackal, Jackal.currentTarget) == MurderAttemptResult.SuppressKill) return;
 
-                jackalKillButton.Timer = jackalKillButton.MaxTimer;
-                Jackal.currentTarget = null;
-            },
-            () => { return Jackal.jackal != null && Jackal.jackal == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return Jackal.currentTarget && PlayerControl.LocalPlayer.CanMove; },
-            () => { jackalKillButton.Timer = jackalKillButton.MaxTimer; },
-            __instance.KillButton.graphic.sprite,
-            ButtonOffset.UpperRight,
-            __instance,
-            __instance.KillButton,
-            KeyCode.Q
-        );
+        //         jackalKillButton.Timer = jackalKillButton.MaxTimer;
+        //         Jackal.currentTarget = null;
+        //     },
+        //     () => { return Jackal.jackal != null && Jackal.jackal == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return Jackal.currentTarget && PlayerControl.LocalPlayer.CanMove; },
+        //     () => { jackalKillButton.Timer = jackalKillButton.MaxTimer; },
+        //     __instance.KillButton.graphic.sprite,
+        //     ButtonOffset.UpperRight,
+        //     __instance,
+        //     __instance.KillButton,
+        //     KeyCode.Q
+        // );
 
-        // Sidekick Kill
-        sidekickKillButton = new CustomButton(
-            () =>
-            {
-                if (Helpers.checkMurderAttemptAndKill(Sidekick.sidekick, Sidekick.currentTarget) == MurderAttemptResult.SuppressKill) return;
-                sidekickKillButton.Timer = sidekickKillButton.MaxTimer;
-                Sidekick.currentTarget = null;
-            },
-            () => { return Sidekick.canKill && Sidekick.sidekick != null && Sidekick.sidekick == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return Sidekick.currentTarget && PlayerControl.LocalPlayer.CanMove; },
-            () => { sidekickKillButton.Timer = sidekickKillButton.MaxTimer; },
-            __instance.KillButton.graphic.sprite,
-            ButtonOffset.UpperRight,
-            __instance,
-            __instance.KillButton,
-            KeyCode.Q
-        );
+        // // Sidekick Kill
+        // sidekickKillButton = new CustomButton(
+        //     () =>
+        //     {
+        //         if (Helpers.checkMurderAttemptAndKill(Sidekick.sidekick, Sidekick.currentTarget) == MurderAttemptResult.SuppressKill) return;
+        //         sidekickKillButton.Timer = sidekickKillButton.MaxTimer;
+        //         Sidekick.currentTarget = null;
+        //     },
+        //     () => { return Sidekick.canKill && Sidekick.sidekick != null && Sidekick.sidekick == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+        //     () => { return Sidekick.currentTarget && PlayerControl.LocalPlayer.CanMove; },
+        //     () => { sidekickKillButton.Timer = sidekickKillButton.MaxTimer; },
+        //     __instance.KillButton.graphic.sprite,
+        //     ButtonOffset.UpperRight,
+        //     __instance,
+        //     __instance.KillButton,
+        //     KeyCode.Q
+        // );
 
-        jackalAndSidekickSabotageLightsButton = new CustomButton(
-            () =>
-            {
-                ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Sabotage, (byte)SystemTypes.Electrical);
-            },
-            () =>
-            {
-                return (Jackal.jackal != null && Jackal.jackal == PlayerControl.LocalPlayer && Jackal.canSabotageLights ||
-                        Sidekick.sidekick != null && Sidekick.sidekick == PlayerControl.LocalPlayer && Sidekick.canSabotageLights) && !PlayerControl.LocalPlayer.Data.IsDead;
-            },
-            () =>
-            {
-                if (Helpers.sabotageTimer() > jackalAndSidekickSabotageLightsButton.Timer || Helpers.sabotageActive())
-                    jackalAndSidekickSabotageLightsButton.Timer = Helpers.sabotageTimer() + 5f;  // this will give imps time to do another sabotage.
-                return Helpers.canUseSabotage();
-            },
-            () =>
-            {
-                jackalAndSidekickSabotageLightsButton.Timer = Helpers.sabotageTimer() + 5f;
-            },
-            Trickster.getLightsOutButtonSprite(),
-            ButtonOffset.UpperCenter,
-            __instance,
-            __instance.SabotageButton,
-            KeyCode.G
-        );
+        // jackalAndSidekickSabotageLightsButton = new CustomButton(
+        //     () =>
+        //     {
+        //         ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Sabotage, (byte)SystemTypes.Electrical);
+        //     },
+        //     () =>
+        //     {
+        //         return (Jackal.jackal != null && Jackal.jackal == PlayerControl.LocalPlayer && Jackal.canSabotageLights ||
+        //                 Sidekick.sidekick != null && Sidekick.sidekick == PlayerControl.LocalPlayer && Sidekick.canSabotageLights) && !PlayerControl.LocalPlayer.Data.IsDead;
+        //     },
+        //     () =>
+        //     {
+        //         if (Helpers.sabotageTimer() > jackalAndSidekickSabotageLightsButton.Timer || Helpers.sabotageActive())
+        //             jackalAndSidekickSabotageLightsButton.Timer = Helpers.sabotageTimer() + 5f;  // this will give imps time to do another sabotage.
+        //         return Helpers.canUseSabotage();
+        //     },
+        //     () =>
+        //     {
+        //         jackalAndSidekickSabotageLightsButton.Timer = Helpers.sabotageTimer() + 5f;
+        //     },
+        //     Trickster.getLightsOutButtonSprite(),
+        //     ButtonOffset.UpperCenter,
+        //     __instance,
+        //     __instance.SabotageButton,
+        //     KeyCode.G
+        // );
 
         // Eraser erase button
         // eraserButton = new CustomButton(

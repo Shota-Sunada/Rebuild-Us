@@ -186,10 +186,10 @@ public static class RoleHelpers
                 return Vampire.vampire == player;
             case RoleId.Snitch:
                 return Snitch.snitch == player;
-            case RoleId.Jackal:
-                return Jackal.jackal == player;
-            case RoleId.Sidekick:
-                return Sidekick.sidekick == player;
+            // case RoleId.Jackal:
+            //     return Jackal.jackal == player;
+            // case RoleId.Sidekick:
+            //     return Sidekick.sidekick == player;
             // case RoleId.Eraser:
             //     return global::RebuildUs.Eraser.eraser == player;
             case RoleId.Spy:
@@ -298,12 +298,12 @@ public static class RoleHelpers
             case RoleId.Snitch:
                 Snitch.snitch = player;
                 break;
-            case RoleId.Jackal:
-                Jackal.jackal = player;
-                break;
-            case RoleId.Sidekick:
-                Sidekick.sidekick = player;
-                break;
+            // case RoleId.Jackal:
+            //     Jackal.jackal = player;
+            //     break;
+            // case RoleId.Sidekick:
+            //     Sidekick.sidekick = player;
+            //     break;
             // case RoleId.Eraser:
             //     global::RebuildUs.Eraser.eraser = player;
             //     break;
@@ -417,18 +417,18 @@ public static class RoleHelpers
         // if (player == RebuildUs.Jester.jester) RebuildUs.Jester.clearAndReload();
         // if (player == global::RebuildUs.Arsonist.arsonist) global::RebuildUs.Arsonist.clearAndReload();
         if (Guesser.isGuesser(player.PlayerId)) Guesser.clear(player.PlayerId);
-        if (player == Jackal.jackal)
+        if (player.isRole(RoleId.Jackal))
         { // Promote Sidekick and hence override the the Jackal or erase Jackal
-            if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead)
+            if (TeamJackal.Sidekick.promotesToJackal && TeamJackal.Sidekick.sidekick != null && !TeamJackal.Sidekick.sidekick.isDead())
             {
                 RPCProcedure.sidekickPromotes();
             }
             else
             {
-                Jackal.clearAndReload();
+                TeamJackal.Jackal.ClearAndReload();
             }
         }
-        if (player == Sidekick.sidekick) Sidekick.clearAndReload();
+        if (player.isRole(RoleId.Sidekick)) TeamJackal.Sidekick.ClearAndReload();
         if (player == BountyHunter.bountyHunter) BountyHunter.clearAndReload();
         if (player == Vulture.vulture) Vulture.clearAndReload();
         if (player == Lawyer.lawyer) Lawyer.clearAndReload();
@@ -476,8 +476,8 @@ public static class RoleHelpers
         if (player.isRole(RoleId.NiceGuesser)) Guesser.niceGuesser = target;
         // if (player.isRole(RoleId.Jester)) RebuildUs.Jester.jester = target;
         // if (player.isRole(RoleId.Arsonist)) global::RebuildUs.Arsonist.arsonist = target;
-        if (player.isRole(RoleId.Jackal)) Jackal.jackal = target;
-        if (player.isRole(RoleId.Sidekick)) Sidekick.sidekick = target;
+        if (player.isRole(RoleId.Jackal)) TeamJackal.Jackal.jackal = target;
+        if (player.isRole(RoleId.Sidekick)) TeamJackal.Sidekick.sidekick = target;
         if (player.isRole(RoleId.Vulture)) Vulture.vulture = target;
         if (player.isRole(RoleId.Lawyer)) Lawyer.lawyer = target;
         if (player.isRole(RoleId.Pursuer)) Pursuer.pursuer = target;

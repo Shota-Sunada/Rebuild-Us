@@ -65,8 +65,8 @@ public class RoleInfo
     public static RoleInfo hacker = new("Hacker", Hacker.Color, "Hack systems to find the <color=#FF1919FF>Impostors</color>", "Hack to find the Impostors", RoleId.Hacker);
     public static RoleInfo tracker = new("Tracker", Tracker.Color, "Track the <color=#FF1919FF>Impostors</color> down", "Track the Impostors down", RoleId.Tracker);
     public static RoleInfo snitch = new("Snitch", Snitch.color, "Finish your tasks to find the <color=#FF1919FF>Impostors</color>", "Finish your tasks", RoleId.Snitch);
-    public static RoleInfo jackal = new("Jackal", Jackal.color, "Kill all Crewmates and <color=#FF1919FF>Impostors</color> to win", "Kill everyone", RoleId.Jackal, true);
-    public static RoleInfo sidekick = new("Sidekick", Sidekick.color, "Help your Jackal to kill everyone", "Help your Jackal to kill everyone", RoleId.Sidekick, true);
+    public static RoleInfo jackal = new("Jackal", TeamJackal.Color, "Kill all Crewmates and <color=#FF1919FF>Impostors</color> to win", "Kill everyone", RoleId.Jackal, true);
+    public static RoleInfo sidekick = new("Sidekick", TeamJackal.Color, "Help your Jackal to kill everyone", "Help your Jackal to kill everyone", RoleId.Sidekick, true);
     public static RoleInfo spy = new("Spy", Spy.color, "Confuse the <color=#FF1919FF>Impostors</color>", "Confuse the Impostors", RoleId.Spy);
     public static RoleInfo securityGuard = new("Security Guard", SecurityGuard.color, "Seal vents and place cameras", "Seal vents and place cameras", RoleId.SecurityGuard);
     public static RoleInfo arsonist = new("Arsonist", Arsonist.Color, "Let them burn", "Let them burn", RoleId.Arsonist, true);
@@ -226,8 +226,8 @@ public class RoleInfo
         if (p.isRole(RoleId.Hacker)) infos.Add(hacker);
         if (p.isRole(RoleId.Tracker)) infos.Add(tracker);
         if (p == Snitch.snitch) infos.Add(snitch);
-        if (p == Jackal.jackal || (Jackal.formerJackals != null && Jackal.formerJackals.Any(x => x.PlayerId == p.PlayerId))) infos.Add(jackal);
-        if (p == Sidekick.sidekick) infos.Add(sidekick);
+        if (p.isRole(RoleId.Jackal) || (TeamJackal.formerJackals != null && TeamJackal.formerJackals.Any(x => x.PlayerId == p.PlayerId))) infos.Add(jackal);
+        if (p.isRole(RoleId.Sidekick)) infos.Add(sidekick);
         if (p == Spy.spy) infos.Add(spy);
         if (p == SecurityGuard.securityGuard) infos.Add(securityGuard);
         if (p.isRole(RoleId.Arsonist)) infos.Add(arsonist);
@@ -291,8 +291,8 @@ public class RoleInfo
                     roleName = Helpers.cs(Arsonist.Color, "♨ ") + roleName;
                 if (p.isRole(RoleId.Arsonist))
                     roleName += Helpers.cs(Arsonist.Color, $" ({PlayerControl.AllPlayerControls.ToArray().Count(x => { return !x.isRole(RoleId.Arsonist) && !x.isDead() && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} left)");
-                if (p == Jackal.fakeSidekick)
-                    roleName = Helpers.cs(Sidekick.color, $" (fake SK)") + roleName;
+                if (p == TeamJackal.Jackal.fakeSidekick)
+                    roleName = Helpers.cs(TeamJackal.Color, $" (fake SK)") + roleName;
 
                 // Death Reason on Ghosts
                 if (p.Data.IsDead)

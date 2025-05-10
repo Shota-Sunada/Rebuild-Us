@@ -33,8 +33,8 @@ public class Eraser : RoleBase<Eraser>
     {
         List<PlayerControl> untargetablePlayers = [];
         if (Spy.spy != null) untargetablePlayers.Add(Spy.spy);
-        if (Sidekick.wasTeamRed) untargetablePlayers.Add(Sidekick.sidekick);
-        if (Jackal.wasTeamRed) untargetablePlayers.Add(Jackal.jackal);
+        if (TeamJackal.Sidekick.wasTeamRed) untargetablePlayers.Add(TeamJackal.Sidekick.sidekick);
+        if (TeamJackal.Jackal.wasTeamRed) untargetablePlayers.Add(TeamJackal.Jackal.jackal);
         currentTarget = setTarget(onlyCrewmates: !canEraseAnyone, untargetablePlayers: canEraseAnyone ? [] : untargetablePlayers);
         setPlayerOutline(currentTarget, Color);
     }

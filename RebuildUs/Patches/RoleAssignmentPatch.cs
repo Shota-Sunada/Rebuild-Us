@@ -438,7 +438,7 @@ class RoleManagerSelectRolesPatch
             { // Lawyer
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if (!p.Data.IsDead && !p.Data.Disconnected && !p.isLovers() && (p.Data.Role.IsImpostor || p == Jackal.jackal || (Lawyer.targetCanBeJester && p.isRole(RoleId.Jester))))
+                    if (!p.Data.IsDead && !p.Data.Disconnected && !p.isLovers() && (p.Data.Role.IsImpostor || p == TeamJackal.Jackal.jackal || (Lawyer.targetCanBeJester && p.isRole(RoleId.Jester))))
                         possibleTargets.Add(p);
                 }
             }

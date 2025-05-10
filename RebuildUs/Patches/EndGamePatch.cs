@@ -93,14 +93,14 @@ public static class OnGameEndPatch
 
         // Remove Jester, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be re-added)
         var notWinners = new List<PlayerControl>();
-        if (Sidekick.sidekick != null) notWinners.Add(Sidekick.sidekick);
-        if (Jackal.jackal != null) notWinners.Add(Jackal.jackal);
+        if (TeamJackal.Sidekick.sidekick != null) notWinners.Add(TeamJackal.Sidekick.sidekick);
+        if (TeamJackal.Jackal.jackal != null) notWinners.Add(TeamJackal.Jackal.jackal);
         if (Vulture.vulture != null) notWinners.Add(Vulture.vulture);
         if (Lawyer.lawyer != null) notWinners.Add(Lawyer.lawyer);
         if (Pursuer.pursuer != null) notWinners.Add(Pursuer.pursuer);
         if (Thief.thief != null) notWinners.Add(Thief.thief);
 
-        notWinners.AddRange(Jackal.formerJackals);
+        notWinners.AddRange(TeamJackal.formerJackals);
 
         notWinners.AddRange(Jester.allPlayers);
         notWinners.AddRange(Arsonist.allPlayers);
@@ -125,7 +125,7 @@ public static class OnGameEndPatch
         bool arsonistWin = Arsonist.exists && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
         bool miniLose = Mini.mini != null && gameOverReason == (GameOverReason)CustomGameOverReason.MiniLose;
         bool loversWin = Lovers.anyAlive() && !(Lovers.separateTeam && gameOverReason == GameOverReason.CrewmatesByTask);
-        bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
+        bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((TeamJackal.Jackal.jackal != null && !TeamJackal.Jackal.jackal.Data.IsDead) || (TeamJackal.Sidekick.sidekick != null && !TeamJackal.Sidekick.sidekick.Data.IsDead));
         bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
         bool prosecutorWin = Lawyer.lawyer != null && gameOverReason == (GameOverReason)CustomGameOverReason.ProsecutorWin;
 
@@ -220,17 +220,17 @@ public static class OnGameEndPatch
             // Jackal wins if nobody except jackal is alive
             AdditionalTempData.winCondition = WinCondition.JackalWin;
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-            var wpd = new CachedPlayerData(Jackal.jackal.Data);
+            var wpd = new CachedPlayerData(TeamJackal.Jackal.jackal.Data);
             wpd.IsImpostor = false;
             EndGameResult.CachedWinners.Add(wpd);
             // If there is a sidekick. The sidekick also wins
-            if (Sidekick.sidekick != null)
+            if (TeamJackal.Sidekick.sidekick != null)
             {
-                var wpdSidekick = new CachedPlayerData(Sidekick.sidekick.Data);
+                var wpdSidekick = new CachedPlayerData(TeamJackal.Sidekick.sidekick.Data);
                 wpdSidekick.IsImpostor = false;
                 EndGameResult.CachedWinners.Add(wpdSidekick);
             }
-            foreach (var player in Jackal.formerJackals)
+            foreach (var player in TeamJackal.formerJackals)
             {
                 var wpdFormerJackal = new CachedPlayerData(player.Data);
                 wpdFormerJackal.IsImpostor = false;
@@ -367,7 +367,7 @@ public class EndGameManagerSetUpPatch
         else if (AdditionalTempData.winCondition == WinCondition.JackalWin)
         {
             textRenderer.text = "Team Jackal Wins";
-            textRenderer.color = Jackal.color;
+            textRenderer.color = TeamJackal.Color;
         }
         else if (AdditionalTempData.winCondition == WinCondition.MiniLose)
         {
@@ -704,12 +704,12 @@ internal class PlayerStatistics
                         numImpostorsAlive++;
                         if (lover) impLovers++;
                     }
-                    if (Jackal.jackal != null && Jackal.jackal.PlayerId == playerInfo.PlayerId)
+                    if (TeamJackal.Jackal.jackal != null && TeamJackal.Jackal.jackal.PlayerId == playerInfo.PlayerId)
                     {
                         numJackalAlive++;
                         if (lover) jackalLovers++;
                     }
-                    if (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == playerInfo.PlayerId)
+                    if (TeamJackal.Sidekick.sidekick != null && TeamJackal.Sidekick.sidekick.PlayerId == playerInfo.PlayerId)
                     {
                         numJackalAlive++;
                         if (lover) jackalLovers++;

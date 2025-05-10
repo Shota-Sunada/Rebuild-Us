@@ -509,7 +509,7 @@ public class CustomOptionHolder
         arsonistDuration = CustomOption.Create(513, CustomOptionType.Neutral, "ArsonistDuration", 3f, 0f, 10f, 1f, arsonistSpawnRate, unitType: UnitType.UnitSeconds);
         arsonistCanBeLovers = CustomOption.Create(514, CustomOptionType.Neutral, "ArsonistCanBeLovers", false, arsonistSpawnRate);
 
-        jackalSpawnRate = new CustomRoleOption(520, 521, CustomOptionType.Neutral, ("Jackal", Jackal.color), 1);
+        jackalSpawnRate = new CustomRoleOption(520, 521, CustomOptionType.Neutral, ("Jackal", TeamJackal.Color), 1);
         jackalKillCooldown = CustomOption.Create(522, CustomOptionType.Neutral, "JackalKillCooldown", 30f, 10f, 60f, 2.5f, jackalSpawnRate, unitType: UnitType.UnitSeconds);
         jackalCanUseVents = CustomOption.Create(523, CustomOptionType.Neutral, "JackalCanUseVents", true, jackalSpawnRate);
         jackalCanSabotageLights = CustomOption.Create(524, CustomOptionType.Neutral, "JackalCanSabotageLights", true, jackalSpawnRate);

@@ -62,7 +62,7 @@ public class Sheriff : RoleBase<Sheriff>
                             (!spyCanDieToSheriff || Spy.spy != currentTarget) &&
                             // (madmateCanDieToSheriff && currentTarget.hasModifier(ModifierType.Madmate)) ||
                             (!canKillNeutrals || !currentTarget.isNeutral()) &&
-                            (Jackal.jackal != currentTarget && Sidekick.sidekick != currentTarget);
+                            TeamJackal.Jackal.jackal != currentTarget && TeamJackal.Sidekick.sidekick != currentTarget;
 
                     // Armored sheriff shot doesn't kill if backfired
                     if (targetId == PlayerControl.LocalPlayer.PlayerId && Helpers.checkArmored(PlayerControl.LocalPlayer, true, true))
