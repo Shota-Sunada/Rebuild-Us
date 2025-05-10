@@ -42,7 +42,6 @@ public class RebuildUsPlugin : BasePlugin
     public Harmony Harmony { get; } = new(MOD_ID);
     public Version Version { get; } = Version.Parse(MOD_VERSION);
     public ManualLogSource Logger;
-    public static uint betaDays = 0;
 
     public static int optionsPage = 2;
 
@@ -98,7 +97,6 @@ public class RebuildUsPlugin : BasePlugin
         Logger = Log;
         Instance = this;
 
-        _ = Helpers.checkBeta(); // Exit if running an expired beta
         _ = Patches.CredentialsPatch.MOTD.loadMOTDs();
 
         DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
@@ -119,9 +117,6 @@ public class RebuildUsPlugin : BasePlugin
         // Removes vanilla Servers
         ServerManager.DefaultRegions = new Il2CppReferenceArray<IRegionInfo>(new IRegionInfo[0]);
         UpdateRegions();
-
-        // Reactor Credits (future use?)
-        // Reactor.Utilities.ReactorCredits.Register("TheOtherRoles", VersionString, betaDays > 0, location => location == Reactor.Utilities.ReactorCredits.Location.PingTracker);
 
         DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
         Harmony.PatchAll();

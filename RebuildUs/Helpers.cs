@@ -922,60 +922,6 @@ public static class Helpers
         ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen); // This will move button positions to the correct position.
     }
 
-    private static long GetBuiltInTicks()
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var builtin = assembly.GetType("Builtin");
-        if (builtin == null) return 0;
-        var field = builtin.GetField("CompileTime");
-        if (field == null) return 0;
-        var value = field.GetValue(null);
-        if (value == null) return 0;
-        return (long)value;
-    }
-
-    public static async Task checkBeta()
-    {
-        if (RebuildUsPlugin.betaDays > 0)
-        {
-            RebuildUsPlugin.Instance.Logger.LogMessage($"Beta check");
-            var ticks = GetBuiltInTicks();
-            var compileTime = new DateTime(ticks, DateTimeKind.Utc);  // This may show as an error, but it is not, compilation will work!
-            RebuildUsPlugin.Instance.Logger.LogMessage($"Compiled at {compileTime.ToString(CultureInfo.InvariantCulture)}");
-            DateTime? now;
-            // Get time from the internet, so no-one can cheat it (so easily).
-            try
-            {
-                var client = new System.Net.Http.HttpClient();
-                using var response = await client.GetAsync("http://www.google.com/");
-                if (response.IsSuccessStatusCode)
-                {
-                    now = response.Headers.Date?.UtcDateTime;
-                }
-                else
-                {
-                    RebuildUsPlugin.Instance.Logger.LogMessage($"Could not get time from server: {response.StatusCode}");
-                    now = DateTime.UtcNow; //In case something goes wrong.
-                }
-            }
-            catch (System.Net.Http.HttpRequestException)
-            {
-                now = DateTime.UtcNow;
-            }
-            if ((now - compileTime)?.TotalDays > RebuildUsPlugin.betaDays)
-            {
-                RebuildUsPlugin.Instance.Logger.LogMessage($"Beta expired!");
-                BepInExUpdater.MessageBoxTimeout(BepInExUpdater.GetForegroundWindow(), "BETA is expired. You cannot play this version anymore.", "Rebuild Us Beta", 0, 0, 10000);
-                Application.Quit();
-
-            }
-            else
-            {
-                RebuildUsPlugin.Instance.Logger.LogMessage($"Beta will remain runnable for {RebuildUsPlugin.betaDays - (now - compileTime)?.TotalDays} days!");
-            }
-        }
-    }
-
     public static bool hasImpVision(NetworkedPlayerInfo player)
     {
         return player.Role.IsImpostor

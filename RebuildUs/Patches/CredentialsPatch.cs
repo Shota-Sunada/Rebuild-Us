@@ -16,7 +16,7 @@ namespace RebuildUs.Patches;
 public static class CredentialsPatch
 {
     public static string fullCredentialsVersion =
-$@"<size=130%><color=#ff351f>RebuildUs</color></size> v{RebuildUsPlugin.Instance.Version.ToString() + (RebuildUsPlugin.betaDays > 0 ? "-BETA" : "")}";
+$@"<size=130%><color=#ff351f>RebuildUs</color></size> v{RebuildUsPlugin.Instance.Version.ToString()}";
     public static string fullCredentials =
     $@"<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>
 <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mallöris</color> & <color=#FCCE03FF>Gendelo</color>
@@ -42,7 +42,7 @@ $@"<size=60%> <color=#FCCE03FF>Special thanks to Smeggy</color></size>";
             {
                 string gameModeText = $"";
                 if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + (MeetingHud.Instance ? " " : "\n");
-                __instance.text.text = $"<size=130%><color=#ff351f>RebuildUs</color></size> v{RebuildUsPlugin.Instance.Version.ToString() + (RebuildUsPlugin.betaDays > 0 ? "-BETA" : "")}\n{gameModeText}" + __instance.text.text;
+                __instance.text.text = $"<size=130%><color=#ff351f>RebuildUs</color></size> v{RebuildUsPlugin.Instance.Version.ToString()}\n{gameModeText}" + __instance.text.text;
                 position.DistanceFromEdge = MeetingHud.Instance ? new Vector3(1.25f, 0.15f, 0) : new Vector3(1.55f, 0.15f, 0);
             }
             else
@@ -93,7 +93,7 @@ $@"<size=60%> <color=#FCCE03FF>Special thanks to Smeggy</color></size>";
             renderer.sprite = EventUtility.isEnabled ? banner2Sprite : bannerSprite;
             var credentialObject = new GameObject("credentialsRU");
             var credentials = credentialObject.AddComponent<TextMeshPro>();
-            credentials.SetText($"v{RebuildUsPlugin.Instance.Version.ToString() + (RebuildUsPlugin.betaDays > 0 ? "-BETA" : "")}\n<size=30f%>\n</size>{mainMenuCredentials}\n<size=30%>\n</size>{contributorsCredentials}");
+            credentials.SetText($"v{RebuildUsPlugin.Instance.Version.ToString()}\n<size=30f%>\n</size>{mainMenuCredentials}\n<size=30%>\n</size>{contributorsCredentials}");
             credentials.alignment = TMPro.TextAlignmentOptions.Center;
             credentials.fontSize *= 0.05f;
 
