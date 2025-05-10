@@ -46,6 +46,7 @@ public class CustomOption
     public string headerKey;
     public Color? headerColor;
     public UnitType unitType = UnitType.None;
+    public List<CustomOption> children;
 
     public virtual bool Enabled { get { return Helpers.RolesEnabled && getBool(); } }
 
@@ -62,6 +63,12 @@ public class CustomOption
         headerKey = header?.Key ?? "";
         headerColor = header?.color ?? null;
         this.unitType = unitType;
+
+        this.children = new List<CustomOption>();
+        if (parent != null)
+        {
+            parent.children.Add(this);
+        }
 
         this.selection = 0;
 
@@ -292,6 +299,21 @@ public class CustomOption
     public int getQuantity()
     {
         return selection + 1;
+    }
+
+    public string getString()
+    {
+        string sel = selections[selection].ToString();
+        if (unitType != UnitType.None)
+        {
+            return string.Format(Tr.Get(Enum.GetName(unitType)), sel);
+        }
+        return Tr.Get(sel);
+    }
+
+    public string getName()
+    {
+        return Tr.Get(titleKey);
     }
 
     public void updateSelection(int id, int newSelection, bool notifyUsers = true)
@@ -1187,6 +1209,35 @@ public class AmongUsClientOnPlayerJoinedPatch
 [HarmonyPatch]
 class GameOptionsDataPatch
 {
+
+
+    public static string optionToString(CustomOption option)
+    {
+        if (option == null) return "";
+        return $"{option.getName()}: {option.getString()}";
+    }
+
+    public static string optionsToString(CustomOption option, bool skipFirst = false)
+    {
+        if (option == null)
+        {
+            RebuildUs.Instance.Logger.LogInfo("no option?");
+            return "";
+        }
+
+        var options = new List<string>();
+        if (!skipFirst) options.Add(optionToString(option));
+        if (option.Enabled)
+        {
+            foreach (var op in option.children)
+            {
+                string str = optionsToString(op);
+                if (str != "") options.Add(str);
+            }
+        }
+        return string.Join("\n", options);
+    }
+
     private static string buildRoleOptions()
     {
         var impRoles = buildOptionsOfType(CustomOptionType.Impostor, true) + "\n";

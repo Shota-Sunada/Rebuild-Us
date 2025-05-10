@@ -4,5 +4,6 @@ public enum RoleType
 {
     Crewmate = 0,
     Neutral = 1,
-    Impostor = 2
+    Impostor = 2,
+    Modifier = 3
 }

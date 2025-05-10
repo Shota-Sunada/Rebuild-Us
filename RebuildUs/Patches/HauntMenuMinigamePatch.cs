@@ -39,7 +39,7 @@ public static class HauntMenuMinigamePatch
         if (__instance.filterMode == HauntMenuMinigame.HauntFilters.Impostor)
         {
             var info = RoleInfo.getRoleInfoForPlayer(pc, false);
-            __result = (pc.Data.Role.IsImpostor || info.Any(x => x.isNeutral)) && !pc.Data.IsDead;
+            __result = (pc.Data.Role.IsImpostor || info.Any(x => x.roleType is RoleType.Neutral)) && !pc.Data.IsDead;
         }
     }
 

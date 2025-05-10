@@ -193,7 +193,7 @@ class ExileControllerWrapUpPatch
             Lawyer.triggerProsecutorWin = true;
 
         // Mini exile lose condition
-        else if (exiled != null && Mini.mini != null && Mini.mini.PlayerId == exiled.PlayerId && !Mini.isGrownUp() && !Mini.mini.Data.Role.IsImpostor && !RoleInfo.getRoleInfoForPlayer(Mini.mini).Any(x => x.isNeutral))
+        else if (exiled != null && Mini.mini != null && Mini.mini.PlayerId == exiled.PlayerId && !Mini.isGrownUp() && !Mini.mini.Data.Role.IsImpostor && !RoleInfo.getRoleInfoForPlayer(Mini.mini).Any(x => x.roleType is RoleType.Neutral))
         {
             Mini.triggerMiniLose = true;
         }

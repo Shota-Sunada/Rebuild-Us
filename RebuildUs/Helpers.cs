@@ -381,7 +381,7 @@ public static class Helpers
     public static bool isNeutral(this PlayerControl player)
     {
         var roleInfo = RoleInfo.getRoleInfoForPlayer(player, false).FirstOrDefault();
-        return roleInfo != null && roleInfo.isNeutral;
+        return roleInfo != null && roleInfo.roleType is RoleType.Neutral;
     }
 
     public static bool isCrew(this PlayerControl player)

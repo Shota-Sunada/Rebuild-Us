@@ -576,7 +576,7 @@ class RoleManagerSelectRolesPatch
         byte playerId;
 
         List<PlayerControl> crewPlayer = new(playerList);
-        crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || RoleInfo.getRoleInfoForPlayer(x).Any(r => r.isNeutral));
+        crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || RoleInfo.getRoleInfoForPlayer(x).Any(r => r.roleType is RoleType.Neutral));
 
         if (modifiers.Contains(RoleId.Sunglasses))
         {
