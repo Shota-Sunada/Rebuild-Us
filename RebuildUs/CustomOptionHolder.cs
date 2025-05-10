@@ -364,7 +364,8 @@ public class CustomOptionHolder
         CustomOption.vanillaSettings = RebuildUsPlugin.Instance.Config.Bind("Preset0", "VanillaOptions", "");
 
         // Role Options
-        presetSelection = CustomOption.Create(PRESET_OPTION_ID, CustomOptionType.General, ("SettingPreset", null), Presets, null, true);
+        activateRoles = CustomOption.Create(1, CustomOptionType.General, "IsRolesEnabled", true, null, true);
+        presetSelection = CustomOption.Create(PRESET_OPTION_ID, CustomOptionType.General, "SettingPreset", Presets, null, true);
 
         if (Utilities.EventUtility.canBeEnabled) enableEventMode = CustomOption.Create(1, CustomOptionType.General, ("Enable Special Mode", Color.green), true, null, true);
 
