@@ -15,53 +15,26 @@ namespace RebuildUs.Patches;
 [HarmonyPatch]
 public static class CredentialsPatch
 {
-    public static string fullCredentialsVersion =
-$@"<size=130%><color=#ff351f>RebuildUs</color></size> v{RebuildUsPlugin.Instance.Version.ToString()}";
-    public static string fullCredentials =
-    $@"<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>
-<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mallöris</color> & <color=#FCCE03FF>Gendelo</color>
-Design by <color=#FCCE03FF>Bavari</color></size>";
-
-    public static string mainMenuCredentials =
-$@"Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mallöris</color> & <color=#FCCE03FF>Gendelo</color>
-Design by <color=#FCCE03FF>Bavari</color>";
-
-    public static string contributorsCredentials =
-$@"<size=60%> <color=#FCCE03FF>Special thanks to Smeggy</color></size>";
-
     [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
     internal static class PingTrackerPatch
     {
-
         static void Postfix(PingTracker __instance)
         {
             __instance.text.alignment = TextAlignmentOptions.Top;
             var position = __instance.GetComponent<AspectPosition>();
             position.Alignment = AspectPosition.EdgeAlignments.Top;
+
             if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
             {
-                string gameModeText = $"";
-                if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + (MeetingHud.Instance ? " " : "\n");
-                __instance.text.text = $"<size=130%><color=#ff351f>RebuildUs</color></size> v{RebuildUsPlugin.Instance.Version.ToString()}\n{gameModeText}" + __instance.text.text;
-                position.DistanceFromEdge = MeetingHud.Instance ? new Vector3(1.25f, 0.15f, 0) : new Vector3(1.55f, 0.15f, 0);
+                __instance.text.text = $"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n{__instance.text.text}";
+                position.DistanceFromEdge = MeetingHud.Instance ? new(1.25f, 0.15f, 0) : new(1.55f, 0.15f, 0);
             }
             else
             {
-                string gameModeText = $"";
-                if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText);
-
-                __instance.text.text = $"{fullCredentialsVersion}\n{fullCredentials}\n {__instance.text.text}";
-                position.DistanceFromEdge = new Vector3(0f, 0.1f, 0);
-
-                try
-                {
-                    var GameModeText = GameObject.Find("GameModeText")?.GetComponent<TextMeshPro>();
-                    GameModeText.text = gameModeText == "" ? (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek ? "Van. HideNSeek" : "Classic") : gameModeText;
-                    var ModeLabel = GameObject.Find("ModeLabel")?.GetComponentInChildren<TextMeshPro>();
-                    ModeLabel.text = "Game Mode";
-                }
-                catch { }
+                __instance.text.text = $"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n<size=50%>By {RebuildUsPlugin.MOD_DEVELOPER}</size>\n{__instance.text.text}";
+                position.DistanceFromEdge = new(0f, 0.1f, 0);
             }
+
             position.AdjustPosition();
         }
     }
@@ -80,41 +53,20 @@ $@"<size=60%> <color=#FCCE03FF>Special thanks to Smeggy</color></size>";
 
         static void Postfix(PingTracker __instance)
         {
-            var torLogo = new GameObject("bannerLogo_RU");
-            torLogo.transform.SetParent(GameObject.Find("RightPanel").transform, false);
-            torLogo.transform.localPosition = new Vector3(-0.4f, 1f, 5f);
+            ModManager.Instance.ShowModStamp();
 
-            renderer = torLogo.AddComponent<SpriteRenderer>();
-            loadSprites();
-            renderer.sprite = Helpers.loadSpriteFromResources("RebuildUs.Resources.Banner.png", 300f);
+            var ruLogo = new GameObject("RULogo");
+            ruLogo.transform.SetParent(GameObject.Find("RightPanel").transform, false);
+            ruLogo.transform.localPosition = new(-0.4f, 1f, 5f);
 
-            instance = __instance;
-            loadSprites();
-            renderer.sprite = EventUtility.isEnabled ? banner2Sprite : bannerSprite;
-            var credentialObject = new GameObject("credentialsRU");
-            var credentials = credentialObject.AddComponent<TextMeshPro>();
-            credentials.SetText($"v{RebuildUsPlugin.Instance.Version.ToString()}\n<size=30f%>\n</size>{mainMenuCredentials}\n<size=30%>\n</size>{contributorsCredentials}");
-            credentials.alignment = TMPro.TextAlignmentOptions.Center;
-            credentials.fontSize *= 0.05f;
+            var credits = new GameObject("RUModCredits");
+            var text = credits.AddComponent<TextMeshPro>();
+            text.SetText($"{RebuildUsPlugin.MOD_NAME} v{RebuildUsPlugin.MOD_VERSION}\n<size=50%>By {RebuildUsPlugin.MOD_DEVELOPER}</size>");
+            text.alignment = TextAlignmentOptions.Center;
+            text.fontSize *= 0.05f;
 
-            credentials.transform.SetParent(torLogo.transform);
-            credentials.transform.localPosition = Vector3.down * 1.25f;
-            motdObject = new GameObject("ruMOTD");
-            motdText = motdObject.AddComponent<TextMeshPro>();
-            motdText.alignment = TMPro.TextAlignmentOptions.Center;
-            motdText.fontSize *= 0.04f;
-
-            motdText.transform.SetParent(torLogo.transform);
-            motdText.enableWordWrapping = true;
-            var rect = motdText.gameObject.GetComponent<RectTransform>();
-            rect.sizeDelta = new Vector2(5.2f, 0.25f);
-
-            motdText.transform.localPosition = Vector3.down * 2.25f;
-            motdText.color = new Color(1, 53f / 255, 31f / 255);
-            Material mat = motdText.fontSharedMaterial;
-            mat.shaderKeywords = new string[] { "OUTLINE_ON" };
-            motdText.SetOutlineColor(Color.white);
-            motdText.SetOutlineThickness(0.025f);
+            text.transform.SetParent(ruLogo.transform);
+            text.transform.localPosition = Vector3.down * 1.25f;
         }
 
         public static void loadSprites()
