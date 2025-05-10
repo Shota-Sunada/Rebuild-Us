@@ -20,7 +20,7 @@ namespace RebuildUs.Modules;
 
 public class ModUpdater : MonoBehaviour
 {
-    public const string RepositoryOwner = "RebuildUsAU";
+    public const string RepositoryOwner = "Shota-Sunada";
     public const string RepositoryName = "RebuildUs";
     public static ModUpdater Instance { get; private set; }
 
