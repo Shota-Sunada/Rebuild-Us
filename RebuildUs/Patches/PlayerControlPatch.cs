@@ -116,14 +116,6 @@ public static class PlayerControlFixedUpdatePatch
         }
     }
 
-    public static void bendTimeUpdate()
-    {
-    }
-
-    static void medicSetTarget()
-    {
-    }
-
     static void shifterSetTarget()
     {
         if (Shifter.shifter == null || Shifter.shifter != PlayerControl.LocalPlayer) return;
@@ -137,10 +129,6 @@ public static class PlayerControlFixedUpdatePatch
         if (Morphing.morphing == null || Morphing.morphing != PlayerControl.LocalPlayer) return;
         Morphing.currentTarget = setTarget();
         setPlayerOutline(Morphing.currentTarget, Morphing.color);
-    }
-
-    static void trackerSetTarget()
-    {
     }
 
     static void vampireSetTarget()
@@ -214,10 +202,6 @@ public static class PlayerControlFixedUpdatePatch
             using var writer = RPCProcedure.SendRPC(CustomRPC.SidekickPromotes);
             RPCProcedure.sidekickPromotes();
         }
-    }
-
-    static void eraserSetTarget()
-    {
     }
 
     static void impostorSetTarget()
@@ -496,10 +480,6 @@ public static class PlayerControlFixedUpdatePatch
         }
     }
 
-    public static void arsonistSetTarget()
-    {
-    }
-
     static void snitchUpdate()
     {
         if (Snitch.snitch == null) return;
@@ -725,15 +705,6 @@ public static class PlayerControlFixedUpdatePatch
         }
     }
 
-    public static void hackerUpdate()
-    {
-    }
-
-    // For swapper swap charges
-    public static void swapperUpdate()
-    {
-    }
-
     static void pursuerSetTarget()
     {
         if (Pursuer.pursuer == null || Pursuer.pursuer != PlayerControl.LocalPlayer) return;
@@ -778,9 +749,6 @@ public static class PlayerControlFixedUpdatePatch
         Thief.currentTarget = setTarget(onlyCrewmates: false, untargetablePlayers: untargetables);
         setPlayerOutline(Thief.currentTarget, Thief.color);
     }
-
-
-
 
     static void baitUpdate()
     {
@@ -880,22 +848,14 @@ public static class PlayerControlFixedUpdatePatch
             //Update pet visibility
             setPetVisibility();
 
-            // Time Master
-            bendTimeUpdate();
             // Morphling
             morphlingSetTarget();
-            // Medic
-            medicSetTarget();
             // Shifter
             shifterSetTarget();
-            // Tracker
-            trackerSetTarget();
             // Vampire
             vampireSetTarget();
             Garlic.UpdateAll();
             Trap.Update();
-            // Eraser
-            eraserSetTarget();
             // Tracker
             engineerUpdate();
             // Jackal
@@ -911,8 +871,6 @@ public static class PlayerControlFixedUpdatePatch
             // SecurityGuard
             securityGuardSetTarget();
             securityGuardUpdate();
-            // Arsonist
-            arsonistSetTarget();
             // Snitch
             snitchUpdate();
             // BountyHunter
@@ -938,10 +896,6 @@ public static class PlayerControlFixedUpdatePatch
             // yoyo
             Silhouette.UpdateAll();
 
-            hackerUpdate();
-            swapperUpdate();
-            // Hacker
-            hackerUpdate();
             // Trapper
             trapperUpdate();
 
