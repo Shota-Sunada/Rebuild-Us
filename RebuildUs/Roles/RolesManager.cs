@@ -12,9 +12,26 @@ namespace RebuildUs.Roles;
 [HarmonyPatch]
 public static class RoleData
 {
-    public static Dictionary<RoleId, Type> allRoleTypes = new() {
-        { RoleId.Jester, typeof(RoleBase< Jester>) }
-    };
+    public static readonly (RoleId id, Type type)[] ALL_ROLE_TYPES = [
+        // CREWMATES
+        (RoleId.Detective, typeof(Detective)),
+        (RoleId.Engineer, typeof(Engineer)),
+        (RoleId.Hacker, typeof(Hacker)),
+        (RoleId.Lighter, typeof(Lighter)),
+        (RoleId.Mayor, typeof(Mayor)),
+        (RoleId.Medic, typeof(Medic)),
+        (RoleId.Seer, typeof(Seer)),
+        (RoleId.Sheriff, typeof(Sheriff)),
+        (RoleId.TimeMaster, typeof(TimeMaster)),
+        (RoleId.Tracker, typeof(Tracker)),
+
+        // IMPOSTORS
+        (RoleId.Eraser, typeof(Eraser)),
+
+        // NEUTRALS
+        (RoleId.Arsonist, typeof(Arsonist)),
+        (RoleId.Jester, typeof(Jester)),
+    ];
 }
 
 public abstract class Role
@@ -138,11 +155,11 @@ public static class RoleHelpers
 {
     public static bool isRole(this PlayerControl player, RoleId role)
     {
-        foreach (var t in RoleData.allRoleTypes)
+        foreach (var (id, type) in RoleData.ALL_ROLE_TYPES)
         {
-            if (role == t.Key)
+            if (role == id)
             {
-                return (bool)t.Value.GetMethod("isRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
+                return (bool)type.GetMethod("isRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
             }
         }
 
@@ -230,11 +247,11 @@ public static class RoleHelpers
 
     public static void setRole(this PlayerControl player, RoleId role)
     {
-        foreach (var t in RoleData.allRoleTypes)
+        foreach (var (id, type) in RoleData.ALL_ROLE_TYPES)
         {
-            if (role == t.Key)
+            if (role == id)
             {
-                t.Value.GetMethod("setRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
+                type.GetMethod("setRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
                 return;
             }
         }
@@ -359,11 +376,11 @@ public static class RoleHelpers
     {
         if (isRole(player, role))
         {
-            foreach (var t in RoleData.allRoleTypes)
+            foreach (var (id, type) in RoleData.ALL_ROLE_TYPES)
             {
-                if (role == t.Key)
+                if (role == id)
                 {
-                    t.Value.GetMethod("eraseRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
+                    type.GetMethod("eraseRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
                     return;
                 }
             }
@@ -373,9 +390,9 @@ public static class RoleHelpers
 
     public static void eraseAllRoles(this PlayerControl player)
     {
-        foreach (var t in RoleData.allRoleTypes)
+        foreach (var (_, type) in RoleData.ALL_ROLE_TYPES)
         {
-            t.Value.GetMethod("eraseRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
+            type.GetMethod("eraseRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
         }
 
         // Crewmate roles
@@ -438,11 +455,11 @@ public static class RoleHelpers
 
     public static void swapRoles(this PlayerControl player, PlayerControl target)
     {
-        foreach (var t in RoleData.allRoleTypes)
+        foreach (var (id, type) in RoleData.ALL_ROLE_TYPES)
         {
-            if (player.isRole(t.Key))
+            if (player.isRole(id))
             {
-                t.Value.GetMethod("swapRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player, target]);
+                type.GetMethod("swapRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player, target]);
             }
         }
 
