@@ -129,11 +129,6 @@ public class RebuildUsPlugin : BasePlugin
         CustomOptionHolder.Load();
         CustomColors.Load();
         CustomHatManager.LoadHats();
-        if (BepInExUpdater.UpdateRequired)
-        {
-            AddComponent<BepInExUpdater>();
-            return;
-        }
 
         AddComponent<ModUpdater>();
 
