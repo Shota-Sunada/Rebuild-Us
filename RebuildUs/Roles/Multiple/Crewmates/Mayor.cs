@@ -9,11 +9,11 @@ public class Mayor : RoleBase<Mayor>
 {
     public static Color Color = new Color32(32, 77, 66, byte.MaxValue);
 
-    public static int numVotes { get { return CustomOptionHolder.mayorNumVotes.getInt(); } }
-    public static bool canSeeVoteColors { get { return CustomOptionHolder.mayorCanSeeVoteColors.getBool(); } }
-    public static int tasksNeededToSeeVoteColors { get { return CustomOptionHolder.mayorTasksNeededToSeeVoteColors.getInt(); } }
-    public static bool meetingButton { get { return CustomOptionHolder.mayorMeetingButton.getBool(); } }
-    public static int maxRemoteMeetings { get { return CustomOptionHolder.mayorMaxRemoteMeetings.getInt(); } }
+    public static int numVotes => CustomOptionHolder.mayorNumVotes.getInt();
+    public static bool canSeeVoteColors => CustomOptionHolder.mayorCanSeeVoteColors.getBool();
+    public static int tasksNeededToSeeVoteColors => CustomOptionHolder.mayorTasksNeededToSeeVoteColors.getInt();
+    public static bool meetingButton => CustomOptionHolder.mayorMeetingButton.getBool();
+    public static int maxRemoteMeetings => CustomOptionHolder.mayorMaxRemoteMeetings.getInt();
 
     public static Minigame emergency = null;
     public static Sprite emergencySprite = null;

@@ -12,9 +12,9 @@ public class Engineer : RoleBase<Engineer>
     private static CustomButton engineerRepairButton;
     private static Sprite buttonSprite;
 
-    public static int numberOfFixes { get { return CustomOptionHolder.engineerNumberOfFixes.getInt(); } }
-    public static bool highlightForImpostors { get { return CustomOptionHolder.engineerHighlightForImpostors.getBool(); } }
-    public static bool highlightForTeamJackal { get { return CustomOptionHolder.engineerHighlightForTeamJackal.getBool(); } }
+    public static int numberOfFixes => CustomOptionHolder.engineerNumberOfFixes.getInt();
+    public static bool highlightForImpostors => CustomOptionHolder.engineerHighlightForImpostors.getBool();
+    public static bool highlightForTeamJackal => CustomOptionHolder.engineerHighlightForTeamJackal.getBool();
 
     public int remainingFixes = 1;
 

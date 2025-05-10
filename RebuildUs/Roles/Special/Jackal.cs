@@ -169,12 +169,12 @@ public static class TeamJackal
         public static bool wasImpostor;
         public static bool wasSpy;
 
-        public static float cooldown { get { return CustomOptionHolder.jackalKillCooldown.getFloat(); } }
-        public static bool canUseVents { get { return CustomOptionHolder.sidekickCanUseVents.getBool(); } }
-        public static bool canKill { get { return CustomOptionHolder.sidekickCanKill.getBool(); } }
-        public static bool promotesToJackal { get { return CustomOptionHolder.sidekickPromotesToJackal.getBool(); } }
-        public static bool hasImpostorVision { get { return CustomOptionHolder.teamJackalHaveImpostorVision.getBool(); } }
-        public static bool canSabotageLights { get { return CustomOptionHolder.sidekickCanSabotageLights.getBool(); } }
+        public static float cooldown => CustomOptionHolder.jackalKillCooldown.getFloat();
+        public static bool canUseVents => CustomOptionHolder.sidekickCanUseVents.getBool();
+        public static bool canKill => CustomOptionHolder.sidekickCanKill.getBool();
+        public static bool promotesToJackal => CustomOptionHolder.sidekickPromotesToJackal.getBool();
+        public static bool hasImpostorVision => CustomOptionHolder.teamJackalHaveImpostorVision.getBool();
+        public static bool canSabotageLights => CustomOptionHolder.sidekickCanSabotageLights.getBool();
 
         public static void ClearAndReload()
         {

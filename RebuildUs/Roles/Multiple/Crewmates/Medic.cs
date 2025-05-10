@@ -11,12 +11,12 @@ public class Medic : RoleBase<Medic>
     public static Color Color = new Color32(126, 251, 194, byte.MaxValue);
     public static Color ShieldedColor = new Color32(0, 221, 255, byte.MaxValue);
 
-    public static int showShielded { get { return CustomOptionHolder.medicShowShielded.getSelection(); } }
-    public static bool showAttemptToShielded { get { return CustomOptionHolder.medicShowAttemptToShielded.getBool(); } }
-    public static int setOrShowShieldAfterMeeting { get { return CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection(); } }
-    public static bool showAttemptToMedic { get { return CustomOptionHolder.medicShowAttemptToMedic.getBool(); } }
-    public static bool setShieldAfterMeeting { get { return CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection() == 2; } }
-    public static bool showShieldAfterMeeting { get { return CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection() == 1; } }
+    public static int showShielded => CustomOptionHolder.medicShowShielded.getSelection();
+    public static bool showAttemptToShielded => CustomOptionHolder.medicShowAttemptToShielded.getBool();
+    public static int setOrShowShieldAfterMeeting => CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection();
+    public static bool showAttemptToMedic => CustomOptionHolder.medicShowAttemptToMedic.getBool();
+    public static bool setShieldAfterMeeting => CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection() == 2;
+    public static bool showShieldAfterMeeting => CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection() == 1;
 
     public Medic()
     {

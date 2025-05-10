@@ -11,9 +11,9 @@ public class TimeMaster : RoleBase<TimeMaster>
     public static Color Color = new Color32(112, 142, 239, byte.MaxValue);
     private static CustomButton timeMasterShieldButton;
 
-    public static float cooldown { get { return CustomOptionHolder.timeMasterCooldown.getFloat(); } }
-    public static float rewindTime { get { return CustomOptionHolder.timeMasterRewindTime.getFloat(); } }
-    public static float shieldDuration { get { return CustomOptionHolder.timeMasterShieldDuration.getFloat(); } }
+    public static float cooldown => CustomOptionHolder.timeMasterCooldown.getFloat();
+    public static float rewindTime => CustomOptionHolder.timeMasterRewindTime.getFloat();
+    public static float shieldDuration => CustomOptionHolder.timeMasterShieldDuration.getFloat();
 
     public static bool shieldActive = false;
     public static bool isRewinding = false;
@@ -27,7 +27,7 @@ public class TimeMaster : RoleBase<TimeMaster>
 
     public override void OnMeetingStart() { }
     public override void OnMeetingEnd() { }
-    public override void HudUpdate() {}
+    public override void HudUpdate() { }
     public override void FixedUpdate()
     {
         if (isRewinding)

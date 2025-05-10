@@ -14,11 +14,11 @@ public class Sheriff : RoleBase<Sheriff>
 
     public static Color Color = new Color32(248, 205, 70, byte.MaxValue);
 
-    public static float cooldown { get { return CustomOptionHolder.sheriffCooldown.getFloat(); } }
-    public static int maxShots { get { return Mathf.RoundToInt(CustomOptionHolder.sheriffNumShots.getFloat()); } }
-    public static bool canKillNeutrals { get { return CustomOptionHolder.sheriffCanKillNeutrals.getBool(); } }
-    public static bool misfireKillsTarget { get { return CustomOptionHolder.sheriffMisfireKillsTarget.getBool(); } }
-    public static bool spyCanDieToSheriff { get { return CustomOptionHolder.spyCanDieToSheriff.getBool(); } }
+    public static float cooldown => CustomOptionHolder.sheriffCooldown.getFloat();
+    public static int maxShots => Mathf.RoundToInt(CustomOptionHolder.sheriffNumShots.getFloat());
+    public static bool canKillNeutrals => CustomOptionHolder.sheriffCanKillNeutrals.getBool();
+    public static bool misfireKillsTarget => CustomOptionHolder.sheriffMisfireKillsTarget.getBool();
+    public static bool spyCanDieToSheriff => CustomOptionHolder.spyCanDieToSheriff.getBool();
     // public static bool madmateCanDieToSheriff { get { return CustomOptionHolder.madmateCanDieToSheriff.getBool(); } }
 
     public int numShots = 2;

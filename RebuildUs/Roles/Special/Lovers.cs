@@ -22,18 +22,12 @@ public static class Lovers
     };
 
 
-    public static bool bothDie { get { return CustomOptionHolder.loversBothDie.getBool(); } }
-    public static bool separateTeam { get { return CustomOptionHolder.loversSeparateTeam.getBool(); } }
-    public static bool tasksCount { get { return CustomOptionHolder.loversTasksCount.getBool(); } }
-    public static bool enableChat { get { return CustomOptionHolder.loversEnableChat.getBool(); } }
+    public static bool bothDie => CustomOptionHolder.loversBothDie.getBool();
+    public static bool separateTeam => CustomOptionHolder.loversSeparateTeam.getBool();
+    public static bool tasksCount => CustomOptionHolder.loversTasksCount.getBool();
+    public static bool enableChat => CustomOptionHolder.loversEnableChat.getBool();
 
-    public static bool hasTasks
-    {
-        get
-        {
-            return tasksCount;
-        }
-    }
+    public static bool hasTasks => tasksCount;
 
     public static string getIcon(PlayerControl player)
     {
@@ -186,53 +180,17 @@ public class Couple(PlayerControl lover1, PlayerControl lover2, Color color)
     public PlayerControl lover2 = lover2;
     public Color color = color;
 
-    public string icon
-    {
-        get
-        {
-            return Helpers.cs(color, " ♥");
-        }
-    }
+    public string icon => Helpers.cs(color, " ♥");
 
-    public bool existing
-    {
-        get
-        {
-            return lover1 != null && lover2 != null && !lover1.Data.Disconnected && !lover2.Data.Disconnected;
-        }
-    }
+    public bool existing => lover1 != null && lover2 != null && !lover1.Data.Disconnected && !lover2.Data.Disconnected;
 
-    public bool alive
-    {
-        get
-        {
-            return lover1 != null && lover2 != null && lover1.isAlive() && lover2.isAlive();
-        }
-    }
+    public bool alive => lover1 != null && lover2 != null && lover1.isAlive() && lover2.isAlive();
 
-    public bool existingAndAlive
-    {
-        get
-        {
-            return existing && alive;
-        }
-    }
+    public bool existingAndAlive => existing && alive;
 
-    public bool existingWithKiller
-    {
-        get
-        {
-            return existing && (lover1.isRole(RoleId.Jackal) || lover2.isRole(RoleId.Jackal)
+    public bool existingWithKiller => existing && (lover1.isRole(RoleId.Jackal) || lover2.isRole(RoleId.Jackal)
                     || lover1.isRole(RoleId.Sidekick) || lover2.isRole(RoleId.Sidekick)
                     || lover1.Data.Role.IsImpostor || lover2.Data.Role.IsImpostor);
-        }
-    }
 
-    public bool hasAliveKillingLover
-    {
-        get
-        {
-            return existingAndAlive && existingWithKiller;
-        }
-    }
+    public bool hasAliveKillingLover => existingAndAlive && existingWithKiller;
 }

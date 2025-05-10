@@ -9,11 +9,11 @@ public class Detective : RoleBase<Detective>
 {
     public static Color Color = new Color32(45, 106, 165, byte.MaxValue);
 
-    public static bool anonymousFootprints { get { return CustomOptionHolder.detectiveAnonymousFootprints.getBool(); } }
-    public static float footprintInterval { get { return CustomOptionHolder.detectiveFootprintInterval.getFloat(); } }
-    public static float footprintDuration { get { return CustomOptionHolder.detectiveFootprintDuration.getFloat(); } }
-    public static float reportNameDuration { get { return CustomOptionHolder.detectiveReportNameDuration.getFloat(); } }
-    public static float reportColorDuration { get { return CustomOptionHolder.detectiveReportColorDuration.getFloat(); } }
+    public static bool anonymousFootprints => CustomOptionHolder.detectiveAnonymousFootprints.getBool();
+    public static float footprintInterval => CustomOptionHolder.detectiveFootprintInterval.getFloat();
+    public static float footprintDuration => CustomOptionHolder.detectiveFootprintDuration.getFloat();
+    public static float reportNameDuration => CustomOptionHolder.detectiveReportNameDuration.getFloat();
+    public static float reportColorDuration => CustomOptionHolder.detectiveReportColorDuration.getFloat();
 
     public float timer = 6.2f;
 

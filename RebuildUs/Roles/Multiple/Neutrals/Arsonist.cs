@@ -13,9 +13,9 @@ public class Arsonist : RoleBase<Arsonist>
     public static Color Color = new Color32(238, 112, 46, byte.MaxValue);
     public static List<PlayerControl> dousedPlayers = [];
 
-    public static float cooldown { get { return CustomOptionHolder.arsonistCooldown.getFloat(); } }
-    public static float duration { get { return CustomOptionHolder.arsonistDuration.getFloat(); } }
-    public static bool canBeLovers { get { return CustomOptionHolder.arsonistCanBeLovers.getBool(); } }
+    public static float cooldown => CustomOptionHolder.arsonistCooldown.getFloat();
+    public static float duration => CustomOptionHolder.arsonistDuration.getFloat();
+    public static bool canBeLovers => CustomOptionHolder.arsonistCanBeLovers.getBool();
 
     public static bool triggerArsonistWin = false;
 

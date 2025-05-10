@@ -11,9 +11,9 @@ public class Lighter : RoleBase<Lighter>
 {
     public static Color Color = new Color32(238, 229, 190, byte.MaxValue);
 
-    public static float modeLightsOnVision { get { return CustomOptionHolder.lighterModeLightsOnVision.getFloat(); } }
-    public static float modeLightsOffVision { get { return CustomOptionHolder.lighterModeLightsOffVision.getFloat(); } }
-    public static float flashlightWidth { get { return CustomOptionHolder.lighterFlashlightWidth.getFloat(); } }
+    public static float modeLightsOnVision => CustomOptionHolder.lighterModeLightsOnVision.getFloat();
+    public static float modeLightsOffVision => CustomOptionHolder.lighterModeLightsOffVision.getFloat();
+    public static float flashlightWidth => CustomOptionHolder.lighterFlashlightWidth.getFloat();
 
     public Lighter()
     {

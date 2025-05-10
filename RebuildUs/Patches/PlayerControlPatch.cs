@@ -717,7 +717,7 @@ public static class PlayerControlFixedUpdatePatch
         if (Witch.witch == null || Witch.witch != PlayerControl.LocalPlayer) return;
         List<PlayerControl> untargetables;
         if (Witch.spellCastingTarget != null)
-            untargetables = PlayerControl.AllPlayerControls.ToArray().Where(x => x.PlayerId != Witch.spellCastingTarget.PlayerId).ToList(); // Don't switch the target from the the one you're currently casting a spell on
+            untargetables = [.. PlayerControl.AllPlayerControls.ToArray().Where(x => x.PlayerId != Witch.spellCastingTarget.PlayerId)]; // Don't switch the target from the the one you're currently casting a spell on
         else
         {
             untargetables = []; // Also target players that have already been spelled, to hide spells that were blanks/blocked by shields

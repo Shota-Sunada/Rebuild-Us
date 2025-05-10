@@ -12,12 +12,12 @@ public class Tracker : RoleBase<Tracker>
 {
     public static Color Color = new Color32(100, 58, 220, byte.MaxValue);
 
-    public static float updateInterval { get { return CustomOptionHolder.trackerUpdateInterval.getFloat(); } }
-    public static bool resetTargetAfterMeeting { get { return CustomOptionHolder.trackerResetTargetAfterMeeting.getBool(); } }
-    public static bool canTrackCorpses { get { return CustomOptionHolder.trackerCanTrackCorpses.getBool(); } }
-    public static float corpsesTrackingCooldown { get { return CustomOptionHolder.trackerCorpsesTrackingCooldown.getFloat(); } }
-    public static float corpsesTrackingDuration { get { return CustomOptionHolder.trackerCorpsesTrackingDuration.getFloat(); } }
-    public static int trackingMode { get { return CustomOptionHolder.trackerTrackingMethod.getSelection(); } }
+    public static float updateInterval => CustomOptionHolder.trackerUpdateInterval.getFloat();
+    public static bool resetTargetAfterMeeting => CustomOptionHolder.trackerResetTargetAfterMeeting.getBool();
+    public static bool canTrackCorpses => CustomOptionHolder.trackerCanTrackCorpses.getBool();
+    public static float corpsesTrackingCooldown => CustomOptionHolder.trackerCorpsesTrackingCooldown.getFloat();
+    public static float corpsesTrackingDuration => CustomOptionHolder.trackerCorpsesTrackingDuration.getFloat();
+    public static int trackingMode => CustomOptionHolder.trackerTrackingMethod.getSelection();
 
     public List<Arrow> localArrows = [];
 

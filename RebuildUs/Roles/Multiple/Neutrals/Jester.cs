@@ -11,10 +11,10 @@ public class Jester : RoleBase<Jester>
     public static bool triggerJesterWin = false;
     public bool isWin = false;
 
-    public static bool canCallEmergency { get { return CustomOptionHolder.jesterCanCallEmergency.getBool(); } }
-    public static bool canSabotage { get { return CustomOptionHolder.jesterCanSabotage.getBool(); } }
-    public static bool hasImpostorVision { get { return CustomOptionHolder.jesterHasImpostorVision.getBool(); } }
-    public static bool jesterWinEveryone { get { return CustomOptionHolder.jesterWinEveryone.getBool(); } }
+    public static bool canCallEmergency => CustomOptionHolder.jesterCanCallEmergency.getBool();
+    public static bool canSabotage => CustomOptionHolder.jesterCanSabotage.getBool();
+    public static bool hasImpostorVision => CustomOptionHolder.jesterHasImpostorVision.getBool();
+    public static bool jesterWinEveryone => CustomOptionHolder.jesterWinEveryone.getBool();
 
     public Jester()
     {

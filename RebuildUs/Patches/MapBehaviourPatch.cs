@@ -258,13 +258,13 @@ static class MapBehaviourPatch
         if (Helpers.isMira())
         {
             var vents = MapUtilities.CachedShipStatus.AllVents.Where(x => !x.name.Contains("JackInTheBoxVent_"));
-            VentNetworks.Add(vents.ToList());
+            VentNetworks.Add([.. vents]);
             return;
         }
         if (MapUtilities.CachedShipStatus.Type == SubmergedCompatibility.SUBMERGED_MAP_TYPE)
         {
             var vents = MapUtilities.CachedShipStatus.AllVents.Where(x => x.Id is 12 or 13 or 15 or 16);
-            VentNetworks.Add(vents.ToList());
+            VentNetworks.Add([.. vents]);
         }
     }
 }

@@ -16,9 +16,9 @@ public class Eraser : RoleBase<Eraser>
     public static List<PlayerControl> futureErased = [];
     public PlayerControl currentTarget;
 
-    public static float cooldown { get { return CustomOptionHolder.eraserCooldown.getFloat(); } }
-    public static float cooldownIncrease { get { return CustomOptionHolder.eraserCooldownIncrease.getFloat(); } }
-    public static bool canEraseAnyone { get { return CustomOptionHolder.eraserCanEraseAnyone.getBool(); } }
+    public static float cooldown => CustomOptionHolder.eraserCooldown.getFloat();
+    public static float cooldownIncrease => CustomOptionHolder.eraserCooldownIncrease.getFloat();
+    public static bool canEraseAnyone => CustomOptionHolder.eraserCanEraseAnyone.getBool();
 
     private static CustomButton eraserButton;
 

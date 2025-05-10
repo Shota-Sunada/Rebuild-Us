@@ -10,9 +10,9 @@ public class Seer : RoleBase<Seer>
     public static Color Color = new Color32(97, 178, 108, byte.MaxValue);
     public static List<Vector3> deadBodyPositions = [];
 
-    public static int mode { get { return CustomOptionHolder.seerMode.getSelection(); } }
-    public static bool limitSoulDuration { get { return CustomOptionHolder.seerLimitSoulDuration.getBool(); } }
-    public static float soulDuration { get { return CustomOptionHolder.seerSoulDuration.getFloat(); } }
+    public static int mode => CustomOptionHolder.seerMode.getSelection();
+    public static bool limitSoulDuration => CustomOptionHolder.seerLimitSoulDuration.getBool();
+    public static float soulDuration => CustomOptionHolder.seerSoulDuration.getFloat();
 
     public Seer()
     {

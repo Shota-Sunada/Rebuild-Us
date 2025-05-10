@@ -7,9 +7,9 @@ public class CustomRoleOption : CustomOption
     public CustomOption countOption = null;
     public bool roleEnabled = true;
 
-    public override bool Enabled { get { return Helpers.RolesEnabled && getBool() && selection > 0; } }
+    public override bool Enabled => Helpers.RolesEnabled && getBool() && selection > 0;
 
-    public int Rate { get { return Enabled ? selection : 0; } }
+    public int Rate => Enabled ? selection : 0;
 
     public int Count
     {
@@ -29,7 +29,7 @@ public class CustomRoleOption : CustomOption
         }
     }
 
-    public (int rate, int count) Data { get { return (Rate, Count); } }
+    public (int rate, int count) Data => (Rate, Count);
 
     public CustomRoleOption(int id, int id2, CustomOptionType type, (string key, Color? color) title, int max = 15, bool roleEnabled = true) :
         base(id, type, title, CustomOptionHolder.Percents, "", null, true, null, UnitType.UnitPercent)

@@ -48,7 +48,7 @@ public class CustomOption
     public UnitType unitType = UnitType.None;
     public List<CustomOption> children;
 
-    public virtual bool Enabled { get { return Helpers.RolesEnabled && getBool(); } }
+    public virtual bool Enabled => Helpers.RolesEnabled && getBool();
 
     public CustomOption(int id, CustomOptionType type, (string key, Color? color) title, object[] selections, object defaultValue, CustomOption parent, bool isHeader, (string Key, Color? color)? header, UnitType unitType)
     {

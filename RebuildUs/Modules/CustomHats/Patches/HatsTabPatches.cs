@@ -76,7 +76,7 @@ internal static class HatsTabPatches
         var isDefaultPackage = CustomHatManager.InnerslothPackageName == packageName;
         if (!isDefaultPackage)
         {
-            hats = hats.OrderBy(x => x.Item1.name).ToList();
+            hats = [.. hats.OrderBy(x => x.Item1.name)];
         }
 
         var offset = yStart;

@@ -16,13 +16,13 @@ namespace RebuildUs;
 public class RoleInfo
 {
     public Color color;
-    public string name { get { return Tr.Get(nameKey); } }
-    public string nameColored { get { return Helpers.cs(color, name); } }
-    public string introDescription { get { return Tr.Get($"{nameKey}IntroDesc"); } }
-    public string shortDescription { get { return Tr.Get($"{nameKey}ShortDesc"); } }
-    public string fullDescription { get { return Tr.Get($"{nameKey}FullDesc"); } }
-    public string roleOptions { get { return GameOptionsDataPatch.optionsToString(baseOption, true); } }
-    public bool enabled { get { return Helpers.RolesEnabled && (this == crewmate || this == impostor || (baseOption != null && baseOption.Enabled)); } }
+    public string name => Tr.Get(nameKey);
+    public string nameColored => Helpers.cs(color, name);
+    public string introDescription => Tr.Get($"{nameKey}IntroDesc");
+    public string shortDescription => Tr.Get($"{nameKey}ShortDesc");
+    public string fullDescription => Tr.Get($"{nameKey}FullDesc");
+    public string roleOptions => GameOptionsDataPatch.optionsToString(baseOption, true);
+    public bool enabled => Helpers.RolesEnabled && (this == crewmate || this == impostor || (baseOption != null && baseOption.Enabled));
 
     public RoleId roleId;
     public RoleType roleType;
@@ -264,7 +264,7 @@ public class RoleInfo
     public static String GetRolesString(PlayerControl p, bool useColors, bool showModifier = true, bool suppressGhostInfo = false)
     {
         string roleName;
-        roleName = String.Join(" ", getRoleInfoForPlayer(p, showModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray());
+        roleName = String.Join(" ", [.. getRoleInfoForPlayer(p, showModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name)]);
         if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && PlayerControl.LocalPlayer != Lawyer.target)
             roleName += (useColors ? Helpers.cs(Pursuer.color, " §") : " §");
 

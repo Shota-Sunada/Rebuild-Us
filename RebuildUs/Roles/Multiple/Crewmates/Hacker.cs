@@ -10,15 +10,15 @@ public class Hacker : RoleBase<Hacker>
 {
     public static Color Color = new Color32(117, 250, 76, byte.MaxValue);
 
-    public static float cooldown { get { return CustomOptionHolder.hackerCooldown.getFloat(); } }
-    public static float duration { get { return CustomOptionHolder.hackerHackingDuration.getFloat(); } }
-    public static bool onlyColorType { get { return CustomOptionHolder.hackerOnlyColorType.getBool(); } }
-    public static float toolsNumber { get { return CustomOptionHolder.hackerToolsNumber.getFloat(); } }
-    public static int rechargeTasksNumber { get { return CustomOptionHolder.hackerRechargeTasksNumber.getInt(); } }
-    public static int rechargedTasks { get { return CustomOptionHolder.hackerRechargeTasksNumber.getInt(); } }
-    public static int chargesVitals { get { return Mathf.RoundToInt(CustomOptionHolder.hackerToolsNumber.getFloat() / 2); } }
-    public static int chargesAdminTable { get { return Mathf.RoundToInt(CustomOptionHolder.hackerToolsNumber.getFloat() / 2); } }
-    public static bool cantMove { get { return CustomOptionHolder.hackerNoMove.getBool(); } }
+    public static float cooldown => CustomOptionHolder.hackerCooldown.getFloat();
+    public static float duration => CustomOptionHolder.hackerHackingDuration.getFloat();
+    public static bool onlyColorType => CustomOptionHolder.hackerOnlyColorType.getBool();
+    public static float toolsNumber => CustomOptionHolder.hackerToolsNumber.getFloat();
+    public static int rechargeTasksNumber => CustomOptionHolder.hackerRechargeTasksNumber.getInt();
+    public static int rechargedTasks => CustomOptionHolder.hackerRechargeTasksNumber.getInt();
+    public static int chargesVitals => Mathf.RoundToInt(CustomOptionHolder.hackerToolsNumber.getFloat() / 2);
+    public static int chargesAdminTable => Mathf.RoundToInt(CustomOptionHolder.hackerToolsNumber.getFloat() / 2);
+    public static bool cantMove => CustomOptionHolder.hackerNoMove.getBool();
 
     private static CustomButton hackerButton;
     public static CustomButton hackerVitalsButton;

@@ -22,47 +22,17 @@ namespace RebuildUs;
 
 public static class Helpers
 {
-    public static bool ShowButtons
-    {
-        get
-        {
-            return !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+    public static bool ShowButtons => !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
                     !MeetingHud.Instance &&
                     !ExileController.Instance;
-        }
-    }
 
-    public static bool ShowMeetingText
-    {
-        get
-        {
-            return MeetingHud.Instance != null && (MeetingHud.Instance.state is MeetingHud.VoteStates.Voted or MeetingHud.VoteStates.NotVoted or MeetingHud.VoteStates.Discussion);
-        }
-    }
+    public static bool ShowMeetingText => MeetingHud.Instance != null && (MeetingHud.Instance.state is MeetingHud.VoteStates.Voted or MeetingHud.VoteStates.NotVoted or MeetingHud.VoteStates.Discussion);
 
-    public static bool GameStarted
-    {
-        get
-        {
-            return AmongUsClient.Instance != null && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started;
-        }
-    }
+    public static bool GameStarted => AmongUsClient.Instance != null && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started;
 
-    public static bool RolesEnabled
-    {
-        get
-        {
-            return CustomOptionHolder.activateRoles.getBool();
-        }
-    }
+    public static bool RolesEnabled => CustomOptionHolder.activateRoles.getBool();
 
-    public static bool RefundVotes
-    {
-        get
-        {
-            return CustomOptionHolder.refundVotesOnDeath.getBool();
-        }
-    }
+    public static bool RefundVotes => CustomOptionHolder.refundVotesOnDeath.getBool();
 
     public static List<byte> generateTasks(int numCommon, int numShort, int numLong)
     {
@@ -178,7 +148,7 @@ public static class Helpers
             stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
             if (path.Contains("HorseHats"))
             {
-                byteTexture = new Il2CppStructArray<byte>(byteTexture.Reverse().ToArray());
+                byteTexture = new Il2CppStructArray<byte>([.. byteTexture.Reverse()]);
             }
             ImageConversion.LoadImage(texture, byteTexture, false);
             return texture;

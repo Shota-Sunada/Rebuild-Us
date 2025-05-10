@@ -75,42 +75,15 @@ public abstract class RoleBase<T> : Role where T : RoleBase<T>, new()
         PostInit();
     }
 
-    public static T local
-    {
-        get
-        {
-            return players.FirstOrDefault(x => x.player == PlayerControl.LocalPlayer);
-        }
-    }
+    public static T local => players.FirstOrDefault(x => x.player == PlayerControl.LocalPlayer);
 
-    public static List<PlayerControl> allPlayers
-    {
-        get
-        {
-            return players.Select(x => x.player).ToList();
-        }
-    }
+    public static List<PlayerControl> allPlayers => [.. players.Select(x => x.player)];
 
-    public static List<PlayerControl> livingPlayers
-    {
-        get
-        {
-            return players.Select(x => x.player).Where(x => x.isAlive()).ToList();
-        }
-    }
+    public static List<PlayerControl> livingPlayers => [.. players.Select(x => x.player).Where(x => x.isAlive())];
 
-    public static List<PlayerControl> deadPlayers
-    {
-        get
-        {
-            return players.Select(x => x.player).Where(x => !x.isAlive()).ToList();
-        }
-    }
+    public static List<PlayerControl> deadPlayers => [.. players.Select(x => x.player).Where(x => !x.isAlive())];
 
-    public static bool exists
-    {
-        get { return Helpers.RolesEnabled && players.Count > 0; }
-    }
+    public static bool exists => Helpers.RolesEnabled && players.Count > 0;
 
     public static T getRole(PlayerControl player = null)
     {

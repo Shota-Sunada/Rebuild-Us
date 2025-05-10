@@ -667,7 +667,7 @@ class MeetingHudPatch
                 {
                     if (!trap.revealed) continue;
                     string message = $"Trap {trap.instanceId}: \n";
-                    trap.trappedPlayer = trap.trappedPlayer.OrderBy(x => rnd.Next()).ToList();
+                    trap.trappedPlayer = [.. trap.trappedPlayer.OrderBy(x => rnd.Next())];
                     foreach (byte playerId in trap.trappedPlayer)
                     {
                         PlayerControl p = Helpers.playerById(playerId);
