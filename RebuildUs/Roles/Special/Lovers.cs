@@ -222,8 +222,8 @@ public class Couple(PlayerControl lover1, PlayerControl lover2, Color color)
     {
         get
         {
-            return existing && (lover1 == Jackal.jackal || lover2 == Jackal.jackal
-                    || lover1 == Sidekick.sidekick || lover2 == Sidekick.sidekick
+            return existing && (lover1.isRole(RoleId.Jackal) || lover2.isRole(RoleId.Jackal)
+                    || lover1.isRole(RoleId.Sidekick) || lover2.isRole(RoleId.Sidekick)
                     || lover1.Data.Role.IsImpostor || lover2.Data.Role.IsImpostor);
         }
     }
