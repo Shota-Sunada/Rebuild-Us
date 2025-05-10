@@ -45,7 +45,7 @@ public class RebuildUs : BasePlugin
 
     public static int optionsPage = 2;
 
-    public static ConfigEntry<string> DebugMode { get; private set; }
+    public static ConfigEntry<bool> DebugMode { get; private set; }
     public static ConfigEntry<bool> GhostsSeeInformation { get; set; }
     public static ConfigEntry<bool> GhostsSeeRoles { get; set; }
     public static ConfigEntry<bool> GhostsSeeModifier { get; set; }
@@ -97,7 +97,7 @@ public class RebuildUs : BasePlugin
         Logger = Log;
         Instance = this;
 
-        DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
+        DebugMode = Config.Bind("Custom", "Enable Debug Mode", false);
         GhostsSeeInformation = Config.Bind("Custom", "Ghosts See Remaining Tasks", true);
         GhostsSeeRoles = Config.Bind("Custom", "Ghosts See Roles", true);
         GhostsSeeModifier = Config.Bind("Custom", "Ghosts See Modifier", true);
@@ -116,7 +116,7 @@ public class RebuildUs : BasePlugin
         ServerManager.DefaultRegions = new Il2CppReferenceArray<IRegionInfo>(new IRegionInfo[0]);
         UpdateRegions();
 
-        DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
+        DebugMode = Config.Bind("Custom", "Enable Debug Mode", false);
         Harmony.PatchAll();
 
         CustomOptionHolder.Load();
@@ -223,40 +223,28 @@ public class RebuildUs : BasePlugin
     [HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
     public static class DebugManager
     {
-        private static readonly string passwordHash = "d1f51dfdfd8d38027fd2ca9dfeb299399b5bdee58e6c0b3b5e9a45cd4e502848";
         private static readonly System.Random random = new((int)DateTime.Now.Ticks);
         private static List<PlayerControl> bots = [];
 
         public static void Postfix(KeyboardJoystick __instance)
         {
-            // Check if debug mode is active.
-            StringBuilder builder = new();
-            SHA256 sha = SHA256Managed.Create();
-            Byte[] hashed = sha.ComputeHash(Encoding.UTF8.GetBytes(RebuildUs.DebugMode.Value));
-            foreach (var b in hashed)
+            // Spawn dummies
+            if (DebugMode.Value && Input.GetKeyDown(KeyCode.F))
             {
-                builder.Append(b.ToString("x2"));
-            }
-            string enteredHash = builder.ToString();
-            if (enteredHash != passwordHash) return;
-
-
-            // Spawn dummys
-            /*if (Input.GetKeyDown(KeyCode.F)) {
                 var playerControl = UnityEngine.Object.Instantiate(AmongUsClient.Instance.PlayerPrefab);
-                var i = playerControl.PlayerId = (byte) GameData.Instance.GetAvailableId();
+                var i = playerControl.PlayerId = (byte)GameData.Instance.GetAvailableId();
 
                 bots.Add(playerControl);
-                GameData.Instance.AddPlayer(playerControl, new InnerNet.ClientData(0));
+                GameData.Instance.AddPlayer(playerControl, new InnerNet.ClientData(new(0)));
                 AmongUsClient.Instance.Spawn(playerControl, -2, InnerNet.SpawnFlags.None);
 
                 playerControl.transform.position = PlayerControl.LocalPlayer.transform.position;
                 playerControl.GetComponent<DummyBehaviour>().enabled = true;
                 playerControl.NetTransform.enabled = false;
                 playerControl.SetName(RandomString(10));
-                playerControl.SetColor((byte) random.Next(Palette.PlayerColors.Length));
-                playerControl.Data.RpcSetTasks(new byte[0]);
-            }*/
+                playerControl.SetColor((byte)random.Next(Palette.PlayerColors.Length));
+                playerControl.Data.RpcSetTasks(Array.Empty<byte>());
+            }
 
             // Terminate round
             if (Input.GetKeyDown(KeyCode.L))
@@ -269,8 +257,7 @@ public class RebuildUs : BasePlugin
         public static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+            return new string([.. Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)])]);
         }
     }
 }
