@@ -129,7 +129,7 @@ class IntroPatch
     public static void setupIntroTeam(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
     {
         List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer);
-        var roleInfo = infos.Where(info => info.roleType is not RoleType.Modifier).FirstOrDefault();
+        var roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
         var neutralColor = new Color32(76, 84, 78, 255);
         if (roleInfo == null || roleInfo == RoleInfo.crewmate)
         {
@@ -172,12 +172,12 @@ class IntroPatch
         {
             // Don't override the intro of the vanilla roles
             List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer);
-            RoleInfo roleInfo = infos.Where(info => info.roleType is not RoleType.Modifier).FirstOrDefault();
-            RoleInfo modifierInfo = infos.Where(info => info.roleType is RoleType.Modifier).FirstOrDefault();
+            RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
+            RoleInfo modifierInfo = infos.Where(info => info.isModifier).FirstOrDefault();
 
             if (EventUtility.isEnabled)
             {
-                var roleInfos = RoleInfo.allRoleInfos.Where(x => x.roleType is not RoleType.Modifier).ToList();
+                var roleInfos = RoleInfo.allRoleInfos.Where(x => !x.isModifier).ToList();
                 if (roleInfo.roleType is RoleType.Neutral) roleInfos.RemoveAll(x => x.roleType is not RoleType.Neutral);
                 if (roleInfo.color == Palette.ImpostorRed) roleInfos.RemoveAll(x => x.color != Palette.ImpostorRed);
                 if (roleInfo.roleType is not RoleType.Neutral && roleInfo.color != Palette.ImpostorRed) roleInfos.RemoveAll(x => x.color == Palette.ImpostorRed || x.roleType is RoleType.Neutral);

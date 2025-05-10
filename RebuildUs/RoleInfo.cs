@@ -26,16 +26,27 @@ public class RoleInfo
 
     public RoleId roleId;
     public RoleType roleType;
+    public bool isModifier = false;
 
     private string nameKey;
     private CustomOption baseOption;
 
-    public RoleInfo(string nameKey, Color color, CustomOption baseOption,  RoleId roleId, RoleType roleType)
+    public RoleInfo(string nameKey, Color color, CustomOption baseOption, RoleId roleId, RoleType roleType)
     {
         this.color = color;
         this.nameKey = nameKey;
         this.roleId = roleId;
         this.roleType = roleType;
+        this.baseOption = baseOption;
+    }
+
+    public RoleInfo(string nameKey, Color color, CustomOption baseOption, RoleId roleId, bool isModifier = true)
+    {
+        this.color = color;
+        this.nameKey = nameKey;
+        this.roleId = roleId;
+        roleType = RoleType.NONE;
+        this.isModifier = isModifier;
         this.baseOption = baseOption;
     }
 
@@ -77,7 +88,7 @@ public class RoleInfo
     public static RoleInfo trapper = new("Trapper", Trapper.color, CustomOptionHolder.trapperSpawnRate, RoleId.Trapper, RoleType.Crewmate);
     public static RoleInfo lawyer = new("Lawyer", Lawyer.color, CustomOptionHolder.lawyerSpawnRate, RoleId.Lawyer, RoleType.Neutral);
     public static RoleInfo prosecutor = new("Prosecutor", Lawyer.color, CustomOptionHolder.lawyerSpawnRate, RoleId.Prosecutor, RoleType.Neutral);
-    public static RoleInfo pursuer = new("Pursuer", Pursuer.color, CustomOptionHolder.lawyerSpawnRate, RoleId.Pursuer, RoleType.Neutral);
+    public static RoleInfo pursuer = new("Pursuer", Pursuer.color, CustomOptionHolder.lawyerSpawnRate, RoleId.Pursuer, false);
     public static RoleInfo impostor = new("Impostor", Palette.ImpostorRed, null, RoleId.Impostor, RoleType.Impostor);
     public static RoleInfo crewmate = new("Crewmate", Palette.CrewmateBlue, null, RoleId.Crewmate, RoleType.Crewmate);
     public static RoleInfo witch = new("Witch", Witch.color, CustomOptionHolder.witchSpawnRate, RoleId.Witch, RoleType.Impostor);
@@ -88,17 +99,17 @@ public class RoleInfo
     public static RoleInfo shifter = new("Shifter", Shifter.Color, CustomOptionHolder.shifterSpawnRate, RoleId.Shifter, RoleType.Crewmate);
 
     // Modifier
-    public static RoleInfo bloody = new("Bloody", Color.yellow, CustomOptionHolder.modifierBloody, RoleId.Bloody, RoleType.Modifier);
-    public static RoleInfo antiTeleport = new("Anti tp", Color.yellow, CustomOptionHolder.modifierAntiTeleport, RoleId.AntiTeleport, RoleType.Modifier);
-    public static RoleInfo tiebreaker = new("Tiebreaker", Color.yellow, CustomOptionHolder.modifierTieBreaker, RoleId.Tiebreaker, RoleType.Modifier);
-    public static RoleInfo bait = new("Bait", Color.yellow, CustomOptionHolder.modifierBait, RoleId.Bait, RoleType.Modifier);
-    public static RoleInfo sunglasses = new("Sunglasses", Color.yellow, CustomOptionHolder.modifierSunglasses, RoleId.Sunglasses, RoleType.Modifier);
-    public static RoleInfo lovers = new("Lover", Lovers.Color, CustomOptionHolder.loversSpawnRate, RoleId.NoRole, RoleType.Modifier);
-    public static RoleInfo mini = new("Mini", Color.yellow, CustomOptionHolder.modifierMini, RoleId.Mini, RoleType.Modifier);
-    public static RoleInfo vip = new("VIP", Color.yellow, CustomOptionHolder.modifierVip, RoleId.Vip, RoleType.Modifier);
-    public static RoleInfo invert = new("Invert", Color.yellow, CustomOptionHolder.modifierInvert, RoleId.Invert, RoleType.Modifier);
-    public static RoleInfo chameleon = new("Chameleon", Color.yellow, CustomOptionHolder.modifierChameleon, RoleId.Chameleon, RoleType.Modifier);
-    public static RoleInfo armored = new("Armored", Color.yellow, CustomOptionHolder.modifierArmored, RoleId.Armored, RoleType.Modifier);
+    public static RoleInfo bloody = new("Bloody", Color.yellow, CustomOptionHolder.modifierBloody, RoleId.Bloody);
+    public static RoleInfo antiTeleport = new("Anti tp", Color.yellow, CustomOptionHolder.modifierAntiTeleport, RoleId.AntiTeleport);
+    public static RoleInfo tiebreaker = new("Tiebreaker", Color.yellow, CustomOptionHolder.modifierTieBreaker, RoleId.Tiebreaker);
+    public static RoleInfo bait = new("Bait", Color.yellow, CustomOptionHolder.modifierBait, RoleId.Bait);
+    public static RoleInfo sunglasses = new("Sunglasses", Color.yellow, CustomOptionHolder.modifierSunglasses, RoleId.Sunglasses);
+    public static RoleInfo lovers = new("Lover", Lovers.Color, CustomOptionHolder.loversSpawnRate, RoleId.NoRole);
+    public static RoleInfo mini = new("Mini", Color.yellow, CustomOptionHolder.modifierMini, RoleId.Mini);
+    public static RoleInfo vip = new("VIP", Color.yellow, CustomOptionHolder.modifierVip, RoleId.Vip);
+    public static RoleInfo invert = new("Invert", Color.yellow, CustomOptionHolder.modifierInvert, RoleId.Invert);
+    public static RoleInfo chameleon = new("Chameleon", Color.yellow, CustomOptionHolder.modifierChameleon, RoleId.Chameleon);
+    public static RoleInfo armored = new("Armored", Color.yellow, CustomOptionHolder.modifierArmored, RoleId.Armored);
 
     public static List<RoleInfo> allRoleInfos = [
         impostor,
