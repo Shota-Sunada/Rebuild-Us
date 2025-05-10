@@ -97,8 +97,6 @@ public class RebuildUsPlugin : BasePlugin
         Logger = Log;
         Instance = this;
 
-        _ = Patches.CredentialsPatch.MOTD.loadMOTDs();
-
         DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
         GhostsSeeInformation = Config.Bind("Custom", "Ghosts See Remaining Tasks", true);
         GhostsSeeRoles = Config.Bind("Custom", "Ghosts See Roles", true);
