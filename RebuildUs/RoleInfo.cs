@@ -26,7 +26,6 @@ public class RoleInfo
 
     public RoleId roleId;
     public RoleType roleType;
-    public static Dictionary<RoleId, RoleInfo> roleInfoById = [];
 
     private string nameKey;
     private CustomOption baseOption;
@@ -38,7 +37,6 @@ public class RoleInfo
         this.roleId = roleId;
         this.roleType = roleType;
         this.baseOption = baseOption;
-        roleInfoById.TryAdd(roleId, this);
     }
 
     public static RoleInfo jester = new("Jester", Jester.Color, CustomOptionHolder.jesterSpawnRate, RoleId.Jester, RoleType.Neutral);
