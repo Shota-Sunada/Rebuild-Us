@@ -11,6 +11,7 @@ using AmongUs.GameOptions;
 using RebuildUs.Patches;
 using static RebuildUs.GameHistory;
 using RebuildUs.Localization;
+using RebuildUs.Extensions;
 
 namespace RebuildUs;
 
@@ -533,7 +534,7 @@ public static class Helpers
         if (source.isDead()) return false;
         if (target.isDead()) return true;
         if (Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive()) return true;
-        if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
+        if (MinigameExtensions.nightVisionIsActive) return true;
         if (Ninja.isInvisible && Ninja.ninja == target) return true;
         if (!MapOptions.hidePlayerNames) return false; // All names are visible
         if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target.isRole(RoleId.Sidekick) && TeamJackal.Sidekick.wasTeamRed || target.isRole(RoleId.Jackal) && TeamJackal.Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
@@ -589,7 +590,7 @@ public static class Helpers
 
         target.RawSetPet(petId, colorId);
 
-        if (enforceNightVisionUpdate) Patches.SurveillanceMinigamePatch.enforceNightVision(target);
+        if (enforceNightVisionUpdate) MinigameExtensions.enforceNightVision(target);
         Chameleon.update();  // so that morphling and camo wont make the chameleons visible
     }
 

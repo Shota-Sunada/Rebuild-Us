@@ -3,6 +3,7 @@ using System.Linq;
 using RebuildUs.Objects;
 using System;
 using UnityEngine;
+using RebuildUs.Extensions;
 
 namespace RebuildUs.Patches;
 
@@ -163,7 +164,7 @@ class ExileControllerWrapUpPatch
         // Nightvision:
         if (obj != null && obj.name != null && obj.name.Contains("FungleSecurity"))
         {
-            SurveillanceMinigamePatch.resetNightVision();
+            MinigameExtensions.resetNightVision();
             return;
         }
 

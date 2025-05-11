@@ -1,14 +1,15 @@
+using System.Linq;
 using HarmonyLib;
 using RebuildUs.Localization;
-using System.Linq;
 
 namespace RebuildUs.Patches;
 
 [HarmonyPatch]
-class GetStringPatch
+public static class TranslationControllerPatch
 {
+    [HarmonyPrefix]
     [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), [typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>)])]
-    public static bool Prefix(TranslationController __instance, StringNames id, ref string __result)
+    public static bool GetStringPrefix(TranslationController __instance, StringNames id, ref string __result)
     {
         if ((int)id < 6000)
         {

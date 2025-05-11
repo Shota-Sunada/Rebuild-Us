@@ -12,6 +12,7 @@ using System;
 using AmongUs.Data;
 using AmongUs.GameOptions;
 using Assets.CoreScripts;
+using RebuildUs.Extensions;
 
 namespace RebuildUs;
 
@@ -44,7 +45,7 @@ public static class RPCProcedure
         reloadPluginOptions();
         Helpers.toggleZoom(reset: true);
         GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 0;
-        SurveillanceMinigamePatch.nightVisionOverlays = null;
+        MinigameExtensions.nightVisionOverlays = null;
         EventUtility.clearAndReload();
         MapBehaviourPatch.clearAndReload();
         HudManagerUpdate.CloseSummary();

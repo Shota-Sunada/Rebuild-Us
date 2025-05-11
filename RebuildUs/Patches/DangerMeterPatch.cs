@@ -1,19 +1,14 @@
 using HarmonyLib;
-
 using UnityEngine;
 
 namespace RebuildUs.Patches;
 
-
 [HarmonyPatch]
-
-public class DangerMeterPatch
+public static class DangerMeterPatch
 {
-
-    [HarmonyPatch(typeof(DangerMeter), nameof(DangerMeter.SetFirstNBarColors))]
     [HarmonyPrefix]
-
-    public static void Prefix(DangerMeter __instance, ref Color color)
+    [HarmonyPatch(typeof(DangerMeter), nameof(DangerMeter.SetFirstNBarColors))]
+    public static void SetFirstNBarColorsPrefix(DangerMeter __instance, ref Color color)
     {
         if (PlayerControl.LocalPlayer.isRole(RoleId.Tracker)) return;
         if (__instance == HudManager.Instance.DangerMeter) return;
