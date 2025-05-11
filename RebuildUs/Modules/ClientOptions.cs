@@ -7,12 +7,12 @@ using UnityEngine.Events;
 using static UnityEngine.UI.Button;
 using Object = UnityEngine.Object;
 
-namespace RebuildUs.Patches;
+namespace RebuildUs.Modules;
 
 [HarmonyPatch]
-public static class ClientOptionsPatch
+public static class ClientOptions
 {
-    private static readonly SelectionBehaviour[] AllOptions = {
+    private static readonly SelectionBehaviour[] AllOptions = [
         new("Ghosts See Tasks & Other Info", () => MapOptions.ghostsSeeInformation = RebuildUs.GhostsSeeInformation.Value = !RebuildUs.GhostsSeeInformation.Value, RebuildUs.GhostsSeeInformation.Value),
         new("Ghosts Can See Votes", () => MapOptions.ghostsSeeVotes = RebuildUs.GhostsSeeVotes.Value = !RebuildUs.GhostsSeeVotes.Value, RebuildUs.GhostsSeeVotes.Value),
         new("Ghosts Can See Roles", () => MapOptions.ghostsSeeRoles = RebuildUs.GhostsSeeRoles.Value = !RebuildUs.GhostsSeeRoles.Value, RebuildUs.GhostsSeeRoles.Value),
@@ -21,7 +21,7 @@ public static class ClientOptionsPatch
         new("Show Lighter / Darker", () => MapOptions.showLighterDarker = RebuildUs.ShowLighterDarker.Value = !RebuildUs.ShowLighterDarker.Value, RebuildUs.ShowLighterDarker.Value),
         new("Show Vents On Map", () => MapOptions.ShowVentsOnMap = RebuildUs.ShowVentsOnMap.Value = !RebuildUs.ShowVentsOnMap.Value, RebuildUs.ShowVentsOnMap.Value),
         new("Show Chat Notifications", () => MapOptions.ShowChatNotifications = RebuildUs.ShowChatNotifications.Value = !RebuildUs.ShowChatNotifications.Value, RebuildUs.ShowChatNotifications.Value),
-    };
+    ];
 
     private static GameObject popUp;
     private static TextMeshPro titleText;
@@ -29,9 +29,7 @@ public static class ClientOptionsPatch
     private static ToggleButtonBehaviour buttonPrefab;
     private static Vector3? _origin;
 
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
-    public static void MainMenuManager_StartPostfix(MainMenuManager __instance)
+    public static void MainMenuManagerStart()
     {
         // Prefab for the title
         var go = new GameObject("TitleTextRU");
@@ -44,9 +42,7 @@ public static class ClientOptionsPatch
         Object.DontDestroyOnLoad(titleText);
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(OptionsMenuBehaviour), nameof(OptionsMenuBehaviour.Start))]
-    public static void OptionsMenuBehaviour_StartPostfix(OptionsMenuBehaviour __instance)
+    public static void OptionsMenuBehaviourStart(OptionsMenuBehaviour __instance)
     {
         if (!__instance.CensorChatButton) return;
 
