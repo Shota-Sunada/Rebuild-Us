@@ -1,5 +1,6 @@
 using System.Linq;
 using HarmonyLib;
+using RebuildUs.Extensions;
 using RebuildUs.Localization;
 
 namespace RebuildUs.Patches;
@@ -25,5 +26,12 @@ public static class TranslationControllerPatch
         __result = ourString;
 
         return false;
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), [typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>)])]
+    public static void Postfix(ref string __result, StringNames id)
+    {
+        ExileExtensions.GetStringPostfix(ref __result, id);
     }
 }

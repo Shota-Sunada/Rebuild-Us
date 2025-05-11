@@ -753,7 +753,7 @@ static class HudManagerStartPatch
                     {
                         if (db == Medium.target)
                         {
-                            Tuple<DeadPlayer, Vector3> deadBody = Tuple.Create(db, ps);
+                            var deadBody = (db, ps);
                             Medium.deadBodies.Remove(deadBody);
                             break;
                         }

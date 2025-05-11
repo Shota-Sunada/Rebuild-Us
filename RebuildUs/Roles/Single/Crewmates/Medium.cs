@@ -11,8 +11,8 @@ public static class Medium
     public static DeadPlayer target;
     public static DeadPlayer soulTarget;
     public static Color color = new Color32(98, 120, 115, byte.MaxValue);
-    public static List<Tuple<DeadPlayer, Vector3>> deadBodies = [];
-    public static List<Tuple<DeadPlayer, Vector3>> futureDeadBodies = [];
+    public static List<(DeadPlayer, Vector3)> deadBodies = [];
+    public static List<(DeadPlayer, Vector3)> futureDeadBodies = [];
     public static List<SpriteRenderer> souls = [];
     public static DateTime meetingStartTime = DateTime.UtcNow;
 

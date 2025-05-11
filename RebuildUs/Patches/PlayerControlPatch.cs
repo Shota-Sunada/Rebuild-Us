@@ -1058,7 +1058,7 @@ public static class MurderPlayerPatch
         // Medium add body
         if (Medium.deadBodies != null)
         {
-            Medium.futureDeadBodies.Add(new Tuple<DeadPlayer, Vector3>(deadPlayer, target.transform.position));
+            Medium.futureDeadBodies.Add(new(deadPlayer, target.transform.position));
         }
 
         // Set bountyHunter cooldown

@@ -14,7 +14,7 @@ class Trap
     public int instanceId = 0;
     public GameObject trap;
     public bool revealed = false;
-    public bool triggerable = false;
+    public bool trigger_able = false;
     private int usedCount = 0;
     private int neededCount = Trapper.trapCountToReveal;
     public List<byte> trappedPlayer = [];
@@ -49,7 +49,7 @@ class Trap
         {
             if (x == 1f)
             {
-                this.triggerable = true;
+                this.trigger_able = true;
                 trapRenderer.color = Color.white;
             }
         })));
@@ -86,7 +86,7 @@ class Trap
         bool localIsTrapper = PlayerControl.LocalPlayer.PlayerId == Trapper.trapper.PlayerId;
         if (!trapPlayerIdMap.ContainsKey(playerId)) trapPlayerIdMap.Add(playerId, t);
         t.usedCount++;
-        t.triggerable = false;
+        t.trigger_able = false;
         if (playerId == PlayerControl.LocalPlayer.PlayerId || playerId == Trapper.trapper.PlayerId)
         {
             t.trap.SetActive(true);
@@ -113,7 +113,7 @@ class Trap
         }
 
         t.trappedPlayer.Add(player.PlayerId);
-        t.triggerable = true;
+        t.trigger_able = true;
     }
 
     public static void Update()
@@ -129,7 +129,7 @@ class Trap
         foreach (Trap trap in traps)
         {
             if (trap.arrow.arrow.active) trap.arrow.Update();
-            if (trap.revealed || !trap.triggerable || trap.trappedPlayer.Contains(player.PlayerId)) continue;
+            if (trap.revealed || !trap.trigger_able || trap.trappedPlayer.Contains(player.PlayerId)) continue;
             if (player.inVent || !player.CanMove) continue;
             float distance = Vector2.Distance(trap.trap.transform.position, player.GetTruePosition());
             if (distance <= ud && distance < closestDistance)
