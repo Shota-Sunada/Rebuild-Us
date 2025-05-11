@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace RebuildUs.Patches;
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.Awake))]
-public static class PlayerPhysiscs_Awake_Patch
+public static class PlayerPhysicsPatch
 {
     [HarmonyPostfix]
-    public static void Postfix(PlayerPhysics __instance)
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.Awake))]
+    public static void AwakePostfix(PlayerPhysics __instance)
     {
         if (!__instance.body) return;
         __instance.body.interpolation = RigidbodyInterpolation2D.Interpolate;
