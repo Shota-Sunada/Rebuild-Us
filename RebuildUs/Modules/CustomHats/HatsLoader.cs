@@ -2,7 +2,6 @@ using System.Collections;
 using System.IO;
 using System.Text.Json;
 using BepInEx.Unity.IL2CPP.Utils;
-using RebuildUs.Utilities;
 using UnityEngine;
 using UnityEngine.Networking;
 using static RebuildUs.Modules.CustomHats.CustomHatManager;

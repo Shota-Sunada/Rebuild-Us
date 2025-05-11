@@ -1,12 +1,7 @@
-using Il2CppSystem.Runtime.ExceptionServices;
-using Rewired;
 using System;
 using System.Collections.Generic;
-using RebuildUs.Modules;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static RebuildUs.RebuildUs;
 
 namespace RebuildUs.Objects;
 

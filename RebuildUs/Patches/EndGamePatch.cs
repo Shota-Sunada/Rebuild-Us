@@ -1,17 +1,10 @@
 
 using HarmonyLib;
-using static RebuildUs.RebuildUs;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System;
 using System.Text;
-
-using RebuildUs.Utilities;
-using RebuildUs.CustomGameModes;
 using static RebuildUs.GameHistory;
-using RebuildUs.Roles;
-using RebuildUs.Localization;
 
 namespace RebuildUs.Patches;
 

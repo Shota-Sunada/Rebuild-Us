@@ -3,10 +3,7 @@ using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
-using Hazel;
 using System;
-
-using RebuildUs.Utilities;
 using System.Linq;
 
 namespace RebuildUs.Patches;

@@ -1,7 +1,4 @@
-using System.Linq;
 using HarmonyLib;
-using RebuildUs.Localization;
-using RebuildUs.Objects;
 using UnityEngine;
 
 namespace RebuildUs.Roles;

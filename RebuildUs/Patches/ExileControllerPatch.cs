@@ -1,14 +1,8 @@
 using HarmonyLib;
-using Hazel;
-using System.Collections.Generic;
 using System.Linq;
-using static RebuildUs.RebuildUs;
 using RebuildUs.Objects;
 using System;
-
-using RebuildUs.Utilities;
 using UnityEngine;
-using RebuildUs.Roles;
 
 namespace RebuildUs.Patches;
 

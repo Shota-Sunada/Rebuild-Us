@@ -1,15 +1,7 @@
 using HarmonyLib;
-using Hazel;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using System;
 using AmongUs.GameOptions;
-
-using RebuildUs.Utilities;
-using static RebuildUs.RebuildUs;
-using RebuildUs.CustomGameModes;
-using RebuildUs.Modules;
 
 namespace RebuildUs.Extensions;
 

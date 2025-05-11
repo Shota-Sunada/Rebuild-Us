@@ -3,14 +3,9 @@ using System;
 using Hazel;
 using UnityEngine;
 using System.Linq;
-using static RebuildUs.RebuildUs;
 using static RebuildUs.GameHistory;
 using static RebuildUs.MapOptions;
 using System.Collections.Generic;
-
-using RebuildUs.Utilities;
-using RebuildUs.Objects;
-using RebuildUs.CustomGameModes;
 using AmongUs.GameOptions;
 
 namespace RebuildUs.Patches;

@@ -2,12 +2,8 @@ using HarmonyLib;
 using Hazel;
 using System;
 using UnityEngine;
-using static RebuildUs.RebuildUs;
 using RebuildUs.Objects;
 using System.Linq;
-using System.Collections.Generic;
-using RebuildUs.Utilities;
-using RebuildUs.CustomGameModes;
 using RebuildUs.Patches;
 
 namespace RebuildUs;

@@ -1,17 +1,11 @@
 using HarmonyLib;
-using Hazel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using static RebuildUs.RebuildUs;
 using static RebuildUs.GameHistory;
 using RebuildUs.Objects;
-
-using RebuildUs.Utilities;
-using RebuildUs.Roles;
 using UnityEngine;
-using RebuildUs.CustomGameModes;
-using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Assets.CoreScripts;
 using Sentry.Internal.Extensions;

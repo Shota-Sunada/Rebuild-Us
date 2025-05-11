@@ -1,15 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using RebuildUs;
 using RebuildUs.Patches;
-
-using System.Linq;
-using InnerNet;
-using RebuildUs.Modules;
 using HarmonyLib;
-using Hazel;
 
 namespace RebuildUs.Utilities;
 

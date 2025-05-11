@@ -1,10 +1,7 @@
 using AmongUs.GameOptions;
 using HarmonyLib;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using static UnityEngine.UI.Button;
 
 namespace RebuildUs.Patches;
 

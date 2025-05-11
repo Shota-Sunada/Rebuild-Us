@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using HarmonyLib;
 using PowerTools;
-using RebuildUs;
 using RebuildUs.Modules.CustomHats.Extensions;
 using UnityEngine;
 

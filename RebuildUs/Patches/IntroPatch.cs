@@ -4,11 +4,6 @@ using static RebuildUs.RebuildUs;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Hazel;
-
-using RebuildUs.Utilities;
-using RebuildUs.CustomGameModes;
-using RebuildUs.Modules;
 
 namespace RebuildUs.Patches;
 

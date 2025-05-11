@@ -5,13 +5,9 @@ using System.Linq;
 using static RebuildUs.RebuildUs;
 using static RebuildUs.MapOptions;
 using RebuildUs.Objects;
-using RebuildUs.Roles;
 using RebuildUs.Extensions;
 using System;
-
-using RebuildUs.Utilities;
 using UnityEngine;
-using Innersloth.Assets;
 using TMPro;
 
 namespace RebuildUs.Patches;

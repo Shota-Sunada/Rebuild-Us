@@ -5,8 +5,6 @@ using HarmonyLib;
 using Hazel;
 using InnerNet;
 
-using RebuildUs.Utilities;
-
 namespace RebuildUs.Modules;
 
 [HarmonyPatch]

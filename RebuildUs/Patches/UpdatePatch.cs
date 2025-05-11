@@ -1,13 +1,8 @@
 using HarmonyLib;
-using System;
 using UnityEngine;
-using static RebuildUs.RebuildUs;
 using RebuildUs.Objects;
 using System.Collections.Generic;
 using System.Linq;
-
-using RebuildUs.Utilities;
-using RebuildUs.CustomGameModes;
 using AmongUs.GameOptions;
 
 namespace RebuildUs.Patches;

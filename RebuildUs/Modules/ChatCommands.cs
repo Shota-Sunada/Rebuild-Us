@@ -1,8 +1,6 @@
 using System;
 using HarmonyLib;
 using System.Linq;
-using RebuildUs.Utilities;
-using Hazel;
 
 namespace RebuildUs.Modules;
 

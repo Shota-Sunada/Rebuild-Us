@@ -5,10 +5,8 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
-using RebuildUs.Patches;
 
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace RebuildUs;
 

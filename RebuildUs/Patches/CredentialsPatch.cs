@@ -1,12 +1,5 @@
-using AmongUs.GameOptions;
 using HarmonyLib;
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using RebuildUs;
-using RebuildUs.CustomGameModes;
-using RebuildUs.Utilities;
 using TMPro;
 using UnityEngine;
 

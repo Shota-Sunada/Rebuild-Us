@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Cpp2IL.Core.Extensions;
 using HarmonyLib;
-using RebuildUs;
 
 namespace RebuildUs.Modules.CustomHats.Patches;
 

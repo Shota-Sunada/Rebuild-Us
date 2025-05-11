@@ -27,7 +27,6 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using RebuildUs.Utilities;
 using UnityEngine.Events;
 
 namespace RebuildUs.Patches;

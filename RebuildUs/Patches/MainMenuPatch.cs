@@ -1,16 +1,6 @@
 using System;
-using System.Collections.Generic;
 using HarmonyLib;
-using UnityEngine;
-using UnityEngine.UI;
-using static UnityEngine.UI.Button;
-using Object = UnityEngine.Object;
-using RebuildUs.Patches;
 using UnityEngine.SceneManagement;
-using RebuildUs.Utilities;
-using AmongUs.Data;
-using Assets.InnerNet;
-using System.Linq;
 
 namespace RebuildUs.Modules;
 

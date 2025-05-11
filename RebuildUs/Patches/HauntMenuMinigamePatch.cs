@@ -1,10 +1,6 @@
 using HarmonyLib;
 using AmongUs.GameOptions;
-using System.Collections.Generic;
 using System.Linq;
-
-using System;
-using RebuildUs.CustomGameModes;
 
 namespace RebuildUs.Patches;
 

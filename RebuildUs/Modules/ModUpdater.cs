@@ -14,7 +14,6 @@ using UnityEngine.SceneManagement;
 using AmongUs.Data;
 using Assets.InnerNet;
 using Twitch;
-using static StarGen;
 
 namespace RebuildUs.Modules;
 
