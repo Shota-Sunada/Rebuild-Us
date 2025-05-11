@@ -1,46 +1,16 @@
-
 using HarmonyLib;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Text;
-using static RebuildUs.GameHistory;
 
-namespace RebuildUs.Patches;
+namespace RebuildUs.Extensions;
 
-static class AdditionalTempData
-{
-    // Should be implemented using a proper GameOverReason in the future
-    public static WinCondition winCondition = WinCondition.Default;
-    public static List<WinCondition> additionalWinConditions = [];
-    public static List<PlayerRoleInfo> playerRoles = [];
-
-    public static void clear()
-    {
-        playerRoles.Clear();
-        additionalWinConditions.Clear();
-        winCondition = WinCondition.Default;
-    }
-
-    internal class PlayerRoleInfo
-    {
-        public string PlayerName { get; set; }
-        public List<RoleInfo> Roles { get; set; }
-        public string RoleNames { get; set; }
-        public int TasksCompleted { get; set; }
-        public int TasksTotal { get; set; }
-        public int? Kills { get; set; }
-        public bool IsAlive { get; set; }
-        public FinalStatus Status { get; set; }
-    }
-}
-
-
-[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
-public static class OnGameEndPatch
+public static class EndGameExtensions
 {
     public static GameOverReason gameOverReason = GameOverReason.CrewmatesByTask;
-    public static void Prefix(AmongUsClient __instance, [HarmonyArgument(0)] ref EndGameResult endGameResult)
+
+    public static void OnGameEndPrefix(ref EndGameResult endGameResult)
     {
         gameOverReason = endGameResult.GameOverReason;
         if ((int)endGameResult.GameOverReason >= 10) endGameResult.GameOverReason = GameOverReason.ImpostorsByKill;
@@ -49,7 +19,7 @@ public static class OnGameEndPatch
         Helpers.toggleZoom(reset: true);
     }
 
-    public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] ref EndGameResult endGameResult)
+    public static void OnGameEndPostfix()
     {
         AdditionalTempData.clear();
 
@@ -58,14 +28,14 @@ public static class OnGameEndPatch
             var roles = RoleInfo.getRoleInfoForPlayer(playerControl);
             var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data);
 
-            var finalStatus = finalStatuses[playerControl.PlayerId] =
+            var finalStatus = GameHistory.finalStatuses[playerControl.PlayerId] =
                     playerControl.Data.Disconnected ? FinalStatus.Disconnected :
-                    finalStatuses.ContainsKey(playerControl.PlayerId) ? finalStatuses[playerControl.PlayerId] :
+                    GameHistory.finalStatuses.ContainsKey(playerControl.PlayerId) ? GameHistory.finalStatuses[playerControl.PlayerId] :
                     playerControl.Data.IsDead ? FinalStatus.Dead :
                     gameOverReason == GameOverReason.ImpostorsBySabotage && !playerControl.Data.Role.IsImpostor ? FinalStatus.Sabotage :
                     FinalStatus.Alive;
 
-            int? killCount = deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
+            int? killCount = GameHistory.deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
             if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl).FirstOrDefault()) || playerControl.Data.Role.IsImpostor))
             {
                 killCount = null;
@@ -260,12 +230,8 @@ public static class OnGameEndPatch
         RPCProcedure.resetVariables();
         EventUtility.gameEndsUpdate();
     }
-}
 
-[HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
-public class EndGameManagerSetUpPatch
-{
-    public static void Postfix(EndGameManager __instance)
+    public static void SetEverythingUpPostfix(EndGameManager __instance)
     {
         // Delete and readd PoolablePlayers always showing the name and role of the player
         foreach (PoolablePlayer pb in __instance.transform.GetComponentsInChildren<PoolablePlayer>())
@@ -369,7 +335,7 @@ public class EndGameManagerSetUpPatch
         }
         else if (AdditionalTempData.winCondition == WinCondition.Default)
         {
-            switch (OnGameEndPatch.gameOverReason)
+            switch (gameOverReason)
             {
                 case GameOverReason.ImpostorDisconnect:
                     textRenderer.text = "Last Crewmate Disconnected";
@@ -450,12 +416,8 @@ public class EndGameManagerSetUpPatch
         }
         AdditionalTempData.clear();
     }
-}
 
-[HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
-class CheckEndCriteriaPatch
-{
-    public static bool Prefix(ShipStatus __instance)
+    public static bool CheckEndCriteriaPrefix(ShipStatus __instance)
     {
         if (!GameData.Instance) return false;
         if (DestroyableSingleton<TutorialManager>.InstanceExists) // InstanceExists | Don't check Custom Criteria when in Tutorial
@@ -472,6 +434,7 @@ class CheckEndCriteriaPatch
         if (CheckAndEndGameForJackalWin(__instance, statistics)) return false;
         if (CheckAndEndGameForImpostorWin(__instance, statistics)) return false;
         if (CheckAndEndGameForCrewmateWin(__instance, statistics)) return false;
+
         return false;
     }
 
@@ -638,101 +601,127 @@ class CheckEndCriteriaPatch
         return;
     }
 
-}
-
-internal class PlayerStatistics
-{
-    public int TeamImpostorsAlive { get; set; }
-    public int TeamJackalAlive { get; set; }
-    public int TeamLoversAlive { get; set; }
-    public int CouplesAlive { get; set; }
-    public int TeamCrew { get; set; }
-    public int NeutralAlive { get; set; }
-    public int TotalAlive { get; set; }
-    public int TeamImpostorLovers { get; set; }
-    public int TeamJackalLovers { get; set; }
-
-    public PlayerStatistics(ShipStatus __instance)
+    private static class AdditionalTempData
     {
-        GetPlayerCounts();
-    }
+        // Should be implemented using a proper GameOverReason in the future
+        public static WinCondition winCondition = WinCondition.Default;
+        public static List<WinCondition> additionalWinConditions = [];
+        public static List<PlayerRoleInfo> playerRoles = [];
 
-    private bool isLover(NetworkedPlayerInfo p)
-    {
-        foreach (var couple in Lovers.couples)
+        public static void clear()
         {
-            if (p.PlayerId == couple.lover1.PlayerId || p.PlayerId == couple.lover2.PlayerId) return true;
+            playerRoles.Clear();
+            additionalWinConditions.Clear();
+            winCondition = WinCondition.Default;
         }
-        return false;
+
+        internal class PlayerRoleInfo
+        {
+            public string PlayerName { get; set; }
+            public List<RoleInfo> Roles { get; set; }
+            public string RoleNames { get; set; }
+            public int TasksCompleted { get; set; }
+            public int TasksTotal { get; set; }
+            public int? Kills { get; set; }
+            public bool IsAlive { get; set; }
+            public FinalStatus Status { get; set; }
+        }
     }
 
-    private void GetPlayerCounts()
+    internal class PlayerStatistics
     {
-        int numJackalAlive = 0;
-        int numImpostorsAlive = 0;
-        int numTotalAlive = 0;
-        int numNeutralAlive = 0;
-        int numCrew = 0;
+        public int TeamImpostorsAlive { get; set; }
+        public int TeamJackalAlive { get; set; }
+        public int TeamLoversAlive { get; set; }
+        public int CouplesAlive { get; set; }
+        public int TeamCrew { get; set; }
+        public int NeutralAlive { get; set; }
+        public int TotalAlive { get; set; }
+        public int TeamImpostorLovers { get; set; }
+        public int TeamJackalLovers { get; set; }
 
-        int numLoversAlive = 0;
-        int numCouplesAlive = 0;
-        int impLovers = 0;
-        int jackalLovers = 0;
-
-        for (int i = 0; i < GameData.Instance.PlayerCount; i++)
+        public PlayerStatistics(ShipStatus __instance)
         {
-            var playerInfo = GameData.Instance.AllPlayers[i];
-            if (!playerInfo.Disconnected)
+            GetPlayerCounts();
+        }
+
+        private bool isLover(NetworkedPlayerInfo p)
+        {
+            foreach (var couple in Lovers.couples)
             {
-                if (playerInfo.Object.isCrewmate()) numCrew++;
-                if (!playerInfo.IsDead)
+                if (p.PlayerId == couple.lover1.PlayerId || p.PlayerId == couple.lover2.PlayerId) return true;
+            }
+            return false;
+        }
+
+        private void GetPlayerCounts()
+        {
+            int numJackalAlive = 0;
+            int numImpostorsAlive = 0;
+            int numTotalAlive = 0;
+            int numNeutralAlive = 0;
+            int numCrew = 0;
+
+            int numLoversAlive = 0;
+            int numCouplesAlive = 0;
+            int impLovers = 0;
+            int jackalLovers = 0;
+
+            for (int i = 0; i < GameData.Instance.PlayerCount; i++)
+            {
+                var playerInfo = GameData.Instance.AllPlayers[i];
+                if (!playerInfo.Disconnected)
                 {
-                    numTotalAlive++;
-
-                    bool lover = isLover(playerInfo);
-                    if (lover) numLoversAlive++;
-
-                    if (playerInfo.Role.IsImpostor)
+                    if (playerInfo.Object.isCrewmate()) numCrew++;
+                    if (!playerInfo.IsDead)
                     {
-                        numImpostorsAlive++;
-                        if (lover) impLovers++;
-                    }
-                    if (TeamJackal.Jackal.jackal != null && TeamJackal.Jackal.jackal.PlayerId == playerInfo.PlayerId)
-                    {
-                        numJackalAlive++;
-                        if (lover) jackalLovers++;
-                    }
-                    if (TeamJackal.Sidekick.sidekick != null && TeamJackal.Sidekick.sidekick.PlayerId == playerInfo.PlayerId)
-                    {
-                        numJackalAlive++;
-                        if (lover) jackalLovers++;
-                    }
+                        numTotalAlive++;
 
-                    if (playerInfo.Object.isNeutral()) numNeutralAlive++;
+                        bool lover = isLover(playerInfo);
+                        if (lover) numLoversAlive++;
+
+                        if (playerInfo.Role.IsImpostor)
+                        {
+                            numImpostorsAlive++;
+                            if (lover) impLovers++;
+                        }
+                        if (TeamJackal.Jackal.jackal != null && TeamJackal.Jackal.jackal.PlayerId == playerInfo.PlayerId)
+                        {
+                            numJackalAlive++;
+                            if (lover) jackalLovers++;
+                        }
+                        if (TeamJackal.Sidekick.sidekick != null && TeamJackal.Sidekick.sidekick.PlayerId == playerInfo.PlayerId)
+                        {
+                            numJackalAlive++;
+                            if (lover) jackalLovers++;
+                        }
+
+                        if (playerInfo.Object.isNeutral()) numNeutralAlive++;
+                    }
                 }
             }
-        }
 
-        foreach (var couple in Lovers.couples)
-        {
-            if (couple.alive) numCouplesAlive++;
-        }
+            foreach (var couple in Lovers.couples)
+            {
+                if (couple.alive) numCouplesAlive++;
+            }
 
-        // In the special case of Mafia being enabled, but only the janitor's left alive,
-        // count it as zero impostors alive bc they can't actually do anything.
-        if (Mafia.Godfather.godfather?.isDead() == true && Mafia.Mafioso.mafioso?.isDead() == true && Mafia.Janitor.janitor?.isDead() == false)
-        {
-            numImpostorsAlive = 0;
-        }
+            // In the special case of Mafia being enabled, but only the janitor's left alive,
+            // count it as zero impostors alive bc they can't actually do anything.
+            if (Mafia.Godfather.godfather?.isDead() == true && Mafia.Mafioso.mafioso?.isDead() == true && Mafia.Janitor.janitor?.isDead() == false)
+            {
+                numImpostorsAlive = 0;
+            }
 
-        TeamCrew = numCrew;
-        TeamJackalAlive = numJackalAlive;
-        TeamImpostorsAlive = numImpostorsAlive;
-        TeamLoversAlive = numLoversAlive;
-        NeutralAlive = numNeutralAlive;
-        TotalAlive = numTotalAlive;
-        CouplesAlive = numCouplesAlive;
-        TeamImpostorLovers = impLovers;
-        TeamJackalLovers = jackalLovers;
+            TeamCrew = numCrew;
+            TeamJackalAlive = numJackalAlive;
+            TeamImpostorsAlive = numImpostorsAlive;
+            TeamLoversAlive = numLoversAlive;
+            NeutralAlive = numNeutralAlive;
+            TotalAlive = numTotalAlive;
+            CouplesAlive = numCouplesAlive;
+            TeamImpostorLovers = impLovers;
+            TeamJackalLovers = jackalLovers;
+        }
     }
 }
