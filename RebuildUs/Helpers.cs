@@ -825,7 +825,7 @@ public static class Helpers
         writer.Write((byte)RebuildUs.Instance.Version.Major);
         writer.Write((byte)RebuildUs.Instance.Version.Minor);
         writer.Write((byte)RebuildUs.Instance.Version.Build);
-        writer.Write(AmongUsClient.Instance.AmHost ? Patches.GameStartManagerPatch.timer : -1f);
+        writer.Write(AmongUsClient.Instance.AmHost ? LobbyExtensions.timer : -1f);
         writer.WritePacked(AmongUsClient.Instance.ClientId);
         writer.Write((byte)(RebuildUs.Instance.Version.Revision < 0 ? 0xFF : RebuildUs.Instance.Version.Revision));
         writer.Write(Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.ToByteArray());

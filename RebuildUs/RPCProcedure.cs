@@ -44,7 +44,7 @@ public static class RPCProcedure
         setCustomButtonCooldowns();
         reloadPluginOptions();
         Helpers.toggleZoom(reset: true);
-        GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 0;
+        LobbyExtensions.startingTimer = 0;
         MinigameExtensions.nightVisionOverlays = null;
         EventUtility.clearAndReload();
         MapBehaviourPatch.clearAndReload();
@@ -147,7 +147,7 @@ public static class RPCProcedure
             ver = new System.Version(major, minor, build);
         else
             ver = new System.Version(major, minor, build, revision);
-        GameStartManagerPatch.playerVersions[clientId] = new GameStartManagerPatch.PlayerVersion(ver, guid);
+        LobbyExtensions.playerVersions[clientId] = new LobbyExtensions.PlayerVersion(ver, guid);
     }
 
     public static void useUncheckedVent(int ventId, byte playerId, byte isEnter)
@@ -198,7 +198,7 @@ public static class RPCProcedure
 
     public static void setGameStarting()
     {
-        GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 5f;
+        LobbyExtensions.startingTimer = 5f;
     }
 
     // Role functionality
@@ -1135,7 +1135,7 @@ class RPCHandlerPatch
                 byte minor = reader.ReadByte();
                 byte patch = reader.ReadByte();
                 float timer = reader.ReadSingle();
-                if (!AmongUsClient.Instance.AmHost && timer >= 0f) GameStartManagerPatch.timer = timer;
+                if (!AmongUsClient.Instance.AmHost && timer >= 0f) LobbyExtensions.timer = timer;
                 int versionOwnerId = reader.ReadPackedInt32();
                 byte revision = 0xFF;
                 Guid guid;
