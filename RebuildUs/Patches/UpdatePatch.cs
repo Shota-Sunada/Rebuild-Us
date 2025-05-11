@@ -75,7 +75,7 @@ class HudManagerUpdatePatch
     static void setNameColors()
     {
         var localPlayer = PlayerControl.LocalPlayer;
-        var localRole = RoleInfo.getRoleInfoForPlayer(localPlayer, false).FirstOrDefault();
+        var localRole = RoleInfo.getRoleInfoForPlayer(localPlayer).FirstOrDefault();
         setPlayerNameColor(localPlayer, localRole.color);
 
         /*if (Jester.jester != null && Jester.jester == localPlayer)

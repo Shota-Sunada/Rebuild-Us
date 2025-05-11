@@ -103,7 +103,7 @@ public static class ChatCommands
 
             if (text.ToLower().StartsWith("/role"))
             {
-                RoleInfo localRole = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer, false).FirstOrDefault();
+                RoleInfo localRole = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer).FirstOrDefault();
                 if (localRole != RoleInfo.impostor && localRole != RoleInfo.crewmate)
                 {
                     string info = RoleInfo.GetRoleDescription(localRole);

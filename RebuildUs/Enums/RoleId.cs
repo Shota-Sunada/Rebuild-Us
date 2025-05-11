@@ -45,20 +45,11 @@ public enum RoleId : byte
     Thief,
     Bomber,
     Yoyo,
+    Mini,
+    Shifter,
+    Bait,
     Crewmate,
     Impostor,
-    // Modifier ---
-    Bait,
-    Bloody,
-    AntiTeleport,
-    Tiebreaker,
-    Sunglasses,
-    Mini,
-    Vip,
-    Invert,
-    Chameleon,
-    Armored,
-    Shifter,
 
     NoRole = byte.MaxValue
 }

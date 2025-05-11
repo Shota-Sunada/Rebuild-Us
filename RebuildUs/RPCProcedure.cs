@@ -137,45 +137,12 @@ public static class RPCProcedure
         );
     }
 
-    public static void setModifier(byte modifierId, byte playerId, byte flag)
+    public static void addModifier(byte modifierId, byte playerId)
     {
-        PlayerControl player = Helpers.playerById(playerId);
-        switch ((RoleId)modifierId)
-        {
-            case RoleId.Bait:
-                Bait.bait.Add(player);
-                break;
-            case RoleId.Bloody:
-                Bloody.bloody.Add(player);
-                break;
-            case RoleId.AntiTeleport:
-                AntiTeleport.antiTeleport.Add(player);
-                break;
-            case RoleId.Tiebreaker:
-                Tiebreaker.tiebreaker = player;
-                break;
-            case RoleId.Sunglasses:
-                Sunglasses.sunglasses.Add(player);
-                break;
-            case RoleId.Mini:
-                Mini.mini = player;
-                break;
-            case RoleId.Vip:
-                Vip.vip.Add(player);
-                break;
-            case RoleId.Invert:
-                Invert.invert.Add(player);
-                break;
-            case RoleId.Chameleon:
-                Chameleon.chameleon.Add(player);
-                break;
-            case RoleId.Armored:
-                Armored.armored = player;
-                break;
-            case RoleId.Shifter:
-                Shifter.shifter = player;
-                break;
-        }
+        PlayerControl.AllPlayerControls.ToArray().DoIf(
+            x => x.PlayerId == playerId,
+            x => x.addModifier((ModifierId)modifierId)
+        );
     }
 
     public static void versionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId)
@@ -1163,11 +1130,10 @@ class RPCHandlerPatch
                 byte playerId = reader.ReadByte();
                 RPCProcedure.setRole(roleId, playerId);
                 break;
-            case (byte)CustomRPC.SetModifier:
+            case (byte)CustomRPC.AddModifier:
                 byte modifierId = reader.ReadByte();
                 byte pId = reader.ReadByte();
-                byte flag = reader.ReadByte();
-                RPCProcedure.setModifier(modifierId, pId, flag);
+                RPCProcedure.addModifier(modifierId, pId);
                 break;
             case (byte)CustomRPC.VersionHandshake:
                 byte major = reader.ReadByte();

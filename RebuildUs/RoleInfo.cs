@@ -40,7 +40,7 @@ public class RoleInfo
         this.baseOption = baseOption;
     }
 
-    public RoleInfo(string nameKey, Color color, CustomOption baseOption, RoleId roleId, bool isModifier = true)
+    public RoleInfo(string nameKey, Color color, CustomOption baseOption, RoleId roleId, bool isModifier)
     {
         this.color = color;
         this.nameKey = nameKey;
@@ -97,19 +97,7 @@ public class RoleInfo
     public static RoleInfo bomber = new("Bomber", Bomber.color, CustomOptionHolder.bomberSpawnRate, RoleId.Bomber, RoleType.Impostor);
     public static RoleInfo yoyo = new("Yo-Yo", Yoyo.color, CustomOptionHolder.yoyoSpawnRate, RoleId.Yoyo, RoleType.Impostor);
     public static RoleInfo shifter = new("Shifter", Shifter.Color, CustomOptionHolder.shifterSpawnRate, RoleId.Shifter, RoleType.Crewmate);
-
-    // Modifier
-    public static RoleInfo bloody = new("Bloody", Color.yellow, CustomOptionHolder.modifierBloody, RoleId.Bloody);
-    public static RoleInfo antiTeleport = new("Anti tp", Color.yellow, CustomOptionHolder.modifierAntiTeleport, RoleId.AntiTeleport);
-    public static RoleInfo tiebreaker = new("Tiebreaker", Color.yellow, CustomOptionHolder.modifierTieBreaker, RoleId.Tiebreaker);
-    public static RoleInfo bait = new("Bait", Color.yellow, CustomOptionHolder.modifierBait, RoleId.Bait);
-    public static RoleInfo sunglasses = new("Sunglasses", Color.yellow, CustomOptionHolder.modifierSunglasses, RoleId.Sunglasses);
-    public static RoleInfo lovers = new("Lover", Lovers.Color, CustomOptionHolder.loversSpawnRate, RoleId.NoRole);
-    public static RoleInfo mini = new("Mini", Color.yellow, CustomOptionHolder.modifierMini, RoleId.Mini);
-    public static RoleInfo vip = new("VIP", Color.yellow, CustomOptionHolder.modifierVip, RoleId.Vip);
-    public static RoleInfo invert = new("Invert", Color.yellow, CustomOptionHolder.modifierInvert, RoleId.Invert);
-    public static RoleInfo chameleon = new("Chameleon", Color.yellow, CustomOptionHolder.modifierChameleon, RoleId.Chameleon);
-    public static RoleInfo armored = new("Armored", Color.yellow, CustomOptionHolder.modifierArmored, RoleId.Armored);
+    public static RoleInfo mini = new("Mini", Color.yellow, CustomOptionHolder.modifierMini, RoleId.Mini, false);
 
     public static List<RoleInfo> allRoleInfos = [
         impostor,
@@ -130,7 +118,6 @@ public class RoleInfo
         yoyo,
         goodGuesser,
         badGuesser,
-        lovers,
         jester,
         arsonist,
         jackal,
@@ -157,48 +144,16 @@ public class RoleInfo
         snitch,
         spy,
         securityGuard,
-        bait,
         medium,
         trapper,
-        bloody,
-        antiTeleport,
-        tiebreaker,
-        sunglasses,
         mini,
-        vip,
-        invert,
-        chameleon,
-        armored,
         shifter
     ];
 
-    public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true)
+    public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p)
     {
         List<RoleInfo> infos = [];
         if (p == null) return infos;
-
-        // Modifier
-        if (showModifier)
-        {
-            // after dead modifier
-            if (!CustomOptionHolder.modifiersAreHidden.getBool() || PlayerControl.LocalPlayer.Data.IsDead || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended)
-            {
-                if (Bait.bait.Any(x => x.PlayerId == p.PlayerId)) infos.Add(bait);
-                if (Bloody.bloody.Any(x => x.PlayerId == p.PlayerId)) infos.Add(bloody);
-                if (Vip.vip.Any(x => x.PlayerId == p.PlayerId)) infos.Add(vip);
-            }
-            if (p.isLovers()) infos.Add(lovers);
-            if (p == Tiebreaker.tiebreaker) infos.Add(tiebreaker);
-            if (AntiTeleport.antiTeleport.Any(x => x.PlayerId == p.PlayerId)) infos.Add(antiTeleport);
-            if (Sunglasses.sunglasses.Any(x => x.PlayerId == p.PlayerId)) infos.Add(sunglasses);
-            if (p == Mini.mini) infos.Add(mini);
-            if (Invert.invert.Any(x => x.PlayerId == p.PlayerId)) infos.Add(invert);
-            if (Chameleon.chameleon.Any(x => x.PlayerId == p.PlayerId)) infos.Add(chameleon);
-            if (p == Armored.armored) infos.Add(armored);
-            if (p == Shifter.shifter) infos.Add(shifter);
-        }
-
-        int count = infos.Count;  // Save count after modifiers are added so that the role count can be checked
 
         // Special roles
         if (p.isRole(RoleId.Jester)) infos.Add(jester);
@@ -245,10 +200,9 @@ public class RoleInfo
         if (p == Pursuer.pursuer) infos.Add(pursuer);
         if (p == Thief.thief) infos.Add(thief);
 
-        // Default roles (just impostor, just crewmate, or hunter / hunted for hide n seek, prop hunt prop ...
-        if (infos.Count == count)
+        if (infos.Count == 0)
         {
-            if (p.Data.Role.IsImpostor)
+            if (p.isImpostor())
             {
                 infos.Add(impostor);
             }
@@ -261,98 +215,103 @@ public class RoleInfo
         return infos;
     }
 
-    public static String GetRolesString(PlayerControl p, bool useColors, bool showModifier = true, bool suppressGhostInfo = false)
+    public static string GetRolesString(PlayerControl p, bool useColors)
     {
-        string roleName;
-        roleName = String.Join(" ", [.. getRoleInfoForPlayer(p, showModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name)]);
-        if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && PlayerControl.LocalPlayer != Lawyer.target)
-            roleName += (useColors ? Helpers.cs(Pursuer.color, " §") : " §");
+        if (p?.Data?.Disconnected != false) return "";
 
-        if (!suppressGhostInfo && p != null)
+        var roleInfo = getRoleInfoForPlayer(p);
+        var roleText = string.Join(" ", [.. roleInfo.Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name)]);
+        if (Lawyer.target != null && p?.PlayerId == Lawyer.target.PlayerId && PlayerControl.LocalPlayer != Lawyer.target)
         {
-            if (p == Shifter.shifter && (PlayerControl.LocalPlayer == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)
-                roleName += Helpers.cs(Color.yellow, " ← " + Shifter.futureShift.Data.PlayerName);
-            if (p == Vulture.vulture && (PlayerControl.LocalPlayer == Vulture.vulture || Helpers.shouldShowGhostInfo()))
-                roleName = roleName + Helpers.cs(Vulture.color, $" ({Vulture.vultureNumberToWin - Vulture.eatenBodies} left)");
-            if (Helpers.shouldShowGhostInfo())
-            {
-                if (Eraser.futureErased.Contains(p))
-                    roleName = Helpers.cs(Color.gray, "(erased) ") + roleName;
-                if (Vampire.vampire != null && !Vampire.vampire.Data.IsDead && Vampire.bitten == p && !p.Data.IsDead)
-                    roleName = Helpers.cs(Vampire.color, $"(bitten {(int)HudManagerStartPatch.vampireKillButton.Timer + 1}) ") + roleName;
-                if (p == Warlock.curseVictim)
-                    roleName = Helpers.cs(Warlock.color, "(cursed) ") + roleName;
-                if (p == Ninja.ninjaMarked)
-                    roleName = Helpers.cs(Ninja.color, "(marked) ") + roleName;
-                if (Pursuer.blankedList.Contains(p) && !p.Data.IsDead)
-                    roleName = Helpers.cs(Pursuer.color, "(blanked) ") + roleName;
-                if (Witch.futureSpelled.Contains(p) && !MeetingHud.Instance) // This is already displayed in meetings!
-                    roleName = Helpers.cs(Witch.color, "☆ ") + roleName;
-                if (BountyHunter.bounty == p)
-                    roleName = Helpers.cs(BountyHunter.color, "(bounty) ") + roleName;
-                if (Arsonist.dousedPlayers.Contains(p))
-                    roleName = Helpers.cs(Arsonist.Color, "♨ ") + roleName;
-                if (p.isRole(RoleId.Arsonist))
-                    roleName += Helpers.cs(Arsonist.Color, $" ({PlayerControl.AllPlayerControls.ToArray().Count(x => { return !x.isRole(RoleId.Arsonist) && !x.isDead() && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} left)");
-                if (p == TeamJackal.Jackal.fakeSidekick)
-                    roleName = Helpers.cs(TeamJackal.Color, $" (fake SK)") + roleName;
-
-                // Death Reason on Ghosts
-                if (p.Data.IsDead)
-                {
-                    string deathReasonString = "";
-                    var deadPlayer = GameHistory.deadPlayers.FirstOrDefault(x => x.player.PlayerId == p.PlayerId);
-
-                    Color killerColor = new();
-                    if (deadPlayer != null && deadPlayer.killerIfExisting != null)
-                    {
-                        killerColor = RoleInfo.getRoleInfoForPlayer(deadPlayer.killerIfExisting, false).FirstOrDefault().color;
-                    }
-
-                    if (deadPlayer != null)
-                    {
-                        switch (deadPlayer.deathReason)
-                        {
-                            case CustomDeathReason.Disconnect:
-                                deathReasonString = " - disconnected";
-                                break;
-                            case CustomDeathReason.Exile:
-                                deathReasonString = " - voted out";
-                                break;
-                            case CustomDeathReason.Kill:
-                                deathReasonString = $" - killed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
-                                break;
-                            case CustomDeathReason.Guess:
-                                if (deadPlayer.killerIfExisting.Data.PlayerName == p.Data.PlayerName)
-                                    deathReasonString = $" - failed guess";
-                                else
-                                    deathReasonString = $" - guessed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
-                                break;
-                            case CustomDeathReason.Shift:
-                                deathReasonString = $" - {Helpers.cs(Color.yellow, "shifted")} {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
-                                break;
-                            case CustomDeathReason.WitchExile:
-                                deathReasonString = $" - {Helpers.cs(Witch.color, "witched")} by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
-                                break;
-                            case CustomDeathReason.LoverSuicide:
-                                deathReasonString = $" - {Helpers.cs(Lovers.Color, "lover died")}";
-                                break;
-                            case CustomDeathReason.LawyerSuicide:
-                                deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";
-                                break;
-                            case CustomDeathReason.Bomb:
-                                deathReasonString = $" - bombed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
-                                break;
-                            case CustomDeathReason.Arson:
-                                deathReasonString = $" - burnt by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
-                                break;
-                        }
-                        roleName = roleName + deathReasonString;
-                    }
-                }
-            }
+            roleText += useColors ? Helpers.cs(Pursuer.color, " §") : " §";
         }
-        return roleName;
+        roleText = p.modifyRoleText(roleText, roleInfo, useColors);
+
+        // if (!suppressGhostInfo && p != null)
+        // {
+        //     if (p == Shifter.shifter && (PlayerControl.LocalPlayer == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)
+        //         roleName += Helpers.cs(Color.yellow, " ← " + Shifter.futureShift.Data.PlayerName);
+        //     if (p == Vulture.vulture && (PlayerControl.LocalPlayer == Vulture.vulture || Helpers.shouldShowGhostInfo()))
+        //         roleName = roleName + Helpers.cs(Vulture.color, $" ({Vulture.vultureNumberToWin - Vulture.eatenBodies} left)");
+        //     if (Helpers.shouldShowGhostInfo())
+        //     {
+        //         if (Eraser.futureErased.Contains(p))
+        //             roleName = Helpers.cs(Color.gray, "(erased) ") + roleName;
+        //         if (Vampire.vampire != null && !Vampire.vampire.Data.IsDead && Vampire.bitten == p && !p.Data.IsDead)
+        //             roleName = Helpers.cs(Vampire.color, $"(bitten {(int)HudManagerStartPatch.vampireKillButton.Timer + 1}) ") + roleName;
+        //         if (p == Warlock.curseVictim)
+        //             roleName = Helpers.cs(Warlock.color, "(cursed) ") + roleName;
+        //         if (p == Ninja.ninjaMarked)
+        //             roleName = Helpers.cs(Ninja.color, "(marked) ") + roleName;
+        //         if (Pursuer.blankedList.Contains(p) && !p.Data.IsDead)
+        //             roleName = Helpers.cs(Pursuer.color, "(blanked) ") + roleName;
+        //         if (Witch.futureSpelled.Contains(p) && !MeetingHud.Instance) // This is already displayed in meetings!
+        //             roleName = Helpers.cs(Witch.color, "☆ ") + roleName;
+        //         if (BountyHunter.bounty == p)
+        //             roleName = Helpers.cs(BountyHunter.color, "(bounty) ") + roleName;
+        //         if (Arsonist.dousedPlayers.Contains(p))
+        //             roleName = Helpers.cs(Arsonist.Color, "♨ ") + roleName;
+        //         if (p.isRole(RoleId.Arsonist))
+        //             roleName += Helpers.cs(Arsonist.Color, $" ({PlayerControl.AllPlayerControls.ToArray().Count(x => { return !x.isRole(RoleId.Arsonist) && !x.isDead() && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} left)");
+        //         if (p == TeamJackal.Jackal.fakeSidekick)
+        //             roleName = Helpers.cs(TeamJackal.Color, $" (fake SK)") + roleName;
+
+        //         // Death Reason on Ghosts
+        //         if (p.Data.IsDead)
+        //         {
+        //             string deathReasonString = "";
+        //             var deadPlayer = GameHistory.deadPlayers.FirstOrDefault(x => x.player.PlayerId == p.PlayerId);
+
+        //             Color killerColor = new();
+        //             if (deadPlayer != null && deadPlayer.killerIfExisting != null)
+        //             {
+        //                 killerColor = RoleInfo.getRoleInfoForPlayer(deadPlayer.killerIfExisting, false).FirstOrDefault().color;
+        //             }
+
+        //             if (deadPlayer != null)
+        //             {
+        //                 switch (deadPlayer.deathReason)
+        //                 {
+        //                     case CustomDeathReason.Disconnect:
+        //                         deathReasonString = " - disconnected";
+        //                         break;
+        //                     case CustomDeathReason.Exile:
+        //                         deathReasonString = " - voted out";
+        //                         break;
+        //                     case CustomDeathReason.Kill:
+        //                         deathReasonString = $" - killed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
+        //                         break;
+        //                     case CustomDeathReason.Guess:
+        //                         if (deadPlayer.killerIfExisting.Data.PlayerName == p.Data.PlayerName)
+        //                             deathReasonString = $" - failed guess";
+        //                         else
+        //                             deathReasonString = $" - guessed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
+        //                         break;
+        //                     case CustomDeathReason.Shift:
+        //                         deathReasonString = $" - {Helpers.cs(Color.yellow, "shifted")} {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
+        //                         break;
+        //                     case CustomDeathReason.WitchExile:
+        //                         deathReasonString = $" - {Helpers.cs(Witch.color, "witched")} by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
+        //                         break;
+        //                     case CustomDeathReason.LoverSuicide:
+        //                         deathReasonString = $" - {Helpers.cs(Lovers.Color, "lover died")}";
+        //                         break;
+        //                     case CustomDeathReason.LawyerSuicide:
+        //                         deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";
+        //                         break;
+        //                     case CustomDeathReason.Bomb:
+        //                         deathReasonString = $" - bombed by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
+        //                         break;
+        //                     case CustomDeathReason.Arson:
+        //                         deathReasonString = $" - burnt by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
+        //                         break;
+        //                 }
+        //                 roleName = roleName + deathReasonString;
+        //             }
+        //         }
+        //     }
+        // }
+        return roleText;
     }
 
 

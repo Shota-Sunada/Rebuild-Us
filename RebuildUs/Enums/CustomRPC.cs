@@ -9,7 +9,7 @@ public enum CustomRPC
     ForceEnd,
     WorkaroundSetRoles,
     SetRole,
-    SetModifier,
+    AddModifier,
     VersionHandshake,
     UseUncheckedVent,
     UncheckedMurderPlayer,

@@ -73,16 +73,16 @@ public static class OnGameEndPatch
                     FinalStatus.Alive;
 
             int? killCount = deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
-            if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor))
+            if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl).FirstOrDefault()) || playerControl.Data.Role.IsImpostor))
             {
                 killCount = null;
             }
-            string roleString = RoleInfo.GetRolesString(playerControl, true, true, false);
+
             AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo()
             {
                 PlayerName = playerControl.Data.PlayerName,
                 Roles = roles,
-                RoleNames = roleString,
+                RoleNames = RoleInfo.GetRolesString(playerControl, true),
                 TasksTotal = tasksTotal,
                 TasksCompleted = tasksCompleted,
                 Kills = killCount,
@@ -691,7 +691,7 @@ internal class PlayerStatistics
             var playerInfo = GameData.Instance.AllPlayers[i];
             if (!playerInfo.Disconnected)
             {
-                if (playerInfo.Object.isCrew()) numCrew++;
+                if (playerInfo.Object.isCrewmate()) numCrew++;
                 if (!playerInfo.IsDead)
                 {
                     numTotalAlive++;

@@ -17,8 +17,6 @@ namespace RebuildUs.Roles;
 public enum ModifierId
 {
     Madmate = 0,
-    AkujoHonmei,
-    AkujoKeep,
 
     // don't put anything below this
     NoModifier = int.MaxValue
@@ -44,6 +42,23 @@ public abstract class Modifier
     public abstract void HandleDisconnect(PlayerControl player, DisconnectReasons reason);
     public abstract void Clear();
     public virtual void ResetModifier() { }
+    public virtual List<PlayerControl> Candidates
+    {
+        get
+        {
+            List<PlayerControl> validPlayers = [];
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (!player.hasModifier(modifierId))
+                {
+                    validPlayers.Add(player);
+                }
+            }
+
+            return validPlayers;
+        }
+    }
 
     public virtual string modifyNameText(string nameText) { return nameText; }
     public virtual string modifyRoleText(string roleText, List<RoleInfo> roleInfo, bool useColors = true, bool includeHidden = false) { return roleText; }

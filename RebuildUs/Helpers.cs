@@ -350,11 +350,11 @@ public static class Helpers
 
     public static bool isNeutral(this PlayerControl player)
     {
-        var roleInfo = RoleInfo.getRoleInfoForPlayer(player, false).FirstOrDefault();
+        var roleInfo = RoleInfo.getRoleInfoForPlayer(player).FirstOrDefault();
         return roleInfo != null && roleInfo.roleType is RoleType.Neutral;
     }
 
-    public static bool isCrew(this PlayerControl player)
+    public static bool isCrewmate(this PlayerControl player)
     {
         return player != null && !player.isImpostor() && !player.isNeutral();
     }
@@ -712,7 +712,7 @@ public static class Helpers
 
     public static MurderAttemptResult checkMurderAttempt(PlayerControl killer, PlayerControl target, bool blockRewind = false, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false, bool ignoreMedic = false)
     {
-        var targetRole = RoleInfo.getRoleInfoForPlayer(target, false).FirstOrDefault();
+        var targetRole = RoleInfo.getRoleInfoForPlayer(target).FirstOrDefault();
         // Modified vanilla checks
         if (AmongUsClient.Instance.IsGameOver) return MurderAttemptResult.SuppressKill;
         if (killer == null || killer.Data == null || (killer.Data.IsDead && !ignoreIfKillerIsDead) || killer.Data.Disconnected) return MurderAttemptResult.SuppressKill; // Allow non Impostor kills compared to vanilla code

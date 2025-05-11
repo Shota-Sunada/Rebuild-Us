@@ -19,7 +19,7 @@ public static class HauntMenuMinigamePatch
     {
         if (GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.Normal) return;
         var target = __instance.HauntTarget;
-        var roleInfo = RoleInfo.getRoleInfoForPlayer(target, false);
+        var roleInfo = RoleInfo.getRoleInfoForPlayer(target);
         string roleString = (roleInfo.Count > 0 && MapOptions.ghostsSeeRoles) ? roleInfo[0].name : "";
         if (__instance.HauntTarget.Data.IsDead)
         {
@@ -38,7 +38,7 @@ public static class HauntMenuMinigamePatch
         if (GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.Normal) return;
         if (__instance.filterMode == HauntMenuMinigame.HauntFilters.Impostor)
         {
-            var info = RoleInfo.getRoleInfoForPlayer(pc, false);
+            var info = RoleInfo.getRoleInfoForPlayer(pc);
             __result = (pc.Data.Role.IsImpostor || info.Any(x => x.roleType is RoleType.Neutral)) && !pc.Data.IsDead;
         }
     }

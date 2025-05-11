@@ -138,50 +138,26 @@ public static class RoleHelpers
 
         switch (role)
         {
-            // case RoleId.Jester:
-            //     return RebuildUs.Jester.jester == player;
-            // case RoleId.Mayor:
-            //     return RebuildUs.Mayor.mayor == player;
-            // case RoleId.Engineer:
-            //     return RebuildUs.Engineer.engineer == player;
             case RoleId.Godfather:
                 return Mafia.Godfather.godfather == player;
             case RoleId.Mafioso:
                 return Mafia.Mafioso.mafioso == player;
             case RoleId.Janitor:
                 return Mafia.Janitor.janitor == player;
-            // case RoleId.Detective:
-            //     return RebuildUs.Detective.detective == player;
-            // case RoleId.TimeMaster:
-            //     return TimeMaster.timeMaster == player;
-            // case RoleId.Medic:
-            //     return Medic.medic == player;
             case RoleId.Shifter:
                 return Shifter.shifter == player;
             case RoleId.Swapper:
                 return Swapper.swapper == player;
-            // case RoleId.Seer:
-            //     return global::RebuildUs.Seer.seer == player;
             case RoleId.Morphing:
                 return Morphing.morphing == player;
             case RoleId.Camouflager:
                 return Camouflager.camouflager == player;
-            // case RoleId.Hacker:
-            //     return global::RebuildUs.Hacker.hacker == player;
             case RoleId.Mini:
                 return Mini.mini == player;
-            // case RoleId.Tracker:
-            //     return global::RebuildUs.Tracker.tracker == player;
             case RoleId.Vampire:
                 return Vampire.vampire == player;
             case RoleId.Snitch:
                 return Snitch.snitch == player;
-            // case RoleId.Jackal:
-            //     return Jackal.jackal == player;
-            // case RoleId.Sidekick:
-            //     return Sidekick.sidekick == player;
-            // case RoleId.Eraser:
-            //     return global::RebuildUs.Eraser.eraser == player;
             case RoleId.Spy:
                 return Spy.spy == player;
             case RoleId.Trickster:
@@ -192,8 +168,6 @@ public static class RoleHelpers
                 return Warlock.warlock == player;
             case RoleId.SecurityGuard:
                 return SecurityGuard.securityGuard == player;
-            // case RoleId.Arsonist:
-            //     return global::RebuildUs.Arsonist.arsonist == player;
             case RoleId.EvilGuesser:
                 return Guesser.evilGuesser == player;
             case RoleId.NiceGuesser:
@@ -211,7 +185,7 @@ public static class RoleHelpers
             case RoleId.Pursuer:
                 return Pursuer.pursuer == player;
             default:
-                RebuildUs.Instance.Logger.LogError($"isRole: no method found for role type {role}");
+                Instance.Logger.LogError($"isRole: no method found for role type {role}");
                 break;
         }
 
@@ -231,15 +205,6 @@ public static class RoleHelpers
 
         switch (role)
         {
-            // case RoleId.Jester:
-            //     RebuildUs.Jester.jester = player;
-            //     break;
-            // case RoleId.Mayor:
-            //     RebuildUs.Mayor.mayor = player;
-            //     break;
-            // case RoleId.Engineer:
-            //     RebuildUs.Engineer.engineer = player;
-            //     break;
             case RoleId.Godfather:
                 Mafia.Godfather.godfather = player;
                 break;
@@ -249,54 +214,27 @@ public static class RoleHelpers
             case RoleId.Janitor:
                 Mafia.Janitor.janitor = player;
                 break;
-            // case RoleId.Detective:
-            //     RebuildUs.Detective.detective = player;
-            //     break;
-            // case RoleId.TimeMaster:
-            //     TimeMaster.timeMaster = player;
-            //     break;
-            // case RoleId.Medic:
-            //     Medic.medic = player;
-            //     break;
             case RoleId.Shifter:
                 Shifter.shifter = player;
                 break;
             case RoleId.Swapper:
                 Swapper.swapper = player;
                 break;
-            // case RoleId.Seer:
-            //     global::RebuildUs.Seer.seer = player;
-            //     break;
             case RoleId.Morphing:
                 Morphing.morphing = player;
                 break;
             case RoleId.Camouflager:
                 Camouflager.camouflager = player;
                 break;
-            // case RoleId.Hacker:
-            //     global::RebuildUs.Hacker.hacker = player;
-            //     break;
             case RoleId.Mini:
                 Mini.mini = player;
                 break;
-            // case RoleId.Tracker:
-            //     global::RebuildUs.Tracker.tracker = player;
-            //     break;
             case RoleId.Vampire:
                 Vampire.vampire = player;
                 break;
             case RoleId.Snitch:
                 Snitch.snitch = player;
                 break;
-            // case RoleId.Jackal:
-            //     Jackal.jackal = player;
-            //     break;
-            // case RoleId.Sidekick:
-            //     Sidekick.sidekick = player;
-            //     break;
-            // case RoleId.Eraser:
-            //     global::RebuildUs.Eraser.eraser = player;
-            //     break;
             case RoleId.Spy:
                 Spy.spy = player;
                 break;
@@ -312,9 +250,6 @@ public static class RoleHelpers
             case RoleId.SecurityGuard:
                 SecurityGuard.securityGuard = player;
                 break;
-            // case RoleId.Arsonist:
-            //     global::RebuildUs.Arsonist.arsonist = player;
-            //     break;
             case RoleId.EvilGuesser:
                 Guesser.evilGuesser = player;
                 break;
@@ -340,7 +275,7 @@ public static class RoleHelpers
                 Pursuer.pursuer = player;
                 break;
             default:
-                RebuildUs.Instance.Logger.LogError($"setRole: no method found for role type {role}");
+                Instance.Logger.LogError($"setRole: no method found for role type {role}");
                 return;
         }
     }
@@ -357,7 +292,7 @@ public static class RoleHelpers
                     return;
                 }
             }
-            RebuildUs.Instance.Logger.LogError($"eraseRole: no method found for role type {role}");
+            Instance.Logger.LogError($"eraseRole: no method found for role type {role}");
         }
     }
 
@@ -369,17 +304,7 @@ public static class RoleHelpers
         }
 
         // Crewmate roles
-        // if (player == RebuildUs.Mayor.mayor) RebuildUs.Mayor.clearAndReload();
-        // if (player.isRole(RoleId.Portalmaker)) RebuildUs.Portalmaker.clearAndReload();
-        // if (player == RebuildUs.Engineer.engineer) RebuildUs.Engineer.clearAndReload();
-        // if (player == RebuildUs.Lighter.lighter) RebuildUs.Lighter.clearAndReload();
-        // if (player == RebuildUs.Detective.detective) RebuildUs.Detective.clearAndReload();
-        // if (player == TimeMaster.timeMaster) TimeMaster.clearAndReload();
-        // if (player == global::RebuildUs.Medic.medic) global::RebuildUs.Medic.clearAndReload();
         if (player.isRole(RoleId.Shifter)) Shifter.clearAndReload();
-        // if (player.isRole(RoleId.Seer)) global::RebuildUs.Seer.clearAndReload();
-        // if (player.isRole(RoleId.Hacker)) global::RebuildUs.Hacker.clearAndReload();
-        // if (player.isRole(RoleId.Tracker)) global::RebuildUs.Tracker.clearAndReload();
         if (player.isRole(RoleId.Snitch)) Snitch.clearAndReload();
         if (player.isRole(RoleId.Swapper)) Swapper.clearAndReload();
         if (player.isRole(RoleId.Spy)) Spy.clearAndReload();
@@ -394,7 +319,6 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Mafioso)) Mafia.Mafioso.clearAndReload();
         if (player.isRole(RoleId.Janitor)) Mafia.Janitor.clearAndReload();
         if (player.isRole(RoleId.Vampire)) Vampire.clearAndReload();
-        // if (player.isRole(RoleId.Eraser)) global::RebuildUs.Eraser.clearAndReload();
         if (player.isRole(RoleId.Trickster)) Trickster.clearAndReload();
         if (player.isRole(RoleId.Cleaner)) Cleaner.clearAndReload();
         if (player.isRole(RoleId.Warlock)) Warlock.clearAndReload();
@@ -404,11 +328,10 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Yoyo)) Yoyo.clearAndReload();
 
         // Other roles
-        // if (player == RebuildUs.Jester.jester) RebuildUs.Jester.clearAndReload();
-        // if (player == global::RebuildUs.Arsonist.arsonist) global::RebuildUs.Arsonist.clearAndReload();
         if (Guesser.isGuesser(player.PlayerId)) Guesser.clear(player.PlayerId);
         if (player.isRole(RoleId.Jackal))
-        { // Promote Sidekick and hence override the the Jackal or erase Jackal
+        {
+            // Promote Sidekick and hence override the the Jackal or erase Jackal
             if (TeamJackal.Sidekick.promotesToJackal && TeamJackal.Sidekick.sidekick != null && !TeamJackal.Sidekick.sidekick.isDead())
             {
                 RPCProcedure.sidekickPromotes();
@@ -436,15 +359,7 @@ public static class RoleHelpers
             }
         }
 
-        // if (player.isRole(RoleId.Mayor)) RebuildUs.Mayor.mayor = target;
-        // if (player.isRole(RoleId.Engineer)) RebuildUs.Engineer.engineer = target;
-        // if (player.isRole(RoleId.Detective)) RebuildUs.Detective.detective = target;
-        // if (player.isRole(RoleId.TimeMaster)) TimeMaster.timeMaster = target;
-        // if (player.isRole(RoleId.Medic)) global::RebuildUs.Medic.medic = target;
         if (player.isRole(RoleId.Swapper)) Swapper.swapper = target;
-        // if (player.isRole(RoleId.Seer)) global::RebuildUs.Seer.seer = target;
-        // if (player.isRole(RoleId.Hacker)) global::RebuildUs.Hacker.hacker = target;
-        // if (player.isRole(RoleId.Tracker)) global::RebuildUs.Tracker.tracker = target;
         if (player.isRole(RoleId.Snitch)) Snitch.snitch = target;
         if (player.isRole(RoleId.Spy)) Spy.spy = target;
         if (player.isRole(RoleId.SecurityGuard)) SecurityGuard.securityGuard = target;
@@ -455,7 +370,6 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Morphing)) Morphing.morphing = target;
         if (player.isRole(RoleId.Camouflager)) Camouflager.camouflager = target;
         if (player.isRole(RoleId.Vampire)) Vampire.vampire = target;
-        // if (player.isRole(RoleId.Eraser)) global::RebuildUs.Eraser.eraser = target;
         if (player.isRole(RoleId.Trickster)) Trickster.trickster = target;
         if (player.isRole(RoleId.Cleaner)) Cleaner.cleaner = target;
         if (player.isRole(RoleId.Warlock)) Warlock.warlock = target;
@@ -464,8 +378,6 @@ public static class RoleHelpers
         if (player.isRole(RoleId.Mini)) Mini.mini = target;
         if (player.isRole(RoleId.EvilGuesser)) Guesser.evilGuesser = target;
         if (player.isRole(RoleId.NiceGuesser)) Guesser.niceGuesser = target;
-        // if (player.isRole(RoleId.Jester)) RebuildUs.Jester.jester = target;
-        // if (player.isRole(RoleId.Arsonist)) global::RebuildUs.Arsonist.arsonist = target;
         if (player.isRole(RoleId.Jackal)) TeamJackal.Jackal.jackal = target;
         if (player.isRole(RoleId.Sidekick)) TeamJackal.Sidekick.sidekick = target;
         if (player.isRole(RoleId.Vulture)) Vulture.vulture = target;
@@ -480,13 +392,17 @@ public static class RoleHelpers
         foreach (var role in Role.allRoles)
         {
             if (role.player == player)
+            {
                 nameText = role.modifyNameText(nameText);
+            }
         }
 
         foreach (var mod in Modifier.allModifiers)
         {
             if (mod.player == player)
+            {
                 nameText = mod.modifyNameText(nameText);
+            }
         }
 
         nameText += Lovers.getIcon(player);
@@ -499,7 +415,9 @@ public static class RoleHelpers
         foreach (var mod in Modifier.allModifiers)
         {
             if (mod.player == player)
+            {
                 roleText = mod.modifyRoleText(roleText, roleInfo, useColors, includeHidden);
+            }
         }
         return roleText;
     }

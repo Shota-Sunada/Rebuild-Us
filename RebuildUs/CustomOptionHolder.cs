@@ -357,11 +357,11 @@ public class CustomOptionHolder
     public static CustomOption dynamicMapEnableSubmerged;
     public static CustomOption dynamicMapSeparateSettings;
 
-    internal static Dictionary<byte, byte[]> blockedRolePairings = [];
+    internal static Dictionary<RoleId, RoleId[]> blockedRolePairings = [];
 
     public static void Load()
     {
-        CustomOption.vanillaSettings = RebuildUs.Instance.Config.Bind("Preset0", "VanillaOptions", "");
+        CustomOption.vanillaSettings = Instance.Config.Bind("Preset0", "VanillaOptions", "");
 
         // Role Options
         activateRoles = CustomOption.Create(1, CustomOptionType.General, "IsRolesEnabled", true, null, true);
@@ -722,11 +722,11 @@ public class CustomOptionHolder
 
         #endregion
 
-        blockedRolePairings.Add((byte)RoleId.Vampire, [(byte)RoleId.Warlock]);
-        blockedRolePairings.Add((byte)RoleId.Warlock, [(byte)RoleId.Vampire]);
-        blockedRolePairings.Add((byte)RoleId.Spy, [(byte)RoleId.Mini]);
-        blockedRolePairings.Add((byte)RoleId.Mini, [(byte)RoleId.Spy]);
-        blockedRolePairings.Add((byte)RoleId.Vulture, [(byte)RoleId.Cleaner]);
-        blockedRolePairings.Add((byte)RoleId.Cleaner, [(byte)RoleId.Vulture]);
+        blockedRolePairings.Add(RoleId.Vampire, [RoleId.Warlock]);
+        blockedRolePairings.Add(RoleId.Warlock, [RoleId.Vampire]);
+        blockedRolePairings.Add(RoleId.Spy, [RoleId.Mini]);
+        blockedRolePairings.Add(RoleId.Mini, [RoleId.Spy]);
+        blockedRolePairings.Add(RoleId.Vulture, [RoleId.Cleaner]);
+        blockedRolePairings.Add(RoleId.Cleaner, [RoleId.Vulture]);
     }
 }

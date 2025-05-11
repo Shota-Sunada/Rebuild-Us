@@ -403,7 +403,7 @@ class MeetingHudPatch
             RoleId guesserRole = (Guesser.niceGuesser != null && PlayerControl.LocalPlayer.PlayerId == Guesser.niceGuesser.PlayerId) ? RoleId.NiceGuesser : RoleId.EvilGuesser;
             if (roleInfo.isModifier || roleInfo.roleId == guesserRole || (!HandleGuesser.evilGuesserCanGuessSpy && guesserRole == RoleId.EvilGuesser && roleInfo.roleId == RoleId.Spy)) continue; // Not guessable roles & modifier
             // remove all roles that cannot spawn due to the settings from the ui.
-            RoleManagerSelectRolesPatch.RoleAssignmentData roleData = RoleManagerSelectRolesPatch.getRoleAssignmentData();
+            var roleData = RoleManagerSelectRolesPatch.getRoleAssignmentData();
             if (roleData.neutralSettings.ContainsKey((byte)roleInfo.roleId) && roleData.neutralSettings[(byte)roleInfo.roleId].rate == 0) continue;
             else if (roleData.impSettings.ContainsKey((byte)roleInfo.roleId) && roleData.impSettings[(byte)roleInfo.roleId].rate == 0) continue;
             else if (roleData.crewSettings.ContainsKey((byte)roleInfo.roleId) && roleData.crewSettings[(byte)roleInfo.roleId].rate == 0) continue;
@@ -463,7 +463,7 @@ class MeetingHudPatch
                         }
                     }
 
-                    var mainRoleInfo = RoleInfo.getRoleInfoForPlayer(focusedTarget, false).FirstOrDefault();
+                    var mainRoleInfo = RoleInfo.getRoleInfoForPlayer(focusedTarget).FirstOrDefault();
                     if (mainRoleInfo == null) return;
 
                     PlayerControl dyingTarget = (mainRoleInfo == roleInfo) ? focusedTarget : PlayerControl.LocalPlayer;
@@ -671,7 +671,7 @@ class MeetingHudPatch
                     foreach (byte playerId in trap.trappedPlayer)
                     {
                         PlayerControl p = Helpers.playerById(playerId);
-                        if (Trapper.infoType == 0) message += RoleInfo.GetRolesString(p, false, false, true) + "\n";
+                        if (Trapper.infoType == 0) message += RoleInfo.GetRolesString(p, false) + "\n";
                         else if (Trapper.infoType == 1)
                         {
                             if (Helpers.isNeutral(p) || p.Data.Role.IsImpostor) message += "Evil Role \n";
@@ -709,7 +709,7 @@ class MeetingHudPatch
                                 {
                                     roomName = DestroyableSingleton<TranslationController>.Instance.GetString((SystemTypes)room);
                                 }
-                                output += "- " + RoleInfo.GetRolesString(p, false, false, true) + ", was last seen " + roomName + "\n";
+                                output += "- " + RoleInfo.GetRolesString(p, false) + ", was last seen " + roomName + "\n";
                             }
                             FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Snitch.snitch, $"{output}");
                         }

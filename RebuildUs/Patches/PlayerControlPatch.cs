@@ -407,8 +407,8 @@ public static class PlayerControlFixedUpdatePatch
                 }
 
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(p.Data);
-                string roleNames = RoleInfo.GetRolesString(p, true, false);
-                string roleText = RoleInfo.GetRolesString(p, true, MapOptions.ghostsSeeModifier);
+                string roleNames = RoleInfo.GetRolesString(p, true);
+                string roleText = RoleInfo.GetRolesString(p, true);
                 string taskInfo = tasksTotal > 0 ? $"<color=#FAD934FF>({tasksCompleted}/{tasksTotal})</color>" : "";
 
                 string playerInfoText = "";
@@ -1133,7 +1133,7 @@ public static class MurderPlayerPatch
             {
                 color = Color.white;
                 if (target.Data.Role.IsImpostor) color = Color.red;
-                else if (RoleInfo.getRoleInfoForPlayer(target, false).FirstOrDefault().roleType is RoleType.Neutral) color = Color.blue;
+                else if (RoleInfo.getRoleInfoForPlayer(target).FirstOrDefault().roleType is RoleType.Neutral) color = Color.blue;
             }
             Helpers.showFlash(color, 1.5f);
         }
