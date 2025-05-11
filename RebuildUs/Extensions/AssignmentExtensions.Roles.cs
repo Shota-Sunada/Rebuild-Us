@@ -48,7 +48,9 @@ public static partial class AssignmentExtensions
         int impCountSettings = rnd.Next(impostorMin, impostorMax + 1);
         // If fill crewmates is enabled, make sure crew + neutral >= crewmates s.t. everyone has a role!
         while (crewCountSettings + neutralCountSettings < crewmates.Count && CustomOptionHolder.crewmateRolesFill.getBool())
+        {
             crewCountSettings++;
+        }
 
         // Potentially lower the actual maximum to the assignable players
         int maxCrewmateRoles = Mathf.Min(crewmates.Count, crewCountSettings);
@@ -80,9 +82,13 @@ public static partial class AssignmentExtensions
         neutralSettings.Add(RoleId.Thief, CustomOptionHolder.thiefSpawnRate.Data);
 
         if (rnd.Next(1, 101) <= CustomOptionHolder.lawyerIsProsecutorChance.getSelection() * 10) // Lawyer or Prosecutor
+        {
             neutralSettings.Add(RoleId.Prosecutor, CustomOptionHolder.lawyerSpawnRate.Data);
+        }
         else
+        {
             neutralSettings.Add(RoleId.Lawyer, CustomOptionHolder.lawyerSpawnRate.Data);
+        }
 
         crewSettings.Add(RoleId.Mayor, CustomOptionHolder.mayorSpawnRate.Data);
         crewSettings.Add(RoleId.Portalmaker, CustomOptionHolder.portalmakerSpawnRate.Data);
@@ -114,7 +120,7 @@ public static partial class AssignmentExtensions
             impSettings = impSettings,
             maxCrewmateRoles = maxCrewmateRoles,
             maxNeutralRoles = maxNeutralRoles,
-            maxImpostorRoles = maxImpostorRoles
+            maxImpostorRoles = maxImpostorRoles,
         };
     }
 
@@ -399,19 +405,25 @@ public static partial class AssignmentExtensions
         }
     }
 
-    private static byte setRoleToRandomPlayer(RoleId roleId, List<PlayerControl> playerList, bool removePlayer = true)
+    private static byte setRoleToRandomPlayer(RoleId roleId, List<PlayerControl> playerList)
     {
+        if (playerList.Count <= 0)
+        {
+            return byte.MaxValue;
+        }
+
         var index = rnd.Next(0, playerList.Count);
         byte playerId = playerList[index].PlayerId;
 
-        if (RoleInfo.lovers.enabled &&
+        if (Helpers.RolesEnabled &&
+            CustomOptionHolder.loversSpawnRate.Enabled &&
             Helpers.playerById(playerId)?.isLovers() == true &&
             blockLovers.Contains(roleId))
         {
             return byte.MaxValue;
         }
 
-        if (removePlayer) playerList.RemoveAt(index);
+        playerList.RemoveAt(index);
 
         using var writer = RPCProcedure.SendRPC(CustomRPC.SetRole);
         writer.Write((byte)roleId);
@@ -419,5 +431,17 @@ public static partial class AssignmentExtensions
         RPCProcedure.setRole((byte)roleId, playerId);
 
         return playerId;
+    }
+
+    public class RoleAssignmentData
+    {
+        public List<PlayerControl> crewmates { get; set; }
+        public List<PlayerControl> impostors { get; set; }
+        public Dictionary<RoleId, (int rate, int count)> impSettings = [];
+        public Dictionary<RoleId, (int rate, int count)> neutralSettings = [];
+        public Dictionary<RoleId, (int rate, int count)> crewSettings = [];
+        public int maxCrewmateRoles { get; set; }
+        public int maxNeutralRoles { get; set; }
+        public int maxImpostorRoles { get; set; }
     }
 }

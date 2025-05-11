@@ -6,6 +6,7 @@ using static RebuildUs.RebuildUs;
 using static RebuildUs.MapOptions;
 using RebuildUs.Objects;
 using RebuildUs.Roles;
+using RebuildUs.Extensions;
 using System;
 
 using RebuildUs.Utilities;
@@ -403,10 +404,10 @@ class MeetingHudPatch
             RoleId guesserRole = (Guesser.niceGuesser != null && PlayerControl.LocalPlayer.PlayerId == Guesser.niceGuesser.PlayerId) ? RoleId.NiceGuesser : RoleId.EvilGuesser;
             if (roleInfo.isModifier || roleInfo.roleId == guesserRole || (!HandleGuesser.evilGuesserCanGuessSpy && guesserRole == RoleId.EvilGuesser && roleInfo.roleId == RoleId.Spy)) continue; // Not guessable roles & modifier
             // remove all roles that cannot spawn due to the settings from the ui.
-            var roleData = RoleManagerSelectRolesPatch.getRoleAssignmentData();
-            if (roleData.neutralSettings.ContainsKey((byte)roleInfo.roleId) && roleData.neutralSettings[(byte)roleInfo.roleId].rate == 0) continue;
-            else if (roleData.impSettings.ContainsKey((byte)roleInfo.roleId) && roleData.impSettings[(byte)roleInfo.roleId].rate == 0) continue;
-            else if (roleData.crewSettings.ContainsKey((byte)roleInfo.roleId) && roleData.crewSettings[(byte)roleInfo.roleId].rate == 0) continue;
+            var roleData = AssignmentExtensions.getRoleAssignmentData();
+            if (roleData.neutralSettings.ContainsKey(roleInfo.roleId) && roleData.neutralSettings[roleInfo.roleId].rate == 0) continue;
+            else if (roleData.impSettings.ContainsKey(roleInfo.roleId) && roleData.impSettings[roleInfo.roleId].rate == 0) continue;
+            else if (roleData.crewSettings.ContainsKey(roleInfo.roleId) && roleData.crewSettings[roleInfo.roleId].rate == 0) continue;
             else if (new List<RoleId>() { RoleId.Janitor, RoleId.Godfather, RoleId.Mafioso }.Contains(roleInfo.roleId) && (CustomOptionHolder.mafiaSpawnRate.getSelection() == 0 || GameOptionsManager.Instance.currentGameOptions.NumImpostors < 3)) continue;
             else if (roleInfo.roleId == RoleId.Sidekick && (!CustomOptionHolder.jackalCanCreateSidekick.getBool() || CustomOptionHolder.jackalSpawnRate.getSelection() == 0)) continue;
             if (roleInfo.roleId == RoleId.Pursuer && CustomOptionHolder.lawyerSpawnRate.getSelection() == 0) continue;
